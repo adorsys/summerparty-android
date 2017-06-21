@@ -15,6 +15,12 @@ buildscript {
     }
 }
 
+ext {
+    constraintLayoutVersion = "1.0.2"
+    supportLibVersion = "25.4.0"
+    jUnitVersion = "4.12"
+}
+
 allprojects {
     repositories {
         google()
