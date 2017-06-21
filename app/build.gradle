@@ -30,5 +30,6 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
     implementation "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
 	implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
+	implementation "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
     testImplementation "junit:junit:${jUnitVersion}"
 }
