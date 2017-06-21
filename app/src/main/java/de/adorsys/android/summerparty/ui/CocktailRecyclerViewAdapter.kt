@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import de.adorsys.android.summerparty.R
-import de.adorsys.android.summerparty.data.CocktailItem
+import de.adorsys.android.summerparty.data.Cocktail
 
 class CocktailRecyclerViewAdapter(
-		private val values: List<CocktailItem>,
+		private val cocktails: ArrayList<Cocktail>,
 		private val listener: OrderFragment.OnListFragmentInteractionListener?) : RecyclerView.Adapter<CocktailRecyclerViewAdapter.ViewHolder>() {
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CocktailRecyclerViewAdapter.ViewHolder {
@@ -19,23 +19,23 @@ class CocktailRecyclerViewAdapter(
 	}
 
 	override fun onBindViewHolder(holder: CocktailRecyclerViewAdapter.ViewHolder, position: Int) {
-		holder.item = values[position]
-		holder.idView.text = values[position].id
-		holder.contentView.text = values[position].description
+		holder.item = cocktails[position]
+		holder.idView.text = cocktails[position].id
+		holder.contentView.text = cocktails[position].type?.name
 
 		holder.view.setOnClickListener {
-			listener?.onListFragmentInteraction(holder.item as CocktailItem)
+			listener?.onListFragmentInteraction(holder.item as Cocktail)
 		}
 	}
 
 	override fun getItemCount(): Int {
-		return values.size
+		return cocktails.size
 	}
 
 	inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 		val idView: TextView
 		val contentView: TextView
-		var item: CocktailItem? = null
+		var item: Cocktail? = null
 
 		init {
 			idView = view.findViewById(R.id.id) as TextView
