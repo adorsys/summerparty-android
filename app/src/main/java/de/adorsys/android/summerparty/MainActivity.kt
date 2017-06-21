@@ -12,7 +12,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.widget.Toast
 
-class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), OrderFragment.OnListFragmentInteractionListener {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
 		override fun getItem(position: Int): Fragment {
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a PlaceholderFragment (defined as a static inner class below).
-			return if (position == 0) CocktailFragment.newInstance(COCKTAIL_COLUMN_COUNT) else OrderFragment.newInstance()
+			return if (position == 0) OrderFragment.newInstance(COCKTAIL_COLUMN_COUNT) else StatusFragment.newInstance()
 		}
 
 

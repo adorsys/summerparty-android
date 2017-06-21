@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import de.adorsys.android.summerparty.CocktailFragment.OnListFragmentInteractionListener
+import de.adorsys.android.summerparty.OrderFragment.OnListFragmentInteractionListener
 
 class CocktailRecyclerViewAdapter(private val values: List<CocktailItem>, private val listener: OnListFragmentInteractionListener?) : RecyclerView.Adapter<CocktailRecyclerViewAdapter.ViewHolder>() {
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 		val view = LayoutInflater.from(parent.context)
-				.inflate(R.layout.fragment_cocktail, parent, false)
+				.inflate(R.layout.fragment_order, parent, false)
 		return ViewHolder(view)
 	}
 
