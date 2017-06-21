@@ -1,7 +1,7 @@
 <resources>
-	<string name="app_name">summerparty</string>
-	<string name="tab_text_1">Order</string>
-	<string name="tab_text_2">Status</string>
+    <string name="app_name">summerparty</string>
+    <string name="tab_text_1">Order</string>
+    <string name="tab_text_2">Status</string>
 
-	<string name="fragment_order_text">Status</string>
+    <string name="fragment_order_text">Status</string>
 </resources>
