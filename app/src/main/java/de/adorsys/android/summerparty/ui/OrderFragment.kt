@@ -1,4 +1,4 @@
-package de.adorsys.android.summerparty
+package de.adorsys.android.summerparty.ui
 
 import android.content.Context
 import android.os.Bundle
@@ -9,17 +9,19 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import de.adorsys.android.summerparty.R
+import de.adorsys.android.summerparty.data.CocktailItem
 import de.adorsys.android.summerparty.mock.CocktailMockContent
 
 class OrderFragment : Fragment() {
 	private var columnCount = 2
-	private var listener: OnListFragmentInteractionListener? = null
+	private var listener: OrderFragment.OnListFragmentInteractionListener? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
 		if (arguments != null) {
-			columnCount = arguments.getInt(ARG_COLUMN_COUNT)
+			columnCount = arguments.getInt(OrderFragment.Companion.ARG_COLUMN_COUNT)
 		}
 	}
 
@@ -44,8 +46,8 @@ class OrderFragment : Fragment() {
 
 	override fun onAttach(context: Context?) {
 		super.onAttach(context)
-		if (context is OnListFragmentInteractionListener) {
-			listener = context as OnListFragmentInteractionListener?
+		if (context is OrderFragment.OnListFragmentInteractionListener) {
+			listener = context as OrderFragment.OnListFragmentInteractionListener?
 		} else {
 			throw RuntimeException(context!!.toString() + " must implement OnListFragmentInteractionListener")
 		}
@@ -56,29 +58,17 @@ class OrderFragment : Fragment() {
 		listener = null
 	}
 
-	/**
-	 * This interface must be implemented by activities that contain this
-	 * fragment to allow an interaction in this fragment to be communicated
-	 * to the activity and potentially other fragments contained in that
-	 * activity.
-	 *
-	 *
-	 * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-	 */
 	interface OnListFragmentInteractionListener {
-		// TODO: Update argument type and name
 		fun onListFragmentInteraction(item: CocktailItem)
 	}
 
 	companion object {
-		// TODO: Customize parameter argument names
 		private val ARG_COLUMN_COUNT = "column-count"
 
-		// TODO: Customize parameter initialization
 		fun newInstance(columnCount: Int): OrderFragment {
 			val fragment = OrderFragment()
 			val args = Bundle()
-			args.putInt(ARG_COLUMN_COUNT, columnCount)
+			args.putInt(OrderFragment.Companion.ARG_COLUMN_COUNT, columnCount)
 			fragment.arguments = args
 			return fragment
 		}

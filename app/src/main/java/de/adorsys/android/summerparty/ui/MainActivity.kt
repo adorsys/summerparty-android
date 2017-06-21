@@ -1,4 +1,4 @@
-package de.adorsys.android.summerparty
+package de.adorsys.android.summerparty.ui
 
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -11,6 +11,8 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.widget.Toast
+import de.adorsys.android.summerparty.R
+import de.adorsys.android.summerparty.data.CocktailItem
 
 class MainActivity : AppCompatActivity(), OrderFragment.OnListFragmentInteractionListener {
 
@@ -55,7 +57,7 @@ class MainActivity : AppCompatActivity(), OrderFragment.OnListFragmentInteractio
 		override fun getItem(position: Int): Fragment {
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a PlaceholderFragment (defined as a static inner class below).
-			return if (position == 0) OrderFragment.newInstance(COCKTAIL_COLUMN_COUNT) else StatusFragment.newInstance()
+			return if (position == 0) OrderFragment.Companion.newInstance(COCKTAIL_COLUMN_COUNT) else StatusFragment.Companion.newInstance()
 		}
 
 

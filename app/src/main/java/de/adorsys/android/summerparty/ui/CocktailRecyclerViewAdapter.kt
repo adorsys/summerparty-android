@@ -1,21 +1,24 @@
-package de.adorsys.android.summerparty
+package de.adorsys.android.summerparty.ui
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import de.adorsys.android.summerparty.OrderFragment.OnListFragmentInteractionListener
+import de.adorsys.android.summerparty.R
+import de.adorsys.android.summerparty.data.CocktailItem
 
-class CocktailRecyclerViewAdapter(private val values: List<CocktailItem>, private val listener: OnListFragmentInteractionListener?) : RecyclerView.Adapter<CocktailRecyclerViewAdapter.ViewHolder>() {
+class CocktailRecyclerViewAdapter(
+		private val values: List<CocktailItem>,
+		private val listener: OrderFragment.OnListFragmentInteractionListener?) : RecyclerView.Adapter<CocktailRecyclerViewAdapter.ViewHolder>() {
 
-	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CocktailRecyclerViewAdapter.ViewHolder {
 		val view = LayoutInflater.from(parent.context)
 				.inflate(R.layout.fragment_order, parent, false)
 		return ViewHolder(view)
 	}
 
-	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+	override fun onBindViewHolder(holder: CocktailRecyclerViewAdapter.ViewHolder, position: Int) {
 		holder.item = values[position]
 		holder.idView.text = values[position].id
 		holder.contentView.text = values[position].description
