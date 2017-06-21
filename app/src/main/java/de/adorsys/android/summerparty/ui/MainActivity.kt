@@ -60,7 +60,6 @@ class MainActivity : AppCompatActivity(), OrderFragment.OnListFragmentInteractio
 			return if (position == 0) OrderFragment.Companion.newInstance(COCKTAIL_COLUMN_COUNT) else StatusFragment.Companion.newInstance()
 		}
 
-
 		override fun getCount(): Int {
 			return PAGER_COUNT
 		}
