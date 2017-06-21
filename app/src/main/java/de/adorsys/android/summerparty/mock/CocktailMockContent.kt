@@ -1,6 +1,6 @@
 package de.adorsys.android.summerparty.mock
 
-import de.adorsys.android.summerparty.CocktailItem
+import de.adorsys.android.summerparty.data.CocktailItem
 import java.util.*
 
 /**

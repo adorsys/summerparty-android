@@ -1,15 +1,16 @@
-package de.adorsys.android.summerparty
+package de.adorsys.android.summerparty.ui
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import de.adorsys.android.summerparty.R
 
 
 class StatusFragment : Fragment() {
 
-	override fun onCreate(savedInstanceState: Bundle?) {
+	override fun onCreate(savedInstanceState: android.os.Bundle?) {
 		super.onCreate(savedInstanceState)
 	}
 
