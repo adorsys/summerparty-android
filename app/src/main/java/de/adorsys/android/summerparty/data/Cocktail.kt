@@ -3,7 +3,7 @@ package de.adorsys.android.summerparty.data
 import android.os.Parcel
 import android.os.Parcelable
 
-class Cocktail(val id: String, val available: Boolean, val type: CocktailType?) : Parcelable {
+data class Cocktail(val id: String, val available: Boolean, val name: String?) : Parcelable {
     companion object {
         @JvmField val CREATOR: Parcelable.Creator<Cocktail> = object : Parcelable.Creator<Cocktail> {
             override fun createFromParcel(source: Parcel): Cocktail = Cocktail(source)
@@ -14,7 +14,7 @@ class Cocktail(val id: String, val available: Boolean, val type: CocktailType?) 
     constructor(source: Parcel) : this(
     source.readString(),
     1 == source.readInt(),
-    source.readParcelable<CocktailType>(CocktailType::class.java.classLoader)
+    source.readString()
     )
 
     override fun describeContents() = 0
@@ -22,6 +22,6 @@ class Cocktail(val id: String, val available: Boolean, val type: CocktailType?) 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(id)
         dest.writeInt((if (available) 1 else 0))
-        dest.writeParcelable(type, 0)
+        dest.writeString(name)
     }
 }
