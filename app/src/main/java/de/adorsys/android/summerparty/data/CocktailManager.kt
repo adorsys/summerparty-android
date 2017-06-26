@@ -10,7 +10,7 @@ enum class CocktailManager {
     INSTANCE;
 
     private val retrofit = Retrofit.Builder()
-            .baseUrl("https://summerparty.dev.adorsys.de")
+            .baseUrl("https://summerparty.adorsys.de/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     private val cocktailService: CocktailService = retrofit.create(CocktailService::class.java)
@@ -24,7 +24,7 @@ enum class CocktailManager {
     }
 
     fun getCocktails(cocktailsCallback: Callback<List<Cocktail>>) {
-        return cocktailService.getCocktails.enqueue(cocktailsCallback)
+        return cocktailService.getCocktails().enqueue(cocktailsCallback)
     }
 
     fun getCocktail(id: String, cocktailCallback: Callback<Cocktail>) {
