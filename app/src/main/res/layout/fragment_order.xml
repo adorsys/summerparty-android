@@ -6,13 +6,14 @@
 	android:layout_margin="@dimen/activity_horizontal_margin"
 	android:orientation="horizontal">
 
-	<TextView
-		android:id="@+id/id_textView"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignParentStart="true"
-		android:layout_margin="@dimen/text_margin"
-		android:textAppearance="?attr/textAppearanceListItem"/>
+    <ImageView
+        android:id="@+id/cocktail_imageView"
+        android:layout_width="@dimen/width_cocktail_image"
+        android:layout_height="@dimen/height_cocktail_image"
+        android:layout_alignParentStart="true"
+        android:layout_margin="@dimen/text_margin"
+        android:scaleType="centerCrop"
+        android:textAppearance="?attr/textAppearanceListItem"/>
 
 	<TextView
 		android:id="@+id/name_textView"
@@ -25,7 +26,7 @@
 	<ImageView
 		android:id="@+id/available_imageView"
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
+		android:layout_height="@dimen/height_cocktail_image"
 		android:layout_alignParentEnd="true"
 		android:layout_margin="@dimen/text_margin"
 		android:textAppearance="?attr/textAppearanceListItem"/>

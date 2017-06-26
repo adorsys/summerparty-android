@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.Cocktail
+import de.adorsys.android.summerparty.data.CocktailType
 
 class CocktailRecyclerViewAdapter(
         private val cocktails: ArrayList<Cocktail>,
@@ -28,14 +29,24 @@ class CocktailRecyclerViewAdapter(
     }
 
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val idView: TextView = view.findViewById(R.id.id_textView) as TextView
+        val cocktailView: ImageView = view.findViewById(R.id.cocktail_imageView) as ImageView
         val contentView: TextView = view.findViewById(R.id.name_textView) as TextView
         val availabilityView: ImageView = view.findViewById(R.id.available_imageView) as ImageView
         var item: Cocktail? = null
 
         fun bindItem(cocktail: Cocktail) {
             item = cocktail
-            idView.text = cocktail.id
+            val id = cocktail.id.toInt()
+            cocktailView.setImageDrawable(
+                    if (id == CocktailType.MAI_TAI.id) {
+                        cocktailView.resources.getDrawable(R.drawable.mai_tai, cocktailView.context.theme)
+                    } else if (id == CocktailType.CUBRA_LIBRE.id) {
+                        cocktailView.resources.getDrawable(R.drawable.cuba_libre, cocktailView.context.theme)
+                    } else if (id == CocktailType.GIN_TONIC.id) {
+                        cocktailView.resources.getDrawable(R.drawable.gin_tonic, cocktailView.context.theme)
+                    } else {
+                        cocktailView.resources.getDrawable(R.drawable.moscow_mule, cocktailView.context.theme)
+                    })
             contentView.text = cocktail.name
             availabilityView.setImageDrawable(
                     if (cocktail.available) {
