@@ -22,7 +22,6 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), OrderFragment.OnListFragmentInteractionListener {
     private var viewPager: ViewPager? = null
-    private var tabLayout: TabLayout? = null
     private val cocktails = ArrayList<Cocktail>()
     private val cocktailsCallback = CocktailsCallback()
 
