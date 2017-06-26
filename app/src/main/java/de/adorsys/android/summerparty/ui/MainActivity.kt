@@ -1,8 +1,6 @@
 package de.adorsys.android.summerparty.ui
 
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -45,17 +43,12 @@ class MainActivity : AppCompatActivity(), OrderFragment.OnListFragmentInteractio
 		viewPager!!.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
 		tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewPager))
 
-        val fab = findViewById(R.id.fab) as FloatingActionButton
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
-
         CocktailManager.INSTANCE.getCocktails(cocktailsCallback)
     }
 
     override fun onListFragmentInteraction(item: Cocktail) {
-        Toast.makeText(this, "available: " + item.available.toString(), Toast.LENGTH_SHORT).show()
+        // TODO: implement logic for adding item to cart
+        Toast.makeText(this, item.name + " is available: " + item.available.toString(), Toast.LENGTH_SHORT).show()
     }
 
 
