@@ -10,15 +10,15 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface CocktailService {
-    @POST("/order")
+    @POST("order")
     fun createOrder(@Body mutableOrder: MutableOrder): Call<Order>
 
-    @GET("/order/{id}")
+    @GET("order/{id}")
     fun getOrder(@Path("id") id: String): Call<Order>
 
-    @get:GET("/beverage")
-    val getCocktails: Call<List<Cocktail>>
+    @GET("beverage")
+    fun getCocktails(): Call<List<Cocktail>>
 
-    @GET("/beverage/{id}")
+    @GET("beverage/{id}")
     fun getCocktail(@Path("id") id: String): Call<Cocktail>
 }
