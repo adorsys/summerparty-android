@@ -1,6 +1,7 @@
 package de.adorsys.android.summerparty.ui
 
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -10,10 +11,10 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
-import android.widget.Toast
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.Cocktail
 import de.adorsys.android.summerparty.data.CocktailManager
+import de.adorsys.android.summerparty.data.callback.CartActionCallback
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,6 +22,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), OrderFragment.OnListFragmentInteractionListener {
     private var viewPager: ViewPager? = null
+    private var tabLayout: TabLayout? = null
     private val cocktails = ArrayList<Cocktail>()
     private val cocktailsCallback = CocktailsCallback()
 
@@ -47,8 +49,12 @@ class MainActivity : AppCompatActivity(), OrderFragment.OnListFragmentInteractio
     }
 
     override fun onListFragmentInteraction(item: Cocktail) {
-        // TODO: implement logic for adding item to cart
-        Toast.makeText(this, item.name + " is available: " + item.available.toString(), Toast.LENGTH_SHORT).show()
+        val rootView = findViewById(android.R.id.content)
+        if (rootView != null) {
+            Snackbar.make(rootView, getString(R.string.order_cocktail, item.name), Snackbar.LENGTH_LONG)
+                    .setAction(R.string.action_cart, CartActionCallback())
+                    .show()
+        }
     }
 
 
