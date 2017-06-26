@@ -48,13 +48,13 @@ class MainActivity : AppCompatActivity(), OrderFragment.OnListFragmentInteractio
     }
 
     override fun onListFragmentInteraction(item: Cocktail) {
-        val rootView = findViewById(R.id.main_content)
-        if (rootView != null && item.available) {
-            Snackbar.make(rootView, getString(R.string.order_cocktail, item.name), Snackbar.LENGTH_INDEFINITE)
+        val viewContainer = findViewById(R.id.main_content)
+        if (viewContainer != null && item.available) {
+            Snackbar.make(viewContainer, getString(R.string.order_cocktail, item.name), Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.action_cart, CartActionCallback())
                     .show()
-        } else if (rootView != null) {
-            Snackbar.make(rootView, getString(R.string.cocktail_out_of_stock, item.name), Snackbar.LENGTH_LONG)
+        } else if (viewContainer != null) {
+            Snackbar.make(viewContainer, getString(R.string.cocktail_out_of_stock, item.name), Snackbar.LENGTH_LONG)
                     .show()
         }
     }
