@@ -10,5 +10,5 @@
 	android:layout_marginLeft="16dp"
 	android:layout_marginRight="16dp"
 	app:layoutManager="LinearLayoutManager"
-	tools:context="de.adorsys.android.summerparty.OrderFragment"
+	tools:context="de.adorsys.android.summerparty.ui.OrderFragment"
 	tools:listitem="@layout/fragment_order"/>
