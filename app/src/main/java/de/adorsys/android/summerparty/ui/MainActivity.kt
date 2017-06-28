@@ -55,13 +55,22 @@ class MainActivity : AppCompatActivity(), OrderFragment.OnListFragmentInteractio
     override fun onListFragmentInteraction(item: Cocktail) {
         val viewContainer = findViewById(R.id.main_content)
         if (viewContainer != null && item.available) {
+            val cocktail = ArrayList<String>(1)
+            cocktail.add(item.id)
+
+            currentOrder = MutableOrder(cocktail, getUser())
             Snackbar.make(viewContainer, getString(R.string.order_cocktail, item.name), Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.action_cart, CartActionCallback())
+                    .setAction(R.string.action_cart, cartActionCallback)
                     .show()
         } else if (viewContainer != null) {
             Snackbar.make(viewContainer, getString(R.string.cocktail_out_of_stock, item.name), Snackbar.LENGTH_LONG)
                     .show()
         }
+    }
+
+    // TODO return other than mock content
+    private fun getUser(): MutableCustomer {
+        return MutableCustomer("Heiner" + Random().nextInt())
     }
 
 
