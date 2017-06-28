@@ -10,7 +10,7 @@ import android.util.Log
 import android.widget.Toast
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.Cocktail
-import de.adorsys.android.summerparty.data.CocktailManager
+import de.adorsys.android.summerparty.data.ApiManager
 import de.adorsys.android.summerparty.data.MutableCustomer
 import de.adorsys.android.summerparty.data.mock.UserFactory
 import de.adorsys.android.summerparty.data.mutable.MutableOrder
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity(), OrderFragment.OnListFragmentInteractio
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewPager))
 
-        CocktailManager.INSTANCE.getCocktails(
+        ApiManager.INSTANCE.getCocktails(
                 object : Callback<List<Cocktail>> {
                     override fun onResponse(call: Call<List<Cocktail>>?, response: Response<List<Cocktail>>?) {
                         val cocktailResponse: List<Cocktail>? = response?.body()
@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity(), OrderFragment.OnListFragmentInteractio
             val currentOrder = MutableOrder(cocktail, user)
             Snackbar.make(viewContainer, getString(R.string.order_cocktail, item.name), Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.action_cart) {
-                        CocktailManager.INSTANCE.createOrder(
+                        ApiManager.INSTANCE.createOrder(
                                 currentOrder,
                                 object : Callback<Void> {
                                     override fun onFailure(call: Call<Void>?, t: Throwable?) {

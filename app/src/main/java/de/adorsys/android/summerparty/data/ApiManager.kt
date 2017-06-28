@@ -6,7 +6,7 @@ import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-enum class CocktailManager {
+enum class ApiManager {
     INSTANCE;
 
     private val retrofit = Retrofit.Builder()
