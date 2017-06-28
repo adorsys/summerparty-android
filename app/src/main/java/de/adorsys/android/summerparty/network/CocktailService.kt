@@ -11,7 +11,7 @@ import retrofit2.http.Path
 
 interface CocktailService {
     @POST("order")
-    fun createOrder(@Body mutableOrder: MutableOrder): Call<Order>
+    fun createOrder(@Body mutableOrder: MutableOrder): Call<Void>
 
     @GET("order/{id}")
     fun getOrder(@Path("id") id: String): Call<Order>

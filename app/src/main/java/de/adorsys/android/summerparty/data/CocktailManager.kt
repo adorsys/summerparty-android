@@ -15,7 +15,7 @@ enum class CocktailManager {
             .build()
     private val cocktailService: CocktailService = retrofit.create(CocktailService::class.java)
 
-    fun createOrder(mutableOrder: MutableOrder, orderCallback: Callback<Order>) {
+    fun createOrder(mutableOrder: MutableOrder, orderCallback: Callback<Void>) {
         return cocktailService.createOrder(mutableOrder).enqueue(orderCallback)
     }
 
