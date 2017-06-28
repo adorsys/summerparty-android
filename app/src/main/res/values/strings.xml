@@ -4,7 +4,9 @@
 	<string name="tab_text_2">Status</string>
 
 	<string name="fragment_order_text">Status</string>
-    <string name="order_cocktail">Order %1$s?</string>
+	<string name="order_cocktail">Order %1$s?</string>
 	<string name="action_cart">To cart</string>
+	<string name="cart">Cart</string>
+	<string name="settings">Settings</string>
 	<string name="cocktail_out_of_stock">%1$s is currently out of stock.</string>
 </resources>

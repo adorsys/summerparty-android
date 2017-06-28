@@ -2,6 +2,7 @@ package de.adorsys.android.summerparty.ui
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
@@ -9,6 +10,8 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.ApiManager
@@ -111,6 +114,19 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                         Log.i("TAG_CUSTOMER_ORDERS", t?.message)
                     }
                 })
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_cart) {
+            this.startActivity(Intent(this, CartActivity::class.java))
+        }
+        return true
     }
 
     override fun onListFragmentInteraction(item: Cocktail) {
