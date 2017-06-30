@@ -12,11 +12,11 @@ import de.adorsys.android.summerparty.data.CocktailType
 
 class CocktailRecyclerViewAdapter(
         private val cocktails: ArrayList<Cocktail>,
-        private val listener: OrderFragment.OnListFragmentInteractionListener?) : RecyclerView.Adapter<CocktailRecyclerViewAdapter.ViewHolder>() {
+        private val listener: CocktailFragment.OnListFragmentInteractionListener?) : RecyclerView.Adapter<CocktailRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CocktailRecyclerViewAdapter.ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.fragment_order, parent, false)
+                .inflate(R.layout.item_cocktail, parent, false)
         return ViewHolder(view)
     }
 
