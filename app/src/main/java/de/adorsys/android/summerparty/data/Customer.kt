@@ -3,8 +3,7 @@ package de.adorsys.android.summerparty.data
 import android.os.Parcel
 import android.os.Parcelable
 
-// TODO check if fields are correct when specified
-class Customer(val id: String, val name: String, val pushId: String) : Parcelable {
+data class Customer(val id: String, val name: String, val pushId: String) : Parcelable {
     companion object {
         @JvmField val CREATOR: Parcelable.Creator<Customer> = object : Parcelable.Creator<Customer> {
             override fun createFromParcel(source: Parcel): Customer = Customer(source)

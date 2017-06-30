@@ -3,7 +3,7 @@ package de.adorsys.android.summerparty.data
 import android.os.Parcel
 import android.os.Parcelable
 
-class Order(val id: String, val state: String, val cocktails: List<Cocktail>, val customer: Customer) : Parcelable {
+data class Order(val id: String, val state: String, val beverages: List<Cocktail>, val customer: Customer) : Parcelable {
     companion object {
         @JvmField val CREATOR: Parcelable.Creator<Order> = object : Parcelable.Creator<Order> {
             override fun createFromParcel(source: Parcel): Order = Order(source)
@@ -23,7 +23,7 @@ class Order(val id: String, val state: String, val cocktails: List<Cocktail>, va
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(id)
         dest.writeString(state)
-        dest.writeTypedList(cocktails)
+        dest.writeTypedList(beverages)
         dest.writeParcelable(customer, 0)
     }
 }
