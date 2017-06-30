@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
     }
 
     private fun getOrdersForUser() {
-        ApiManager.INSTANCE.getOrdersForCustomer((user as Customer).id,
+        ApiManager.INSTANCE.getOrdersForCustomer(user!!.id,
                 object : Callback<List<Order>> {
                     override fun onResponse(call: Call<List<Order>>?, response: Response<List<Order>>?) {
                         val cocktailResponse: List<Order>? = response?.body()
