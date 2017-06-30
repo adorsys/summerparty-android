@@ -31,4 +31,6 @@ dependencies {
 	implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
 	implementation "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
     testImplementation "junit:junit:${jUnitVersion}"
+	compile "com.android.support:cardview-v7:${supportLibVersion}"
+
 }
