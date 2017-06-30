@@ -12,9 +12,9 @@ import android.view.ViewGroup
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.Cocktail
 
-class OrderFragment : Fragment() {
+class CocktailFragment : Fragment() {
 	private var columnCount = 2
-	private var listener: OrderFragment.OnListFragmentInteractionListener? = null
+	private var listener: CocktailFragment.OnListFragmentInteractionListener? = null
     private val cocktails: ArrayList<Cocktail> = ArrayList()
 
 	override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -44,8 +44,8 @@ class OrderFragment : Fragment() {
 
 	override fun onAttach(context: Context?) {
 		super.onAttach(context)
-		if (context is OrderFragment.OnListFragmentInteractionListener) {
-			listener = context as OrderFragment.OnListFragmentInteractionListener?
+		if (context is CocktailFragment.OnListFragmentInteractionListener) {
+			listener = context as CocktailFragment.OnListFragmentInteractionListener?
 		} else {
 			throw RuntimeException(context!!.toString() + " must implement OnListFragmentInteractionListener")
 		}
@@ -61,14 +61,14 @@ class OrderFragment : Fragment() {
 	}
 
 	companion object {
-		private val ARG_COLUMN_COUNT = "column-count"
+		private val ARG_COLUMN_COUNT = "cocktails_column_count"
 		private val ARG_COCKTAILS = "cocktails"
 
-		fun newInstance(columnCount: Int, cocktails: ArrayList<Cocktail>): OrderFragment {
-			val fragment = OrderFragment()
+		fun newInstance(columnCount: Int, cocktails: ArrayList<Cocktail>): CocktailFragment {
+			val fragment = CocktailFragment()
 			val args = Bundle()
-			args.putInt(OrderFragment.Companion.ARG_COLUMN_COUNT, columnCount)
-			args.putParcelableArrayList(OrderFragment.Companion.ARG_COCKTAILS, cocktails)
+			args.putInt(CocktailFragment.Companion.ARG_COLUMN_COUNT, columnCount)
+			args.putParcelableArrayList(CocktailFragment.Companion.ARG_COCKTAILS, cocktails)
 			fragment.arguments = args
 			return fragment
 		}
