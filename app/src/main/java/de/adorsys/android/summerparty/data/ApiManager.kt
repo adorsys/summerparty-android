@@ -1,5 +1,6 @@
 package de.adorsys.android.summerparty.data
 
+import de.adorsys.android.summerparty.data.mutable.MutableCustomer
 import de.adorsys.android.summerparty.data.mutable.MutableOrder
 import de.adorsys.android.summerparty.network.CocktailService
 import retrofit2.Callback
@@ -29,5 +30,17 @@ enum class ApiManager {
 
     fun getCocktail(id: String, cocktailCallback: Callback<Cocktail>) {
         return cocktailService.getCocktail(id).enqueue(cocktailCallback)
+    }
+
+    fun createCustomer(mutableCustomer: MutableCustomer, customerCallback: Callback<Customer>) {
+        return cocktailService.createCustomer(mutableCustomer).enqueue(customerCallback)
+    }
+
+    fun getCustomer(id: String, customerCallback: Callback<Customer>) {
+        return cocktailService.getCustomer(id).enqueue(customerCallback)
+    }
+
+    fun getOrdersForCustomer(id: String, ordersCallback: Callback<List<Order>>) {
+        return cocktailService.getOrdersForCustomer(id).enqueue(ordersCallback)
     }
 }
