@@ -1,6 +1,6 @@
 package de.adorsys.android.summerparty.data.mock
 
-import de.adorsys.android.summerparty.data.MutableCustomer
+import de.adorsys.android.summerparty.data.mutable.MutableCustomer
 import java.util.*
 
 class UserFactory {

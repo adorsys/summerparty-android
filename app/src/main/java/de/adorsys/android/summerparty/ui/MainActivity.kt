@@ -9,9 +9,9 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.widget.Toast
 import de.adorsys.android.summerparty.R
-import de.adorsys.android.summerparty.data.Cocktail
 import de.adorsys.android.summerparty.data.ApiManager
-import de.adorsys.android.summerparty.data.MutableCustomer
+import de.adorsys.android.summerparty.data.Cocktail
+import de.adorsys.android.summerparty.data.Customer
 import de.adorsys.android.summerparty.data.mock.UserFactory
 import de.adorsys.android.summerparty.data.mutable.MutableOrder
 import retrofit2.Call
@@ -21,7 +21,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), OrderFragment.OnListFragmentInteractionListener {
     // TODO get real user from login instead of creating one
-    private val user: MutableCustomer = UserFactory.create()
+    private var user: Customer? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +40,19 @@ class MainActivity : AppCompatActivity(), OrderFragment.OnListFragmentInteractio
         viewPager.adapter = sectionsPagerAdapter
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewPager))
+
+        // TODO create user via user login instead of using the mock content
+        val customer = UserFactory.create()
+        ApiManager.INSTANCE.createCustomer(customer,
+                object : Callback<Customer> {
+                    override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
+                        user = response?.body()
+                    }
+
+                    override fun onFailure(call: Call<Customer>?, t: Throwable?) {
+                        Log.i("TAG", t?.message)
+                    }
+                })
 
         ApiManager.INSTANCE.getCocktails(
                 object : Callback<List<Cocktail>> {
@@ -62,7 +75,7 @@ class MainActivity : AppCompatActivity(), OrderFragment.OnListFragmentInteractio
             val cocktail = ArrayList<String>(1)
             cocktail.add(item.id)
 
-            val currentOrder = MutableOrder(cocktail, user)
+            val currentOrder = MutableOrder(cocktail, if (user == null) "" else (user as Customer).id)
             Snackbar.make(viewContainer, getString(R.string.order_cocktail, item.name), Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.action_cart) {
                         ApiManager.INSTANCE.createOrder(
