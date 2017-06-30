@@ -1,5 +1,7 @@
 package de.adorsys.android.summerparty.ui
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
@@ -21,9 +23,14 @@ import retrofit2.Response
 import java.util.*
 
 class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInteractionListener {
+    companion object {
+        private val KEY_USER_ID = "preferences_key_user_id"
+    }
+
     // TODO get real user from login instead of creating one
     private var user: Customer? = null
     private var viewPager: ViewPager? = null
+    private var preferences: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +39,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         val tabLayout = findViewById(R.id.tabs) as TabLayout
         viewPager = findViewById(R.id.container) as ViewPager
+        preferences = getPreferences(Context.MODE_PRIVATE)
 
         setSupportActionBar(toolbar)
         // Create the adapter that will return a fragment for each of the
@@ -43,18 +51,36 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
         tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewPager))
 
         // TODO create user via user login instead of using the mock content
-        val customer = UserFactory.create()
-        ApiManager.INSTANCE.createCustomer(customer,
-                object : Callback<Customer> {
-                    override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
-                        user = response?.body()
-                        getOrdersForUser()
-                    }
+        // Update adapter's cocktail list
+        if (preferences!!.contains(KEY_USER_ID)) {
+            ApiManager.INSTANCE.getCustomer(preferences!!.getString(KEY_USER_ID, null),
+                    object : Callback<Customer> {
+                        override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
+                            user = response?.body()
+                            getOrdersForUser()
+                        }
 
-                    override fun onFailure(call: Call<Customer>?, t: Throwable?) {
-                        Log.i("CUSTOMER", t?.message)
-                    }
-                })
+                        override fun onFailure(call: Call<Customer>?, t: Throwable?) {
+                            Log.i("TAG_USER", t?.message)
+                        }
+                    })
+        } else {
+            val user = UserFactory.create()
+            ApiManager.INSTANCE.createCustomer(user,
+                    object : Callback<Customer> {
+                        override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
+                            if (response?.body() != null) {
+                                this@MainActivity.user = response.body()
+                                (preferences as SharedPreferences).edit().putString(KEY_USER_ID, this@MainActivity.user?.id).apply()
+                                getOrdersForUser()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<Customer>?, t: Throwable?) {
+                            Log.i("TAG_USER", t?.message)
+                        }
+                    })
+        }
 
         ApiManager.INSTANCE.getCocktails(
                 object : Callback<List<Cocktail>> {
@@ -66,27 +92,25 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                     }
 
                     override fun onFailure(call: Call<List<Cocktail>>?, t: Throwable?) {
-                        Log.i("COCKTAILS", t?.message)
+                        Log.i("TAG_COCKTAILS", t?.message)
                     }
                 })
     }
 
     private fun getOrdersForUser() {
-        if (user != null) {
-            ApiManager.INSTANCE.getOrdersForCustomer((user as Customer).id,
-                    object : Callback<List<Order>> {
-                        override fun onResponse(call: Call<List<Order>>?, response: Response<List<Order>>?) {
-                            val cocktailResponse: List<Order>? = response?.body()
-                            // Update adapter's order list
-                            cocktailResponse?.let { (viewPager?.adapter as SectionsPagerAdapter).setOrders(it) }
-                            viewPager?.adapter?.notifyDataSetChanged()
-                        }
+        ApiManager.INSTANCE.getOrdersForCustomer((user as Customer).id,
+                object : Callback<List<Order>> {
+                    override fun onResponse(call: Call<List<Order>>?, response: Response<List<Order>>?) {
+                        val cocktailResponse: List<Order>? = response?.body()
+                        // Update adapter's order list
+                        cocktailResponse?.let { (viewPager?.adapter as SectionsPagerAdapter).setOrders(it) }
+                        viewPager?.adapter?.notifyDataSetChanged()
+                    }
 
-                        override fun onFailure(call: Call<List<Order>>?, t: Throwable?) {
-                            Log.i("CUSTOMER_ORDERS", t?.message)
-                        }
-                    })
-        }
+                    override fun onFailure(call: Call<List<Order>>?, t: Throwable?) {
+                        Log.i("TAG_CUSTOMER_ORDERS", t?.message)
+                    }
+                })
     }
 
     override fun onListFragmentInteraction(item: Cocktail) {
@@ -104,12 +128,14 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                                     override fun onResponse(call: Call<Void>?, response: Response<Void>?) {
                                         if (response != null && response.isSuccessful) {
                                             Toast.makeText(this@MainActivity, "Successfully created order", Toast.LENGTH_SHORT).show()
-                                            getOrdersForUser()
+                                            if (user != null) {
+                                                getOrdersForUser()
+                                            }
                                         }
                                     }
 
                                     override fun onFailure(call: Call<Void>?, t: Throwable?) {
-                                        Log.i("ORDER_CREATE", t?.message)
+                                        Log.i("TAG_ORDER_CREATE", t?.message)
                                     }
                                 })
                     }
