@@ -1,4 +1,3 @@
-package de.adorsys.android.summerparty.data
+package de.adorsys.android.summerparty.data.mutable
 
-// TODO check if fields are correct when specified
-data class MutableCustomer(val name: String)
+data class MutableCustomer(val name: String, val pushId: String ,val type: String = "Android")

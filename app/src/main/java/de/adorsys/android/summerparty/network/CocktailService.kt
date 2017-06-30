@@ -1,13 +1,12 @@
 package de.adorsys.android.summerparty.network
 
 import de.adorsys.android.summerparty.data.Cocktail
+import de.adorsys.android.summerparty.data.Customer
 import de.adorsys.android.summerparty.data.Order
+import de.adorsys.android.summerparty.data.mutable.MutableCustomer
 import de.adorsys.android.summerparty.data.mutable.MutableOrder
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface CocktailService {
     @POST("order")
@@ -21,4 +20,13 @@ interface CocktailService {
 
     @GET("beverage/{id}")
     fun getCocktail(@Path("id") id: String): Call<Cocktail>
+
+    @POST("customer")
+    fun createCustomer(@Body mutableCustomer: MutableCustomer): Call<Customer>
+
+    @GET("customer")
+    fun getCustomer(@Query("id") id: String): Call<Customer>
+
+    @GET("customer/{id}/order")
+    fun getOrdersForCustomer(@Path("id") id: String): Call<List<Order>>
 }
