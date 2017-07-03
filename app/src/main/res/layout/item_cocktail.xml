@@ -11,16 +11,16 @@
         android:layout_width="@dimen/width_cocktail_image"
         android:layout_height="@dimen/height_cocktail_image"
         android:layout_alignParentStart="true"
-        android:layout_margin="@dimen/text_margin"
+        android:layout_margin="@dimen/margin_text"
         android:scaleType="centerCrop"
         android:textAppearance="?attr/textAppearanceListItem"/>
 
 	<TextView
-		android:id="@+id/name_textView"
+		android:id="@+id/order_view"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_centerInParent="true"
-		android:layout_margin="@dimen/text_margin"
+		android:layout_margin="@dimen/margin_text"
 		android:textAppearance="?attr/textAppearanceListItem"/>
 
 	<ImageView
@@ -28,6 +28,6 @@
 		android:layout_width="wrap_content"
 		android:layout_height="@dimen/height_cocktail_image"
 		android:layout_alignParentEnd="true"
-		android:layout_margin="@dimen/text_margin"
+		android:layout_margin="@dimen/margin_text"
 		android:textAppearance="?attr/textAppearanceListItem"/>
 </RelativeLayout>

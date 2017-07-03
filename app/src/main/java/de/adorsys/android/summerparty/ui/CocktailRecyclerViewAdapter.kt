@@ -29,23 +29,23 @@ class CocktailRecyclerViewAdapter(
     }
 
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val cocktailView: ImageView = view.findViewById(R.id.cocktail_imageView) as ImageView
-        val contentView: TextView = view.findViewById(R.id.name_textView) as TextView
+        val cocktailImageView: ImageView = view.findViewById(R.id.cocktail_imageView) as ImageView
+        val contentView: TextView = view.findViewById(R.id.order_view) as TextView
         val availabilityView: ImageView = view.findViewById(R.id.available_imageView) as ImageView
         var item: Cocktail? = null
 
         fun bindItem(cocktail: Cocktail) {
             item = cocktail
             val id = cocktail.id.toInt()
-            cocktailView.setImageDrawable(
+            cocktailImageView.setImageDrawable(
                     if (id == CocktailType.MAI_TAI.id) {
-                        cocktailView.resources.getDrawable(R.drawable.mai_tai, cocktailView.context.theme)
+                        cocktailImageView.resources.getDrawable(R.drawable.mai_tai, cocktailImageView.context.theme)
                     } else if (id == CocktailType.CUBRA_LIBRE.id) {
-                        cocktailView.resources.getDrawable(R.drawable.cuba_libre, cocktailView.context.theme)
+                        cocktailImageView.resources.getDrawable(R.drawable.cuba_libre, cocktailImageView.context.theme)
                     } else if (id == CocktailType.GIN_TONIC.id) {
-                        cocktailView.resources.getDrawable(R.drawable.gin_tonic, cocktailView.context.theme)
+                        cocktailImageView.resources.getDrawable(R.drawable.gin_tonic, cocktailImageView.context.theme)
                     } else {
-                        cocktailView.resources.getDrawable(R.drawable.moscow_mule, cocktailView.context.theme)
+                        cocktailImageView.resources.getDrawable(R.drawable.moscow_mule, cocktailImageView.context.theme)
                     })
             contentView.text = cocktail.name
             availabilityView.setImageDrawable(

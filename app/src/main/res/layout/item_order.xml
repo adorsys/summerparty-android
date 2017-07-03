@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.v7.widget.CardView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:layout_margin="@dimen/activity_horizontal_margin"
+	android:layout_margin="@dimen/margin_recycler_view_item"
 	android:orientation="horizontal">
 
-	<TextView
-		android:id="@+id/name_textView"
+	<de.adorsys.android.summerparty.ui.views.OrderView
+		android:id="@+id/order_view"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_margin="@dimen/text_margin"
+		android:layout_margin="@dimen/margin_text"
 		android:layout_weight="2"
 		android:textAppearance="?attr/textAppearanceListItem"/>
 
@@ -18,8 +18,9 @@
 		android:id="@+id/status_imageView"
 		android:layout_width="wrap_content"
 		android:layout_height="@dimen/height_status_image"
-		android:layout_margin="@dimen/text_margin"
+		android:layout_margin="@dimen/margin_text"
 		android:layout_weight="1"
 		android:scaleType="fitEnd"
 		android:textAppearance="?attr/textAppearanceListItem"/>
-</LinearLayout>
+
+</android.support.v7.widget.CardView>
