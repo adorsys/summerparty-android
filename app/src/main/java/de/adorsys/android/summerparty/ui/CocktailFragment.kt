@@ -10,23 +10,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import de.adorsys.android.summerparty.R
-import de.adorsys.android.summerparty.data.CocktailItem
-import de.adorsys.android.summerparty.mock.CocktailMockContent
+import de.adorsys.android.summerparty.data.Cocktail
 
-class OrderFragment : Fragment() {
+class CocktailFragment : Fragment() {
 	private var columnCount = 2
-	private var listener: OrderFragment.OnListFragmentInteractionListener? = null
-
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-
-		if (arguments != null) {
-			columnCount = arguments.getInt(OrderFragment.Companion.ARG_COLUMN_COUNT)
-		}
-	}
+	private var listener: CocktailFragment.OnListFragmentInteractionListener? = null
+    private val cocktails: ArrayList<Cocktail> = ArrayList()
 
 	override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
 							  savedInstanceState: Bundle?): View? {
+        if (arguments != null) {
+            columnCount = arguments.getInt(Companion.ARG_COLUMN_COUNT)
+            cocktails.clear()
+            cocktails.addAll(arguments.getParcelableArrayList<Cocktail>(Companion.ARG_COCKTAILS))
+        }
+
 		val view = inflater!!.inflate(R.layout.fragment_cocktail_list, container, false)
 
 		// Set the adapter
@@ -38,7 +36,7 @@ class OrderFragment : Fragment() {
 			} else {
 				recyclerView.layoutManager = GridLayoutManager(context, columnCount)
 			}
-			recyclerView.adapter = CocktailRecyclerViewAdapter(CocktailMockContent.ITEMS, listener)
+			recyclerView.adapter = CocktailRecyclerViewAdapter(cocktails, listener)
 		}
 		return view
 	}
@@ -46,8 +44,8 @@ class OrderFragment : Fragment() {
 
 	override fun onAttach(context: Context?) {
 		super.onAttach(context)
-		if (context is OrderFragment.OnListFragmentInteractionListener) {
-			listener = context as OrderFragment.OnListFragmentInteractionListener?
+		if (context is CocktailFragment.OnListFragmentInteractionListener) {
+			listener = context as CocktailFragment.OnListFragmentInteractionListener?
 		} else {
 			throw RuntimeException(context!!.toString() + " must implement OnListFragmentInteractionListener")
 		}
@@ -59,16 +57,18 @@ class OrderFragment : Fragment() {
 	}
 
 	interface OnListFragmentInteractionListener {
-		fun onListFragmentInteraction(item: CocktailItem)
+		fun onListFragmentInteraction(item: Cocktail)
 	}
 
 	companion object {
-		private val ARG_COLUMN_COUNT = "column-count"
+		private val ARG_COLUMN_COUNT = "cocktails_column_count"
+		private val ARG_COCKTAILS = "cocktails"
 
-		fun newInstance(columnCount: Int): OrderFragment {
-			val fragment = OrderFragment()
+		fun newInstance(columnCount: Int, cocktails: ArrayList<Cocktail>): CocktailFragment {
+			val fragment = CocktailFragment()
 			val args = Bundle()
-			args.putInt(OrderFragment.Companion.ARG_COLUMN_COUNT, columnCount)
+			args.putInt(CocktailFragment.Companion.ARG_COLUMN_COUNT, columnCount)
+			args.putParcelableArrayList(CocktailFragment.Companion.ARG_COCKTAILS, cocktails)
 			fragment.arguments = args
 			return fragment
 		}
