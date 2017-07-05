@@ -34,6 +34,7 @@ class CocktailRecyclerViewAdapter(
         private val contentView = view.findViewById(R.id.name_text) as TextView
         private val availabilityView = view.findViewById(R.id.available_image) as ImageView
         private val availabilityText = view.findViewById(R.id.available_text) as TextView
+        private val addImage = view.findViewById(R.id.add_image) as ImageView
 
         private var item: Cocktail? = null
 
@@ -59,7 +60,7 @@ class CocktailRecyclerViewAdapter(
                 availabilityText.text = availabilityText.context.getString(R.string.availability_unavailable)
             }
 
-            view.setOnClickListener {
+            addImage.setOnClickListener {
                 listener?.onListFragmentInteraction(cocktail)
             }
             if (adapterPosition == 0) {
