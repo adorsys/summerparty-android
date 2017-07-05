@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.Order
 import de.adorsys.android.summerparty.ui.views.OrderView
@@ -26,21 +25,11 @@ class OrderRecyclerViewAdapter(
         return orders.size
     }
 
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val orderView: OrderView = view.findViewById(R.id.order_view) as OrderView
-        val statusView: ImageView = view.findViewById(R.id.status_imageView) as ImageView
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val orderView: OrderView = view.findViewById(R.id.order_view) as OrderView
 
         fun bindItem(order: Order) {
-            val state = order.state
-            statusView.setImageDrawable(
-                    if (state == "mixed") {
-                        statusView.resources.getDrawable(R.drawable.traffic_lights_green, statusView.context.theme)
-                    } else if (state == "delivered") {
-                        statusView.resources.getDrawable(R.drawable.traffic_lights_orange, statusView.context.theme)
-                    } else {
-                        statusView.resources.getDrawable(R.drawable.traffic_light_red, statusView.context.theme)
-                    })
-            orderView.cocktails = order.beverages
+            orderView.order = order
         }
     }
 }

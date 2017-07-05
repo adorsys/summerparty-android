@@ -29,9 +29,9 @@ class CocktailRecyclerViewAdapter(
     }
 
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val cocktailImageView: ImageView = view.findViewById(R.id.cocktail_imageView) as ImageView
-        val contentView: TextView = view.findViewById(R.id.order_view) as TextView
-        val availabilityView: ImageView = view.findViewById(R.id.available_imageView) as ImageView
+        private val cocktailImageView: ImageView = view.findViewById(R.id.cocktail_image) as ImageView
+        private val contentView: TextView = view.findViewById(R.id.cocktail_name_text) as TextView
+        private val availabilityView: ImageView = view.findViewById(R.id.cocktail_available_image) as ImageView
         var item: Cocktail? = null
 
         fun bindItem(cocktail: Cocktail) {
