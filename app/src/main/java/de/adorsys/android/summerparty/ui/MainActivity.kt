@@ -24,7 +24,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInteractionListener {
     companion object {
-        private val KEY_USER_ID = "preferences_key_user_id"
+        val KEY_USER_ID = "preferences_key_user_id"
     }
 
     // TODO get real user from login instead of creating one

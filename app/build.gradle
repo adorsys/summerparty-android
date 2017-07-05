@@ -30,6 +30,5 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
 	implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
 	implementation "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
-	implementation 'de.adorsys.android:securestoragelibrary:0.0.2'
     testImplementation "junit:junit:${jUnitVersion}"
 }
