@@ -20,8 +20,8 @@ class CocktailRecyclerViewAdapter(
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: CocktailRecyclerViewAdapter.ViewHolder, position: Int) {
-        holder.bindItem(cocktails[position])
+    override fun onBindViewHolder(holderOrder: CocktailRecyclerViewAdapter.ViewHolder, position: Int) {
+        holderOrder.bindItem(cocktails[position])
     }
 
     override fun getItemCount(): Int {
