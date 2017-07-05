@@ -1,16 +1,16 @@
 <resources>
-	<string name="app_name">summerparty</string>
+	<string name="app_name">Cocktail App</string>
 	<string name="tab_text_1">Cocktails</string>
-	<string name="tab_text_2">Bestellungen</string>
+	<string name="tab_text_2">Orders</string>
 
 	<string name="fragment_order_text">Status</string>
     <string name="order_cocktail">Order %1$s?</string>
 	<string name="action_cart">To cart</string>
 	<string name="cocktail_out_of_stock">%1$s is currently out of stock.</string>
-    <string name="order_state_mixed">Abholbereit</string>
-    <string name="order_state_delivered">Abgeholt</string>
-    <string name="order_state_ordered">Bestellt</string>
+    <string name="order_state_mixed">Ready for collection</string>
+    <string name="order_state_delivered">Fetched</string>
+    <string name="order_state_ordered">Ordered</string>
 	<string name="cocktail_type_cocktail">Cocktails</string>
-	<string name="availability_available">verfügbar</string>
-	<string name="availability_unavailable">nicht verfügbar</string>
+	<string name="availability_available">available</string>
+	<string name="availability_unavailable">not available</string>
 </resources>
