@@ -1,14 +1,12 @@
 package de.adorsys.android.summerparty.ui
 
 import android.support.v7.widget.RecyclerView
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.Order
+import de.adorsys.android.summerparty.ui.views.OrderView
 
 class OrderRecyclerViewAdapter(
         private val orders: ArrayList<Order>) : RecyclerView.Adapter<OrderRecyclerViewAdapter.ViewHolder>() {
@@ -27,36 +25,11 @@ class OrderRecyclerViewAdapter(
         return orders.size
     }
 
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val contentView: TextView = view.findViewById(R.id.name_textView) as TextView
-        val statusView: ImageView = view.findViewById(R.id.status_imageView) as ImageView
-        var item: Order? = null
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val orderView: OrderView = view.findViewById(R.id.order_view) as OrderView
 
         fun bindItem(order: Order) {
-            item = order
-            val state = order.state
-            statusView.setImageDrawable(
-                    if (state == "mixed") {
-                        statusView.resources.getDrawable(R.drawable.traffic_lights_green, statusView.context.theme)
-                    } else if (state == "delivered") {
-                        statusView.resources.getDrawable(R.drawable.traffic_lights_orange, statusView.context.theme)
-                    } else {
-                        statusView.resources.getDrawable(R.drawable.traffic_light_red, statusView.context.theme)
-                    })
-            // TODO change to nicer ui
-            contentView.text = buildOrderString(order)
-        }
-
-        private fun buildOrderString(order: Order): CharSequence? {
-            var orderString = ""
-            for (cocktail in order.beverages) {
-                orderString = orderString.plus(cocktail.name).plus("\n")
-            }
-            if (!TextUtils.isEmpty(orderString)) {
-                return orderString.subSequence(0, orderString.length - 1)
-            } else {
-                return ""
-            }
+            orderView.order = order
         }
     }
 }
