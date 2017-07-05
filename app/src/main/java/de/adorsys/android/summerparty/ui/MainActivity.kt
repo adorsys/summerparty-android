@@ -15,7 +15,6 @@ import de.adorsys.android.summerparty.data.ApiManager
 import de.adorsys.android.summerparty.data.Cocktail
 import de.adorsys.android.summerparty.data.Customer
 import de.adorsys.android.summerparty.data.Order
-import de.adorsys.android.summerparty.data.mock.UserFactory
 import de.adorsys.android.summerparty.data.mutable.MutableOrder
 import retrofit2.Call
 import retrofit2.Callback
@@ -58,22 +57,6 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                         override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
                             user = response?.body()
                             getOrdersForUser()
-                        }
-
-                        override fun onFailure(call: Call<Customer>?, t: Throwable?) {
-                            Log.i("TAG_USER", t?.message)
-                        }
-                    })
-        } else {
-            val user = UserFactory.create()
-            ApiManager.INSTANCE.createCustomer(user,
-                    object : Callback<Customer> {
-                        override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
-                            if (response?.body() != null) {
-                                this@MainActivity.user = response.body()
-                                (preferences as SharedPreferences).edit().putString(KEY_USER_ID, this@MainActivity.user?.id).apply()
-                                getOrdersForUser()
-                            }
                         }
 
                         override fun onFailure(call: Call<Customer>?, t: Throwable?) {
