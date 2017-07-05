@@ -37,6 +37,7 @@ class CocktailFragment : Fragment() {
 				recyclerView.layoutManager = GridLayoutManager(context, columnCount)
 			}
 			recyclerView.adapter = CocktailRecyclerViewAdapter(cocktails, listener)
+			recyclerView.setHasFixedSize(true)
 		}
 		return view
 	}

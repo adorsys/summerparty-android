@@ -37,6 +37,7 @@ class StatusFragment : Fragment() {
 				recyclerView.layoutManager = GridLayoutManager(context, columnCount)
 			}
 			recyclerView.adapter = OrderRecyclerViewAdapter(orders)
+            recyclerView.setHasFixedSize(true)
 		}
 		return view
 	}
