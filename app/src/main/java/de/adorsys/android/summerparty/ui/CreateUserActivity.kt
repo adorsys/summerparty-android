@@ -35,17 +35,20 @@ class CreateUserActivity : AppCompatActivity() {
             if (TextUtils.isEmpty(usernameEditText.text.toString())) {
                 Toast.makeText(this@CreateUserActivity, "Cannot be empty", Toast.LENGTH_SHORT).show()
             } else {
-                ApiManager.INSTANCE.createCustomer(MutableCustomer(usernameEditText.text.toString(), FirebaseInstanceId.getInstance().token),
-                        object : Callback<Customer> {
-                            override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
-                                val customer = response?.body()
-                                (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, customer?.id).apply()
-                            }
+                if (FirebaseInstanceId.getInstance().token == null) {
+                    ApiManager.INSTANCE.createCustomer(MutableCustomer(usernameEditText.text.toString(), FirebaseInstanceId.getInstance().token),
+                            object : Callback<Customer> {
+                                override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
+                                    val customer = response?.body()
+                                    (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, customer?.id).apply()
+                                }
 
-                            override fun onFailure(call: Call<Customer>?, t: Throwable?) {
-                                Log.i("TAG_USER", t?.message)
-                            }
-                        })
+                                override fun onFailure(call: Call<Customer>?, t: Throwable?) {
+                                    Log.i("TAG_USER", t?.message)
+                                }
+                            })
+                }
+                (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_NAME, usernameEditText.text.toString()).apply()
                 val intent = Intent(this@CreateUserActivity, MainActivity::class.java)
                 startActivity(intent)
                 finish()

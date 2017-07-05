@@ -14,7 +14,7 @@ class SplashActivity : AppCompatActivity() {
         preferences = getPreferences(Context.MODE_PRIVATE)
 
         val intent: Intent
-        if (preferences!!.contains(MainActivity.KEY_USER_ID)) {
+        if ((preferences as SharedPreferences).contains(MainActivity.KEY_USER_ID)) {
             intent = Intent(this, MainActivity::class.java)
         } else {
             intent = Intent(this, CreateUserActivity::class.java)
