@@ -5,4 +5,5 @@ enum class CocktailType(val id: Int) {
     CUBRA_LIBRE(2),
     GIN_TONIC(3),
     MOSCOW_MULE(4)
+    // TODO add more types
 }

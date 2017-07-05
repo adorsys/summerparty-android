@@ -7,8 +7,6 @@
 	android:name="de.adorsys.android.summerparty.ui.StatusFragment"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:layout_marginLeft="16dp"
-	android:layout_marginRight="16dp"
 	app:layoutManager="LinearLayoutManager"
 	tools:context="de.adorsys.android.summerparty.ui.StatusFragment"
-	tools:listitem="@layout/item_cocktail"/>
+	tools:listitem="@layout/item_order"/>
