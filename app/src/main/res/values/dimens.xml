@@ -7,7 +7,7 @@
 
 	<dimen name="width_cocktail_image">56dp</dimen>
 
-	<dimen name="height_cocktail_image">96dp</dimen>
+	<dimen name="height_cocktail_image">56dp</dimen>
     <dimen name="width_status_image">96dp</dimen>
 
 	<dimen name="margin_text">16dp</dimen>
