@@ -28,11 +28,14 @@ class CocktailRecyclerViewAdapter(
         return cocktails.size
     }
 
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        private val cocktailImageView: ImageView = view.findViewById(R.id.cocktail_image) as ImageView
-        private val contentView: TextView = view.findViewById(R.id.name_text) as TextView
-        private val availabilityView: ImageView = view.findViewById(R.id.available_image) as ImageView
-        var item: Cocktail? = null
+    inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+        private val headerView = view.findViewById(R.id.cocktail_type_header) as TextView
+        private val cocktailImageView = view.findViewById(R.id.cocktail_image) as ImageView
+        private val contentView = view.findViewById(R.id.name_text) as TextView
+        private val availabilityView = view.findViewById(R.id.available_image) as ImageView
+        private val availabilityText = view.findViewById(R.id.available_text) as TextView
+
+        private var item: Cocktail? = null
 
         fun bindItem(cocktail: Cocktail) {
             item = cocktail
@@ -48,15 +51,22 @@ class CocktailRecyclerViewAdapter(
                         cocktailImageView.resources.getDrawable(R.drawable.moscow_mule, cocktailImageView.context.theme)
                     })
             contentView.text = cocktail.name
-            availabilityView.setImageDrawable(
-                    if (cocktail.available) {
-                        view.context.getDrawable(R.drawable.ic_wb_sunny_green_24dp)
-                    } else {
-                        view.context.getDrawable(R.drawable.ic_wb_cloudy_red_24dp)
-                    })
+            if (cocktail.available) {
+                availabilityView.setImageDrawable(view.context.getDrawable(R.drawable.ic_wb_sunny_green_24dp))
+                availabilityText.text = availabilityText.context.getString(R.string.availability_available)
+            } else {
+                availabilityView.setImageDrawable(view.context.getDrawable(R.drawable.ic_wb_cloudy_red_24dp))
+                availabilityText.text = availabilityText.context.getString(R.string.availability_unavailable)
+            }
 
             view.setOnClickListener {
                 listener?.onListFragmentInteraction(cocktail)
+            }
+            if (adapterPosition == 0) {
+                headerView.visibility = View.VISIBLE
+                headerView.text = headerView.context.getString(R.string.cocktail_type_cocktail)
+            } else {
+                headerView.visibility = View.GONE
             }
         }
     }
