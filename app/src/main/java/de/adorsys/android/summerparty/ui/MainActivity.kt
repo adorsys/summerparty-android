@@ -24,7 +24,8 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInteractionListener {
     companion object {
-        private val KEY_USER_ID = "preferences_key_user_id"
+        val KEY_USER_ID = "preferences_key_user_id"
+        val KEY_USER_NAME = "preferences_key_user_name"
     }
 
     // TODO get real user from login instead of creating one
@@ -57,6 +58,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                     object : Callback<Customer> {
                         override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
                             user = response?.body()
+                            (preferences as SharedPreferences).edit().putString(KEY_USER_NAME, this@MainActivity.user?.name).apply()
                             getOrdersForUser()
                         }
 
@@ -72,6 +74,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                             if (response?.body() != null) {
                                 this@MainActivity.user = response.body()
                                 (preferences as SharedPreferences).edit().putString(KEY_USER_ID, this@MainActivity.user?.id).apply()
+                                (preferences as SharedPreferences).edit().putString(KEY_USER_NAME, this@MainActivity.user?.name).apply()
                                 getOrdersForUser()
                             }
                         }
@@ -98,7 +101,10 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
     }
 
     private fun getOrdersForUser() {
-        ApiManager.INSTANCE.getOrdersForCustomer((user as Customer).id,
+        if (user == null) {
+            return
+        }
+        ApiManager.INSTANCE.getOrdersForCustomer(user!!.id,
                 object : Callback<List<Order>> {
                     override fun onResponse(call: Call<List<Order>>?, response: Response<List<Order>>?) {
                         val cocktailResponse: List<Order>? = response?.body()
