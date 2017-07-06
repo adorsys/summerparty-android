@@ -11,6 +11,8 @@
     <string name="order_state_delivered">Fetched</string>
     <string name="order_state_ordered">Ordered</string>
 	<string name="cocktail_type_cocktail">Cocktails</string>
+	<string name="cocktail_type_nonalcoholic">Non Alcoholic</string>
+	<string name="cocktail_type_long_drink">Long Drinks</string>
 	<string name="availability_available">available</string>
 	<string name="availability_unavailable">not available</string>
 </resources>

@@ -11,6 +11,8 @@
     <string name="order_state_delivered">Abgeholt</string>
     <string name="order_state_ordered">Bestellt</string>
 	<string name="cocktail_type_cocktail">Cocktails</string>
+	<string name="cocktail_type_nonalcoholic">Alkoholfrei</string>
+	<string name="cocktail_type_long_drink">Longdrinks</string>
 	<string name="availability_available">verfügbar</string>
 	<string name="availability_unavailable">nicht verfügbar</string>
 </resources>

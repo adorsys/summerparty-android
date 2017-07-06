@@ -36,8 +36,8 @@ class StatusFragment : Fragment() {
 			} else {
 				recyclerView.layoutManager = GridLayoutManager(context, columnCount)
 			}
-			val order = sortOrders(orders)
-			recyclerView.adapter = OrderRecyclerViewAdapter(order)
+			val sortedOrders = sortOrders(orders)
+			recyclerView.adapter = OrderRecyclerViewAdapter(sortedOrders)
             recyclerView.setHasFixedSize(true)
 		}
 		return view
