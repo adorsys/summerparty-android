@@ -25,6 +25,8 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
     companion object {
         val KEY_USER_ID = "preferences_key_user_id"
         val KEY_USER_NAME = "preferences_key_user_name"
+        val PREFS_FILENAME = "de.adorsys.android.summerparty.prefs"
+
     }
 
     // TODO get real user from login instead of creating one
@@ -39,7 +41,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         val tabLayout = findViewById(R.id.tabs) as TabLayout
         viewPager = findViewById(R.id.container) as ViewPager
-        preferences = getPreferences(Context.MODE_PRIVATE)
+        preferences = getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
 
         setSupportActionBar(toolbar)
         // Create the adapter that will return a fragment for each of the
