@@ -21,7 +21,7 @@ class StatusFragment : Fragment() {
 		if (arguments != null) {
 			columnCount = arguments.getInt(StatusFragment.ARG_COLUMN_COUNT)
 			orders.clear()
-			orders.addAll(arguments.getParcelableArrayList<Order>(StatusFragment.ARG_ORDERS))
+			orders.addAll(arguments.getParcelableArrayList(StatusFragment.ARG_ORDERS))
 		}
 
 		// Inflate the layout for this fragment
@@ -36,12 +36,18 @@ class StatusFragment : Fragment() {
 			} else {
 				recyclerView.layoutManager = GridLayoutManager(context, columnCount)
 			}
-			recyclerView.adapter = OrderRecyclerViewAdapter(orders)
+			val sortedOrders = sortOrders(orders)
+			recyclerView.adapter = OrderRecyclerViewAdapter(sortedOrders)
+            recyclerView.setHasFixedSize(true)
 		}
 		return view
 	}
 
-	companion object {
+    private fun sortOrders(orders: ArrayList<Order>): List<Order> {
+        return orders.sortedWith(compareBy({ it.state }))
+    }
+
+    companion object {
 		private val ARG_COLUMN_COUNT = "status_column_count"
 		private val ARG_ORDERS = "orders"
 
