@@ -36,7 +36,9 @@ class CocktailFragment : Fragment() {
 			} else {
 				recyclerView.layoutManager = GridLayoutManager(context, columnCount)
 			}
-			recyclerView.adapter = CocktailRecyclerViewAdapter(cocktails, listener)
+			val sortedCocktails = sortCocktails(cocktails)
+			recyclerView.adapter = CocktailRecyclerViewAdapter(sortedCocktails, listener)
+			recyclerView.setHasFixedSize(true)
 		}
 		return view
 	}
@@ -45,7 +47,7 @@ class CocktailFragment : Fragment() {
 	override fun onAttach(context: Context?) {
 		super.onAttach(context)
 		if (context is CocktailFragment.OnListFragmentInteractionListener) {
-			listener = context as CocktailFragment.OnListFragmentInteractionListener?
+			listener = context
 		} else {
 			throw RuntimeException(context!!.toString() + " must implement OnListFragmentInteractionListener")
 		}
@@ -55,6 +57,10 @@ class CocktailFragment : Fragment() {
 		super.onDetach()
 		listener = null
 	}
+
+	private fun sortCocktails(cocktails: ArrayList<Cocktail>): List<Cocktail> {
+        return cocktails.sortedWith(compareBy({ it.type }))
+    }
 
 	interface OnListFragmentInteractionListener {
 		fun onListFragmentInteraction(item: Cocktail)

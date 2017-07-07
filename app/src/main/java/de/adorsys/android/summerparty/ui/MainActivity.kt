@@ -54,22 +54,11 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
         viewPager!!.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewPager))
 
-        // TODO create user via user login instead of using the mock content
-        // Update adapter's cocktail list
-        if (preferences!!.contains(KEY_USER_ID)) {
-            ApiManager.INSTANCE.getCustomer(preferences!!.getString(KEY_USER_ID, null),
-                    object : Callback<Customer> {
-                        override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
-                            user = response?.body()
-                            getOrdersForUser()
-                        }
+        getUser()
+        getCocktails()
+    }
 
-                        override fun onFailure(call: Call<Customer>?, t: Throwable?) {
-                            Log.i("TAG_USER", t?.message)
-                        }
-                    })
-        }
-
+    private fun getCocktails() {
         ApiManager.INSTANCE.getCocktails(
                 object : Callback<List<Cocktail>> {
                     override fun onResponse(call: Call<List<Cocktail>>?, response: Response<List<Cocktail>>?) {
@@ -83,6 +72,31 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                         Log.i("TAG_COCKTAILS", t?.message)
                     }
                 })
+    }
+
+    private fun getUser() {
+        // TODO create user via user login instead of using the mock content
+        // Update adapter's cocktail list
+        if (preferences!!.contains(KEY_USER_ID)) {
+            ApiManager.INSTANCE.getCustomer(preferences!!.getString(KEY_USER_ID, null),
+                    object : Callback<Customer> {
+                        override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
+                            user = response?.body()
+                            if (user == null) {
+                                // backend has hard-reset the database
+                                getPreferences(Context.MODE_PRIVATE).edit().clear().apply()
+                                getUser()
+                                return
+                            }
+                            (preferences as SharedPreferences).edit().putString(KEY_USER_NAME, this@MainActivity.user?.name).apply()
+                            getOrdersForUser()
+                        }
+
+                        override fun onFailure(call: Call<Customer>?, t: Throwable?) {
+                            Log.i("TAG_USER", t?.message)
+                        }
+                    })
+        }
     }
 
     private fun getOrdersForUser() {

@@ -49,11 +49,11 @@ class OrderView : LinearLayout {
         val state = order.state
         statusImageView?.setImageDrawable(
                 if (state == "mixed") {
-                    statusImageView!!.resources.getDrawable(R.drawable.traffic_lights_green, statusImageView!!.context.theme)
+                    statusImageView!!.resources.getDrawable(R.drawable.cocktail_ready, statusImageView!!.context.theme)
                 } else if (state == "delivered") {
-                    statusImageView!!.resources.getDrawable(R.drawable.traffic_lights_orange, statusImageView!!.context.theme)
+                    statusImageView!!.resources.getDrawable(R.drawable.cocktail_ready, statusImageView!!.context.theme)
                 } else {
-                    statusImageView!!.resources.getDrawable(R.drawable.traffic_light_red, statusImageView!!.context.theme)
+                    statusImageView!!.resources.getDrawable(R.drawable.cocktail_ordered, statusImageView!!.context.theme)
                 })
 
         cocktailsContainer?.removeAllViews()
