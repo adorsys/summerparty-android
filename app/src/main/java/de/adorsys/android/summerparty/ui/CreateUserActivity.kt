@@ -41,17 +41,22 @@ class CreateUserActivity : AppCompatActivity() {
                                 override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
                                     val customer = response?.body()
                                     (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, customer?.id).apply()
+                                    (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_NAME, usernameEditText.text.toString()).apply()
+                                    val intent = Intent(this@CreateUserActivity, MainActivity::class.java)
+                                    startActivity(intent)
+                                    finish()
                                 }
 
                                 override fun onFailure(call: Call<Customer>?, t: Throwable?) {
                                     Log.i("TAG_USER", t?.message)
                                 }
                             })
+                } else {
+                    (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_NAME, usernameEditText.text.toString()).apply()
+                    val intent = Intent(this@CreateUserActivity, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 }
-                (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_NAME, usernameEditText.text.toString()).apply()
-                val intent = Intent(this@CreateUserActivity, MainActivity::class.java)
-                startActivity(intent)
-                finish()
             }
         })
 

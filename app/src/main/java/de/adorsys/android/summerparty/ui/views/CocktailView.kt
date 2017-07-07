@@ -46,7 +46,7 @@ class CocktailView : LinearLayout {
     }
 
     private fun bindCocktail(cocktail: Cocktail?) {
-        val preferences = (context as MainActivity).getPreferences(Context.MODE_PRIVATE)
+        val preferences = (context as MainActivity).getSharedPreferences(MainActivity.PREFS_FILENAME, Context.MODE_PRIVATE)
         userNameText!!.text = preferences.getString(MainActivity.KEY_USER_NAME, null)
         cocktailNameText!!.text = cocktail?.name
     }

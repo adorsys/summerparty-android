@@ -31,7 +31,6 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
 
     }
 
-    // TODO get real user from login instead of creating one
     private var user: Customer? = null
     private var viewPager: ViewPager? = null
     private var preferences: SharedPreferences? = null
@@ -75,7 +74,6 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
     }
 
     private fun getUser() {
-        // TODO create user via user login instead of using the mock content
         // Update adapter's cocktail list
         if (preferences!!.contains(KEY_USER_ID)) {
             ApiManager.INSTANCE.getCustomer(preferences!!.getString(KEY_USER_ID, null),
@@ -84,7 +82,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                             user = response?.body()
                             if (user == null) {
                                 // backend has hard-reset the database
-                                getPreferences(Context.MODE_PRIVATE).edit().clear().apply()
+                                (preferences as SharedPreferences).edit().clear().apply()
                                 getUser()
                                 return
                             }
