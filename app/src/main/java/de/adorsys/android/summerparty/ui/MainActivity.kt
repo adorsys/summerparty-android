@@ -51,6 +51,27 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
         viewPager!!.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewPager))
 
+        getUser()
+        getCocktails()
+    }
+
+    private fun getCocktails() {
+        ApiManager.INSTANCE.getCocktails(
+                object : Callback<List<Cocktail>> {
+                    override fun onResponse(call: Call<List<Cocktail>>?, response: Response<List<Cocktail>>?) {
+                        val cocktailResponse: List<Cocktail>? = response?.body()
+                        // Update adapter's cocktail list
+                        cocktailResponse?.let { (viewPager?.adapter as SectionsPagerAdapter).setCocktails(it) }
+                        viewPager?.adapter?.notifyDataSetChanged()
+                    }
+
+                    override fun onFailure(call: Call<List<Cocktail>>?, t: Throwable?) {
+                        Log.i("TAG_COCKTAILS", t?.message)
+                    }
+                })
+    }
+
+    private fun getUser() {
         // TODO create user via user login instead of using the mock content
         // Update adapter's cocktail list
         if (preferences!!.contains(KEY_USER_ID)) {
@@ -58,6 +79,12 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                     object : Callback<Customer> {
                         override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
                             user = response?.body()
+                            if (user == null) {
+                                // backend has hard-reset the database
+                                getPreferences(Context.MODE_PRIVATE).edit().clear().apply()
+                                getUser()
+                                return
+                            }
                             (preferences as SharedPreferences).edit().putString(KEY_USER_NAME, this@MainActivity.user?.name).apply()
                             getOrdersForUser()
                         }
@@ -84,20 +111,6 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                         }
                     })
         }
-
-        ApiManager.INSTANCE.getCocktails(
-                object : Callback<List<Cocktail>> {
-                    override fun onResponse(call: Call<List<Cocktail>>?, response: Response<List<Cocktail>>?) {
-                        val cocktailResponse: List<Cocktail>? = response?.body()
-                        // Update adapter's cocktail list
-                        cocktailResponse?.let { (viewPager?.adapter as SectionsPagerAdapter).setCocktails(it) }
-                        viewPager?.adapter?.notifyDataSetChanged()
-                    }
-
-                    override fun onFailure(call: Call<List<Cocktail>>?, t: Throwable?) {
-                        Log.i("TAG_COCKTAILS", t?.message)
-                    }
-                })
     }
 
     private fun getOrdersForUser() {
