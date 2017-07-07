@@ -94,6 +94,20 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                             Log.i("TAG_USER", t?.message)
                         }
                     })
+        } else {
+            if (FirebaseInstanceId.getInstance().token != null) {
+                ApiManager.INSTANCE.createCustomer(MutableCustomer((preferences as SharedPreferences).getString(KEY_USER_NAME, " "), FirebaseInstanceId.getInstance().token),
+                        object : Callback<Customer> {
+                            override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
+                                user = response?.body()
+                                (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, user?.id).apply()
+                            }
+
+                            override fun onFailure(call: Call<Customer>?, t: Throwable?) {
+                                Log.i("TAG_USER", t?.message)
+                            }
+                        })
+            }
         }
     }
 
