@@ -47,10 +47,10 @@ class CocktailRecyclerViewAdapter(
 
             contentView.text = cocktail.name
             if (cocktail.available) {
-                availabilityView.setImageDrawable(view.context.getDrawable(R.drawable.ic_wb_sunny_green_24dp))
+                availabilityView.setImageDrawable(view.context.getDrawable(R.drawable.dot_green))
                 availabilityText.text = availabilityText.context.getString(R.string.availability_available)
             } else {
-                availabilityView.setImageDrawable(view.context.getDrawable(R.drawable.ic_wb_cloudy_red_24dp))
+                availabilityView.setImageDrawable(view.context.getDrawable(R.drawable.dot_red))
                 availabilityText.text = availabilityText.context.getString(R.string.availability_unavailable)
             }
 
