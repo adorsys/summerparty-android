@@ -35,7 +35,7 @@ class CreateUserActivity : AppCompatActivity() {
             if (TextUtils.isEmpty(usernameEditText.text.toString())) {
                 Toast.makeText(this@CreateUserActivity, "Cannot be empty", Toast.LENGTH_SHORT).show()
             } else {
-                if (FirebaseInstanceId.getInstance().token == null) {
+                if (FirebaseInstanceId.getInstance().token != null) {
                     ApiManager.INSTANCE.createCustomer(MutableCustomer(usernameEditText.text.toString(), FirebaseInstanceId.getInstance().token),
                             object : Callback<Customer> {
                                 override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {

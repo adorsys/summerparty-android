@@ -10,11 +10,13 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.widget.Toast
+import com.google.firebase.iid.FirebaseInstanceId
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.ApiManager
 import de.adorsys.android.summerparty.data.Cocktail
 import de.adorsys.android.summerparty.data.Customer
 import de.adorsys.android.summerparty.data.Order
+import de.adorsys.android.summerparty.data.mutable.MutableCustomer
 import de.adorsys.android.summerparty.data.mutable.MutableOrder
 import retrofit2.Call
 import retrofit2.Callback
@@ -111,27 +113,46 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
             val currentOrder = MutableOrder(cocktail, if (user == null) "" else (user as Customer).id)
             Snackbar.make(viewContainer, getString(R.string.order_cocktail, item.name), Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.action_cart) {
-                        ApiManager.INSTANCE.createOrder(
-                                currentOrder,
-                                object : Callback<Void> {
-                                    override fun onResponse(call: Call<Void>?, response: Response<Void>?) {
-                                        if (response != null && response.isSuccessful) {
-                                            Toast.makeText(this@MainActivity, "Successfully created order", Toast.LENGTH_SHORT).show()
-                                            if (user != null) {
-                                                getOrdersForUser()
-                                            }
+                        if ((preferences as SharedPreferences).contains(MainActivity.KEY_USER_ID)) {
+                            createOrder(currentOrder)
+                        } else {
+                            ApiManager.INSTANCE.createCustomer(MutableCustomer((preferences as SharedPreferences).getString(KEY_USER_NAME, ""), FirebaseInstanceId.getInstance().token),
+                                    object : Callback<Customer> {
+                                        override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
+                                            val customer = response?.body()
+                                            (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, customer?.id).apply()
+                                            createOrder(currentOrder)
                                         }
-                                    }
 
-                                    override fun onFailure(call: Call<Void>?, t: Throwable?) {
-                                        Log.i("TAG_ORDER_CREATE", t?.message)
-                                    }
-                                })
+                                        override fun onFailure(call: Call<Customer>?, t: Throwable?) {
+                                            Log.i("TAG_USER", t?.message)
+                                        }
+                                    })
+                        }
                     }
                     .show()
         } else if (viewContainer != null) {
             Snackbar.make(viewContainer, getString(R.string.cocktail_out_of_stock, item.name), Snackbar.LENGTH_LONG)
                     .show()
         }
+    }
+
+    private fun createOrder(currentOrder: MutableOrder) {
+        ApiManager.INSTANCE.createOrder(
+                currentOrder,
+                object : Callback<Void> {
+                    override fun onResponse(call: Call<Void>?, response: Response<Void>?) {
+                        if (response != null && response.isSuccessful) {
+                            Toast.makeText(this@MainActivity, "Successfully created order", Toast.LENGTH_SHORT).show()
+                            if (user != null) {
+                                getOrdersForUser()
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<Void>?, t: Throwable?) {
+                        Log.i("TAG_ORDER_CREATE", t?.message)
+                    }
+                })
     }
 }
