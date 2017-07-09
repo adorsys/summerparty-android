@@ -152,22 +152,15 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
         menuItem = menu.findItem(R.id.action_cart)
         MenuItemCompat.setActionView(menuItem, R.layout.view_action_cart)
         val cartOptionsItemContainer = MenuItemCompat.getActionView(menuItem) as RelativeLayout
+        cartOptionsItemContainer.setOnClickListener {
+            val intent = Intent(this@MainActivity, CartActivity::class.java)
+            intent.putExtra(CartActivity.EXTRA_COCKTAIL_IDS, pendingCocktailIds)
+            intent.putExtra(CartActivity.EXTRA_USER_ID, user?.id)
+            this@MainActivity.startActivityForResult(intent, REQUEST_CODE_CART)
+        }
         cartOptionsItemCount = cartOptionsItemContainer.findViewById(R.id.action_cart_count_text) as TextView
         menuItem?.isVisible = false
         return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // TODO gets never called -> check why
-        Log.d("TAG_ACTION", "onOptionsItemSelected" +  item.toString())
-        if (item.itemId == R.id.action_cart) {
-            val intent = Intent(this, CartActivity::class.java)
-            val bundle = Bundle()
-            bundle.putStringArrayList(CartActivity.EXTRA_COCKTAIL_IDS, pendingCocktailIds)
-            bundle.putString(CartActivity.EXTRA_USER_ID, user?.id)
-            this.startActivityForResult(intent, REQUEST_CODE_CART)
-        }
-        return false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

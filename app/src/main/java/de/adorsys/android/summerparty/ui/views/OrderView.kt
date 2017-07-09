@@ -4,11 +4,15 @@ import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import de.adorsys.android.summerparty.R
+import de.adorsys.android.summerparty.data.CocktailType
 import de.adorsys.android.summerparty.data.Order
+import de.adorsys.android.summerparty.data.mutable.MutableOrder
+import de.adorsys.android.summerparty.ui.CartActivity
 import de.adorsys.android.summerparty.ui.MainActivity
 
 class OrderView : LinearLayout {
@@ -17,6 +21,13 @@ class OrderView : LinearLayout {
         set(value) {
             field = value
             bindOrder(field)
+        }
+
+    var mutableOrder: MutableOrder? = null
+        get() = field
+        set(value) {
+            field = value
+            bindOrder(value)
         }
 
     private var statusImageView: ImageView? = null
@@ -59,6 +70,7 @@ class OrderView : LinearLayout {
                     statusImageView!!.resources.getDrawable(R.drawable.cocktail_ordered, statusImageView!!.context.theme)
                 })
 
+        // TODO dirty context cast
         val preferences = (context as MainActivity).getPreferences(Context.MODE_PRIVATE)
         userNameTextView?.text = preferences.getString(MainActivity.KEY_USER_NAME, null)
 
@@ -66,6 +78,24 @@ class OrderView : LinearLayout {
         for (cocktail in order.beverages) {
             val cocktailTextView = LayoutInflater.from(context).inflate(R.layout.text_view, cocktailsContainer, false) as TextView
             cocktailTextView.text = cocktail.name
+            cocktailsContainer?.addView(cocktailTextView)
+        }
+    }
+
+    private fun bindOrder(order: MutableOrder?) {
+        if (order == null) {
+            return
+        }
+
+        statusImageView?.visibility = View.GONE
+        // TODO dirty context cast
+        val preferences = (context as CartActivity).getPreferences(Context.MODE_PRIVATE)
+        userNameTextView?.text = preferences.getString(MainActivity.KEY_USER_NAME, null)
+
+        cocktailsContainer?.removeAllViews()
+        for (cocktail in order.beverages) {
+            val cocktailTextView = LayoutInflater.from(context).inflate(R.layout.text_view, cocktailsContainer, false) as TextView
+            cocktailTextView.text = CocktailType.cocktailForId(cocktail.toInt())?.name
             cocktailsContainer?.addView(cocktailTextView)
         }
     }
