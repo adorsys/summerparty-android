@@ -11,5 +11,11 @@ enum class CocktailType(val id: Int) {
     WODKA_LEMON(8),
     CUBA_LIBRE(9),
     APEROL_SPRITZ(10),
-    GIN_TONIC(11)
+    GIN_TONIC(11);
+
+    companion object {
+        fun cocktailForId(id: Int): CocktailType? {
+            return values().firstOrNull { it.id == id }
+        }
+    }
 }
