@@ -150,7 +150,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         menuItem = menu.findItem(R.id.action_cart)
-        MenuItemCompat.setActionView(menuItem, R.layout.view_action_cart2)
+        MenuItemCompat.setActionView(menuItem, R.layout.view_action_cart)
         val cartOptionsItemContainer = MenuItemCompat.getActionView(menuItem) as RelativeLayout
         cartOptionsItemCount = cartOptionsItemContainer.findViewById(R.id.action_cart_count_text) as TextView
         menuItem?.isVisible = false
