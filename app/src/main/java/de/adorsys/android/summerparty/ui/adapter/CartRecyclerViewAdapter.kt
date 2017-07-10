@@ -14,7 +14,7 @@ import de.adorsys.android.summerparty.data.Cocktail
 import de.adorsys.android.summerparty.data.CocktailUtils
 
 class CartRecyclerViewAdapter(
-        private val cocktails: MutableList<Cocktail>, private var cocktailMap: HashMap<Cocktail, Int>) : RecyclerView.Adapter<CartRecyclerViewAdapter.ViewHolder>() {
+        private val cocktails: MutableList<Cocktail>, private var cocktailMap: HashMap<Cocktail, Int> = HashMap()) : RecyclerView.Adapter<CartRecyclerViewAdapter.ViewHolder>() {
     init {
         cocktailMap = CocktailUtils.cocktailListToMap(cocktails)
 
@@ -62,7 +62,7 @@ class CartRecyclerViewAdapter(
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     val cocktailCount = s?.toString()?.toInt()
                     if (cocktailCount != null)
-                    cocktailMap.replace(cocktail, cocktailCount)
+                        cocktailMap.replace(cocktail, cocktailCount)
                 }
             })
             val cocktailDrawable = CocktailUtils.getCocktailDrawableForId(cocktailImage.context, cocktail.id)

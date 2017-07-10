@@ -2,7 +2,6 @@ package de.adorsys.android.summerparty.ui.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -49,17 +48,13 @@ class OrderView : LinearLayout {
             return
         }
 
-        Log.i("TAG_ORDER", order.id)
         val state = order.state
-
-        statusImageView?.setImageDrawable(
-                if (state == "mixed") {
-                    statusImageView!!.resources.getDrawable(R.drawable.cocktail_ready, statusImageView!!.context.theme)
-                } else if (state == "delivered") {
-                    statusImageView!!.resources.getDrawable(R.drawable.cocktail_ready, statusImageView!!.context.theme)
-                } else {
-                    statusImageView!!.resources.getDrawable(R.drawable.cocktail_ordered, statusImageView!!.context.theme)
-                })
+        when (state) {
+            "mixed", "delivered" -> statusImageView?.setImageDrawable(
+                    statusImageView!!.resources.getDrawable(R.drawable.cocktail_ready, statusImageView!!.context.theme))
+            state -> statusImageView?.setImageDrawable(
+                    statusImageView!!.resources.getDrawable(R.drawable.cocktail_ordered, statusImageView!!.context.theme))
+        }
 
         val preferences = context.getSharedPreferences(MainActivity.KEY_PREFS_FILENAME, Context.MODE_PRIVATE)
         userNameTextView?.text = preferences.getString(MainActivity.KEY_USER_NAME, null)
@@ -69,7 +64,6 @@ class OrderView : LinearLayout {
         for ((cocktail, count) in cocktailMap) {
             val cocktailTextView = LayoutInflater.from(context).inflate(R.layout.text_view, cocktailsContainer, false) as TextView
             val text = cocktailTextView.context.getString(R.string.order_cocktail_placeholder, count, cocktail.name)
-            Log.d("TAG_ORDER", text)
             cocktailTextView.text = text
             cocktailsContainer?.addView(cocktailTextView)
         }

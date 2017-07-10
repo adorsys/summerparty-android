@@ -2,7 +2,6 @@ package de.adorsys.android.summerparty.ui
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -14,51 +13,43 @@ import de.adorsys.android.summerparty.ui.adapter.OrderRecyclerViewAdapter
 
 
 class OrderFragment : Fragment() {
-	private var columnCount = 2
-	private val orders: ArrayList<Order> = ArrayList()
+    private val orders: ArrayList<Order> = ArrayList()
 
-	override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-							  savedInstanceState: Bundle?): View? {
-		if (arguments != null) {
-			columnCount = arguments.getInt(OrderFragment.ARG_COLUMN_COUNT)
-			orders.clear()
-			orders.addAll(arguments.getParcelableArrayList(OrderFragment.ARG_ORDERS))
-		}
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        if (arguments != null) {
+            orders.clear()
+            orders.addAll(arguments.getParcelableArrayList(OrderFragment.ARG_ORDERS))
+        }
 
-		// Inflate the layout for this fragment
-		val view = inflater!!.inflate(R.layout.fragment_order_list, container, false)
+        // Inflate the layout for this fragment
+        val view = inflater!!.inflate(R.layout.fragment_order_list, container, false)
 
-		// Set the adapter
-		if (view is RecyclerView) {
-			val context = view.getContext()
-			val recyclerView = view
-			if (columnCount <= 1) {
-				recyclerView.layoutManager = LinearLayoutManager(context)
-			} else {
-				recyclerView.layoutManager = GridLayoutManager(context, columnCount)
-			}
-			val sortedOrders = sortOrders(orders)
-			recyclerView.adapter = OrderRecyclerViewAdapter(sortedOrders)
+        // Set the adapter
+        if (view is RecyclerView) {
+            val context = view.getContext()
+            val recyclerView = view
+            recyclerView.layoutManager = LinearLayoutManager(context)
+            val sortedOrders = sortOrders(orders)
+            recyclerView.adapter = OrderRecyclerViewAdapter(sortedOrders)
             recyclerView.setHasFixedSize(true)
-		}
-		return view
-	}
+        }
+        return view
+    }
 
     private fun sortOrders(orders: ArrayList<Order>): List<Order> {
         return orders.sortedWith(compareBy({ it.state }))
     }
 
     companion object {
-		private val ARG_COLUMN_COUNT = "status_column_count"
-		private val ARG_ORDERS = "orders"
+        private val ARG_ORDERS = "orders"
 
-		fun newInstance(columnCount: Int, orders: ArrayList<Order>): OrderFragment {
-			val fragment = OrderFragment()
-			val args = Bundle()
-			args.putInt(ARG_COLUMN_COUNT, columnCount)
-			args.putParcelableArrayList(ARG_ORDERS, orders)
-			fragment.arguments = args
-			return fragment
-		}
-	}
+        fun newInstance(orders: ArrayList<Order>): OrderFragment {
+            val fragment = OrderFragment()
+            val args = Bundle()
+            args.putParcelableArrayList(ARG_ORDERS, orders)
+            fragment.arguments = args
+            return fragment
+        }
+    }
 }

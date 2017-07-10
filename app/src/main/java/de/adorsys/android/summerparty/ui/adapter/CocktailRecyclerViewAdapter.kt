@@ -13,15 +13,15 @@ import de.adorsys.android.summerparty.ui.CocktailFragment
 
 class CocktailRecyclerViewAdapter(
         private val cocktails: List<Cocktail>,
-        private val listener: CocktailFragment.OnListFragmentInteractionListener?) : RecyclerView.Adapter<CocktailRecyclerViewAdapter.ViewHolder>() {
+        private val listener: CocktailFragment.OnListFragmentInteractionListener?) : RecyclerView.Adapter<CocktailRecyclerViewAdapter.CocktailViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CocktailViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_cocktail, parent, false)
-        return ViewHolder(view)
+        return CocktailViewHolder(view)
     }
 
-    override fun onBindViewHolder(holderOrder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holderOrder: CocktailViewHolder, position: Int) {
         holderOrder.bindItem(cocktails[position])
     }
 
@@ -29,7 +29,7 @@ class CocktailRecyclerViewAdapter(
         return cocktails.size
     }
 
-    inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+    inner class CocktailViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         private val headerView = view.findViewById(R.id.cocktail_type_header) as TextView
         private val cocktailImageView = view.findViewById(R.id.cocktail_image) as ImageView
         private val contentView = view.findViewById(R.id.name_text) as TextView

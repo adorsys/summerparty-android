@@ -10,22 +10,21 @@ import de.adorsys.android.summerparty.data.Order
 import de.adorsys.android.summerparty.ui.views.OrderView
 
 class OrderRecyclerViewAdapter(
-        private val orders: List<Order>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        private val orders: List<Order>) : RecyclerView.Adapter<OrderRecyclerViewAdapter.OrderViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_order, parent, false)
         return OrderViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (holder) {
-            is OrderViewHolder -> holder.bindItem(orders[position])
-        }
+    override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
+        holder.bindItem(orders[position])
     }
 
     override fun getItemCount(): Int {
         return orders.size
     }
+
 
     inner class OrderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val orderView = view.findViewById(R.id.order_view) as OrderView

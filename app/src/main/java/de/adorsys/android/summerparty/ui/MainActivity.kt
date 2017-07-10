@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
     }
 
     private fun getUser() {
-        // TODO create user via user login instead of using the mock content
+        // TODO create user via user login instead of using the mock content -> delete mock package and content
         // Update adapter's cocktail list
         if (preferences!!.contains(KEY_USER_ID)) {
             ApiManager.INSTANCE.getCustomer(preferences!!.getString(KEY_USER_ID, null),

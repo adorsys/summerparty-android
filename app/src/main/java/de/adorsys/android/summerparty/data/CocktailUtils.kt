@@ -48,18 +48,6 @@ class CocktailUtils {
             return cocktailMap
         }
 
-        fun cocktailMapToList(cocktailMap: HashMap<Cocktail, Int>): List<Cocktail> {
-            val cocktails = ArrayList<Cocktail>()
-            for ((cocktail, count) in cocktailMap) {
-                var counter = 0
-                while (counter < count) {
-                    cocktails.add(cocktail)
-                    counter += 1
-                }
-            }
-            return cocktails
-        }
-
         fun cocktailMapToIdList(cocktailMap: HashMap<Cocktail, Int>): List<String> {
             val cocktailIds = ArrayList<String>()
             for ((key, count) in cocktailMap) {

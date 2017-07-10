@@ -10,9 +10,9 @@ import de.adorsys.android.summerparty.ui.CocktailFragment
 import de.adorsys.android.summerparty.ui.OrderFragment
 
 class SectionsPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
-    private val PAGER_COUNT: Int = 2
-    private val COCKTAIL_COLUMN_COUNT: Int = 1
-    private val ORDER_COLUMN_COUNT: Int = 1
+    companion object {
+        private val PAGER_COUNT: Int = 2
+    }
 
     private val cocktails = ArrayList<Cocktail>()
     private val orders = ArrayList<Order>()
@@ -31,9 +31,9 @@ class SectionsPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdap
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
         return if (position == 0)
-            CocktailFragment.newInstance(COCKTAIL_COLUMN_COUNT, cocktails)
+            CocktailFragment.newInstance(cocktails)
         else
-            OrderFragment.newInstance(ORDER_COLUMN_COUNT, orders)
+            OrderFragment.newInstance(orders)
     }
 
     override fun getItemPosition(any: Any?): Int {

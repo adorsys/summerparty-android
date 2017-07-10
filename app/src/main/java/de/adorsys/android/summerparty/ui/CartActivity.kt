@@ -43,7 +43,7 @@ class CartActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.cart_order_items_recycler_view) as RecyclerView
         recyclerView?.layoutManager = LinearLayoutManager(this)
         val sortedCocktails: List<Cocktail> = pendingCocktails.sortedWith(compareBy({ it.id }))
-        recyclerView?.adapter = CartRecyclerViewAdapter(sortedCocktails.toMutableList(), HashMap())
+        recyclerView?.adapter = CartRecyclerViewAdapter(sortedCocktails.toMutableList())
         recyclerView?.setHasFixedSize(true)
 
         findViewById(R.id.cart_send_order_button).setOnClickListener {
