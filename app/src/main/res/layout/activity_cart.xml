@@ -8,19 +8,25 @@
     android:orientation="vertical"
     tools:context="de.adorsys.android.summerparty.ui.CartActivity">
 
-    <de.adorsys.android.summerparty.ui.views.OrderView
-        android:id="@+id/cart_order_view"
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:id="@+id/cart_order_items_recycler_view">
 
-    <Button
+        <!-- Cart order items are dynamically added during runtime into this container -->
+
+    </android.support.v7.widget.RecyclerView>
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/cart_send_order_button"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Base.TextAppearance.AppCompat.Button"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@android:string/ok"
-        android:layout_gravity="bottom"
-        android:gravity="center"/>
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        style="@style/Widget.Design.FloatingActionButton"
+        android:src="@drawable/ic_send_white_24dp"
+        android:layout_gravity="bottom|end"/>
 
 </LinearLayout>

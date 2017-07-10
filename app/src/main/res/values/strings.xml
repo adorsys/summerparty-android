@@ -18,4 +18,5 @@
 	<string name="availability_available">available</string>
 	<string name="availability_unavailable">not available</string>
 	<string name="order_successfully_send">Order successfully send</string>
+    <string name="cart_count_standard">1</string>
 </resources>

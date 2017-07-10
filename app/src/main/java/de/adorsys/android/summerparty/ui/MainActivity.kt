@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
     companion object {
         val KEY_USER_ID = "preferences_key_user_id"
         val KEY_USER_NAME = "preferences_key_user_name"
+        val KEY_PREFS_FILENAME = "de.adorsys.android.summerparty.prefs"
         val REQUEST_CODE_CART = 23
     }
 
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
     private var cartOptionsItemCount: TextView? = null
 
     private var preferences: SharedPreferences? = null
-    private var pendingCocktailIds: ArrayList<String> = ArrayList()
+    private var pendingCocktails: ArrayList<Cocktail> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +56,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
         val tabLayout = findViewById(R.id.tabs) as TabLayout
         viewPager = findViewById(R.id.container) as ViewPager
         viewContainer = findViewById(R.id.main_content)
-        preferences = getPreferences(Context.MODE_PRIVATE)
+        preferences = getSharedPreferences(KEY_PREFS_FILENAME, Context.MODE_PRIVATE)
 
         setSupportActionBar(toolbar)
         // Create the adapter that will return a fragment for each of the
@@ -96,11 +97,11 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                             user = response?.body()
                             if (user == null) {
                                 // backend has hard-reset the database
-                                getPreferences(Context.MODE_PRIVATE).edit().clear().apply()
+                                preferences?.edit()?.clear()?.apply()
                                 getUser()
                                 return
                             }
-                            (preferences as SharedPreferences).edit().putString(KEY_USER_NAME, this@MainActivity.user?.name).apply()
+                            preferences?.edit()?.putString(KEY_USER_NAME, this@MainActivity.user?.name)?.apply()
                             getOrdersForUser()
                         }
 
@@ -115,8 +116,8 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                         override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
                             if (response?.body() != null) {
                                 this@MainActivity.user = response.body()
-                                (preferences as SharedPreferences).edit().putString(KEY_USER_ID, this@MainActivity.user?.id).apply()
-                                (preferences as SharedPreferences).edit().putString(KEY_USER_NAME, this@MainActivity.user?.name).apply()
+                                preferences?.edit()?.putString(KEY_USER_ID, this@MainActivity.user?.id)?.apply()
+                                preferences?.edit()?.putString(KEY_USER_NAME, this@MainActivity.user?.name)?.apply()
                                 getOrdersForUser()
                             }
                         }
@@ -154,7 +155,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
         val cartOptionsItemContainer = MenuItemCompat.getActionView(menuItem) as RelativeLayout
         cartOptionsItemContainer.setOnClickListener {
             val intent = Intent(this@MainActivity, CartActivity::class.java)
-            intent.putExtra(CartActivity.EXTRA_COCKTAIL_IDS, pendingCocktailIds)
+            intent.putExtra(CartActivity.EXTRA_COCKTAILS, pendingCocktails)
             intent.putExtra(CartActivity.EXTRA_USER_ID, user?.id)
             this@MainActivity.startActivityForResult(intent, REQUEST_CODE_CART)
         }
@@ -165,7 +166,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_CART && resultCode == Activity.RESULT_OK) {
-            pendingCocktailIds.clear()
+            pendingCocktails.clear()
             updateCartMenuItem()
             getOrdersForUser()
         }
@@ -173,7 +174,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
 
     override fun onListFragmentInteraction(item: Cocktail) {
         if (viewContainer != null && item.available) {
-            pendingCocktailIds.add(item.id)
+            pendingCocktails.add(item)
             updateCartMenuItem()
         } else if (viewContainer != null) {
             Snackbar.make(viewContainer!!, getString(R.string.cocktail_out_of_stock, item.name), Snackbar.LENGTH_LONG)
@@ -182,7 +183,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
     }
 
     private fun updateCartMenuItem() {
-        menuItem?.isVisible = !pendingCocktailIds.isEmpty()
-        cartOptionsItemCount?.text = pendingCocktailIds.size.toString()
+        menuItem?.isVisible = !pendingCocktails.isEmpty()
+        cartOptionsItemCount?.text = pendingCocktails.size.toString()
     }
 }
