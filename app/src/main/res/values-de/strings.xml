@@ -3,9 +3,6 @@
 	<string name="tab_text_1">Cocktails</string>
 	<string name="tab_text_2">Bestellungen</string>
 
-	<string name="fragment_order_text">Status</string>
-    <string name="order_cocktail">%1$s bestellen?</string>
-	<string name="action_cart">Zum Einkaufswagen</string>
 	<string name="cocktail_out_of_stock">%1$s is aktuell nicht verfügbar.</string>
     <string name="order_state_mixed">Abholbereit</string>
     <string name="order_state_delivered">Abgeholt</string>
@@ -15,6 +12,5 @@
 	<string name="cocktail_type_long_drink">Longdrinks</string>
 	<string name="availability_available">verfügbar</string>
 	<string name="availability_unavailable">nicht verfügbar</string>
-	<string name="order_successfully_send">Bestellung erfolgreich abgeschickt</string>
 	<string name="cart_count_standard">1</string>
 </resources>
