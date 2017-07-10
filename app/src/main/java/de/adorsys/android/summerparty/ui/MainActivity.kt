@@ -15,7 +15,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.RelativeLayout
+import android.view.ViewGroup
 import android.widget.TextView
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.ApiManager
@@ -153,7 +153,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
         menuInflater.inflate(R.menu.menu_main, menu)
         menuItem = menu.findItem(R.id.action_cart)
         MenuItemCompat.setActionView(menuItem, R.layout.view_action_cart)
-        val cartOptionsItemContainer = MenuItemCompat.getActionView(menuItem) as RelativeLayout
+        val cartOptionsItemContainer = MenuItemCompat.getActionView(menuItem) as ViewGroup
         cartOptionsItemContainer.setOnClickListener {
             val intent = Intent(this@MainActivity, CartActivity::class.java)
             intent.putExtra(CartActivity.EXTRA_COCKTAILS, pendingCocktails)
