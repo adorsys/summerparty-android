@@ -13,4 +13,5 @@
 
 	<dimen name="margin_text">16dp</dimen>
 	<dimen name="margin_recycler_view_item">8dp</dimen>
+	<dimen name="size_delete_button">42dp</dimen>
 </resources>

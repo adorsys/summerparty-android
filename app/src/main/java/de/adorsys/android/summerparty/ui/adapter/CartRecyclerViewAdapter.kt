@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import de.adorsys.android.summerparty.R
@@ -14,7 +15,7 @@ import de.adorsys.android.summerparty.data.Cocktail
 import de.adorsys.android.summerparty.data.CocktailUtils
 
 class CartRecyclerViewAdapter(
-        private val cocktails: MutableList<Cocktail>, private var cocktailMap: HashMap<Cocktail, Int> = HashMap()) : RecyclerView.Adapter<CartRecyclerViewAdapter.ViewHolder>() {
+        private val cocktails: MutableList<Cocktail>, private val onListEmptyListener: OnListEmptyListener, private var cocktailMap: HashMap<Cocktail, Int> = HashMap()) : RecyclerView.Adapter<CartRecyclerViewAdapter.ViewHolder>() {
     init {
         cocktailMap = CocktailUtils.cocktailListToMap(cocktails)
 
@@ -47,6 +48,7 @@ class CartRecyclerViewAdapter(
         private val cocktailImage = view.findViewById(R.id.cocktail_image) as ImageView
         private val cocktailName = view.findViewById(R.id.name_text) as TextView
         private val cocktailCount = view.findViewById(R.id.cocktail_count) as EditText
+        private val cocktailDelete = view.findViewById(R.id.cocktail_delete) as ImageButton
 
         private var item: Cocktail? = null
 
@@ -65,9 +67,22 @@ class CartRecyclerViewAdapter(
                         cocktailMap.replace(cocktail, cocktailCount)
                 }
             })
+            cocktailDelete.setOnClickListener({
+                cocktails.remove(cocktail)
+                cocktailMap.remove(cocktail)
+                notifyDataSetChanged()
+                if (cocktails.isEmpty()) {
+                    onListEmptyListener.onListEmpty()
+                }
+            })
             val cocktailDrawable = CocktailUtils.getCocktailDrawableForId(cocktailImage.context, cocktail.id)
             cocktailImage.setImageDrawable(cocktailDrawable)
             cocktailName.text = cocktail.name
         }
+    }
+
+
+    interface OnListEmptyListener {
+        fun onListEmpty()
     }
 }
