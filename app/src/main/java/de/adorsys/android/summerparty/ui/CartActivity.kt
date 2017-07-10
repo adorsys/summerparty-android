@@ -22,7 +22,6 @@ class CartActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
 
-        // TODO bundle is always empty -> check why
         val pendingCocktailIds = intent.getStringArrayListExtra(EXTRA_COCKTAIL_IDS)
         val userId = intent.getStringExtra(EXTRA_USER_ID)
 
