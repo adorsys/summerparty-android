@@ -24,7 +24,8 @@
 		</activity>
 		<activity
 			android:parentActivityName=".ui.MainActivity"
-			android:name=".ui.CartActivity">
+			android:name=".ui.CartActivity"
+			android:configChanges="orientation|screenSize|keyboardHidden">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="de.adorsys.android.summerparty.ui.MainActivity" />
