@@ -3,9 +3,7 @@
 	<string name="tab_text_1">Cocktails</string>
 	<string name="tab_text_2">Orders</string>
 
-	<string name="fragment_order_text">Status</string>
-    <string name="order_cocktail">Order %1$s?</string>
-	<string name="action_cart">To cart</string>
+	<string name="cart">Cart</string>
 	<string name="cocktail_out_of_stock">%1$s is currently out of stock.</string>
     <string name="order_state_mixed">Ready for collection</string>
     <string name="order_state_delivered">Fetched</string>
@@ -15,4 +13,6 @@
 	<string name="cocktail_type_long_drink">Long Drinks</string>
 	<string name="availability_available">available</string>
 	<string name="availability_unavailable">not available</string>
+    <string name="cart_count_standard">1</string>
+	<string name="order_cocktail_placeholder">%1$d x %2$s</string>
 </resources>

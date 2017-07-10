@@ -1,37 +1,53 @@
 package de.adorsys.android.summerparty.ui
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
+import android.support.v4.view.MenuItemCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
-import android.widget.Toast
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.ApiManager
 import de.adorsys.android.summerparty.data.Cocktail
 import de.adorsys.android.summerparty.data.Customer
 import de.adorsys.android.summerparty.data.Order
 import de.adorsys.android.summerparty.data.mock.UserFactory
-import de.adorsys.android.summerparty.data.mutable.MutableOrder
+import de.adorsys.android.summerparty.ui.adapter.SectionsPagerAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
+
+
+
 
 class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInteractionListener {
     companion object {
         val KEY_USER_ID = "preferences_key_user_id"
         val KEY_USER_NAME = "preferences_key_user_name"
+        val KEY_PREFS_FILENAME = "de.adorsys.android.summerparty.prefs"
+        val REQUEST_CODE_CART = 23
     }
 
     // TODO get real user from login instead of creating one
     private var user: Customer? = null
     private var viewPager: ViewPager? = null
+    private var viewContainer: View? = null
+    private var menuItem: MenuItem? = null
+    private var cartOptionsItemCount: TextView? = null
+
     private var preferences: SharedPreferences? = null
+    private var pendingCocktails: ArrayList<Cocktail> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +56,8 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         val tabLayout = findViewById(R.id.tabs) as TabLayout
         viewPager = findViewById(R.id.container) as ViewPager
-        preferences = getPreferences(Context.MODE_PRIVATE)
+        viewContainer = findViewById(R.id.main_content)
+        preferences = getSharedPreferences(KEY_PREFS_FILENAME, Context.MODE_PRIVATE)
 
         setSupportActionBar(toolbar)
         // Create the adapter that will return a fragment for each of the
@@ -72,7 +89,7 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
     }
 
     private fun getUser() {
-        // TODO create user via user login instead of using the mock content
+        // TODO create user via user login instead of using the mock content -> delete mock package and content
         // Update adapter's cocktail list
         if (preferences!!.contains(KEY_USER_ID)) {
             ApiManager.INSTANCE.getCustomer(preferences!!.getString(KEY_USER_ID, null),
@@ -81,11 +98,11 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                             user = response?.body()
                             if (user == null) {
                                 // backend has hard-reset the database
-                                getPreferences(Context.MODE_PRIVATE).edit().clear().apply()
+                                preferences?.edit()?.clear()?.apply()
                                 getUser()
                                 return
                             }
-                            (preferences as SharedPreferences).edit().putString(KEY_USER_NAME, this@MainActivity.user?.name).apply()
+                            preferences?.edit()?.putString(KEY_USER_NAME, this@MainActivity.user?.name)?.apply()
                             getOrdersForUser()
                         }
 
@@ -100,8 +117,8 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                         override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
                             if (response?.body() != null) {
                                 this@MainActivity.user = response.body()
-                                (preferences as SharedPreferences).edit().putString(KEY_USER_ID, this@MainActivity.user?.id).apply()
-                                (preferences as SharedPreferences).edit().putString(KEY_USER_NAME, this@MainActivity.user?.name).apply()
+                                preferences?.edit()?.putString(KEY_USER_ID, this@MainActivity.user?.id)?.apply()
+                                preferences?.edit()?.putString(KEY_USER_NAME, this@MainActivity.user?.name)?.apply()
                                 getOrdersForUser()
                             }
                         }
@@ -132,36 +149,42 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                 })
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        menuItem = menu.findItem(R.id.action_cart)
+        MenuItemCompat.setActionView(menuItem, R.layout.view_action_cart)
+        val cartOptionsItemContainer = MenuItemCompat.getActionView(menuItem) as ViewGroup
+        cartOptionsItemContainer.setOnClickListener {
+            val intent = Intent(this@MainActivity, CartActivity::class.java)
+            intent.putExtra(CartActivity.EXTRA_COCKTAILS, pendingCocktails)
+            intent.putExtra(CartActivity.EXTRA_USER_ID, user?.id)
+            this@MainActivity.startActivityForResult(intent, REQUEST_CODE_CART)
+        }
+        cartOptionsItemCount = cartOptionsItemContainer.findViewById(R.id.action_cart_count_text) as TextView
+        updateCartMenuItem()
+        return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_CART && resultCode == Activity.RESULT_OK) {
+            pendingCocktails.clear()
+            updateCartMenuItem()
+            getOrdersForUser()
+        }
+    }
+
     override fun onListFragmentInteraction(item: Cocktail) {
-        val viewContainer = findViewById(R.id.main_content)
         if (viewContainer != null && item.available) {
-            val cocktail = ArrayList<String>(1)
-            cocktail.add(item.id)
-
-            val currentOrder = MutableOrder(cocktail, if (user == null) "" else (user as Customer).id)
-            Snackbar.make(viewContainer, getString(R.string.order_cocktail, item.name), Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.action_cart) {
-                        ApiManager.INSTANCE.createOrder(
-                                currentOrder,
-                                object : Callback<Void> {
-                                    override fun onResponse(call: Call<Void>?, response: Response<Void>?) {
-                                        if (response != null && response.isSuccessful) {
-                                            Toast.makeText(this@MainActivity, "Successfully created order", Toast.LENGTH_SHORT).show()
-                                            if (user != null) {
-                                                getOrdersForUser()
-                                            }
-                                        }
-                                    }
-
-                                    override fun onFailure(call: Call<Void>?, t: Throwable?) {
-                                        Log.i("TAG_ORDER_CREATE", t?.message)
-                                    }
-                                })
-                    }
-                    .show()
+            pendingCocktails.add(item)
+            updateCartMenuItem()
         } else if (viewContainer != null) {
-            Snackbar.make(viewContainer, getString(R.string.cocktail_out_of_stock, item.name), Snackbar.LENGTH_LONG)
+            Snackbar.make(viewContainer!!, getString(R.string.cocktail_out_of_stock, item.name), Snackbar.LENGTH_LONG)
                     .show()
         }
+    }
+
+    private fun updateCartMenuItem() {
+        menuItem?.isVisible = !pendingCocktails.isEmpty()
+        cartOptionsItemCount?.text = pendingCocktails.size.toString()
     }
 }
