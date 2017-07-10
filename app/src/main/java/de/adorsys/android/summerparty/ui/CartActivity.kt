@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.MenuItem
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.ApiManager
 import de.adorsys.android.summerparty.data.Cocktail
@@ -22,11 +23,13 @@ class CartActivity : AppCompatActivity() {
     }
 
     private var recyclerView: RecyclerView? = null
-    private val pendingCocktailIds = emptyList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
+
+        // if activity is left result should be canceled
+        setResult(Activity.RESULT_CANCELED)
 
         val pendingCocktails = intent.getParcelableArrayListExtra<Cocktail>(EXTRA_COCKTAILS)
         val userId = intent.getStringExtra(EXTRA_USER_ID)
@@ -48,6 +51,14 @@ class CartActivity : AppCompatActivity() {
             sendOrder(currentOrder) }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+        }
+        return true
+    }
+
     private fun sendOrder(currentOrder: MutableOrder) {
         ApiManager.INSTANCE.createOrder(
                 currentOrder,
@@ -59,6 +70,8 @@ class CartActivity : AppCompatActivity() {
 
                     override fun onFailure(call: Call<Void>?, t: Throwable?) {
                         Log.i("TAG_ORDER_CREATE", t?.message)
+                        setResult(Activity.RESULT_CANCELED)
+                        finish()
                     }
                 })
     }
