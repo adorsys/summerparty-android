@@ -159,25 +159,30 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
             this@MainActivity.startActivityForResult(intent, REQUEST_CODE_CART)
         }
         cartOptionsItemCount = cartOptionsItemContainer.findViewById(R.id.action_cart_count_text) as TextView
-        menuItem?.isVisible = false
+        updateCartMenuItem()
         return true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_CART && resultCode == Activity.RESULT_OK) {
             pendingCocktailIds.clear()
-            Snackbar.make(viewContainer!!, getString(R.string.order_successfully_send), Snackbar.LENGTH_LONG).show()
+            updateCartMenuItem()
+            getOrdersForUser()
         }
     }
 
     override fun onListFragmentInteraction(item: Cocktail) {
         if (viewContainer != null && item.available) {
             pendingCocktailIds.add(item.id)
-            menuItem?.isVisible = true
-            cartOptionsItemCount?.text = pendingCocktailIds.size.toString()
+            updateCartMenuItem()
         } else if (viewContainer != null) {
             Snackbar.make(viewContainer!!, getString(R.string.cocktail_out_of_stock, item.name), Snackbar.LENGTH_LONG)
                     .show()
         }
+    }
+
+    private fun updateCartMenuItem() {
+        menuItem?.isVisible = !pendingCocktailIds.isEmpty()
+        cartOptionsItemCount?.text = pendingCocktailIds.size.toString()
     }
 }
