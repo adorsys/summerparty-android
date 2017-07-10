@@ -51,6 +51,7 @@ class OrderView : LinearLayout {
 
         Log.i("TAG_ORDER", order.id)
         val state = order.state
+
         statusImageView?.setImageDrawable(
                 if (state == "mixed") {
                     statusImageView!!.resources.getDrawable(R.drawable.cocktail_ready, statusImageView!!.context.theme)

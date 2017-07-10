@@ -13,20 +13,20 @@ import de.adorsys.android.summerparty.data.Order
 import de.adorsys.android.summerparty.ui.adapter.OrderRecyclerViewAdapter
 
 
-class StatusFragment : Fragment() {
+class OrderFragment : Fragment() {
 	private var columnCount = 2
 	private val orders: ArrayList<Order> = ArrayList()
 
 	override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
 							  savedInstanceState: Bundle?): View? {
 		if (arguments != null) {
-			columnCount = arguments.getInt(StatusFragment.ARG_COLUMN_COUNT)
+			columnCount = arguments.getInt(OrderFragment.ARG_COLUMN_COUNT)
 			orders.clear()
-			orders.addAll(arguments.getParcelableArrayList(StatusFragment.ARG_ORDERS))
+			orders.addAll(arguments.getParcelableArrayList(OrderFragment.ARG_ORDERS))
 		}
 
 		// Inflate the layout for this fragment
-		val view = inflater!!.inflate(R.layout.fragment_status, container, false)
+		val view = inflater!!.inflate(R.layout.fragment_order_list, container, false)
 
 		// Set the adapter
 		if (view is RecyclerView) {
@@ -52,8 +52,8 @@ class StatusFragment : Fragment() {
 		private val ARG_COLUMN_COUNT = "status_column_count"
 		private val ARG_ORDERS = "orders"
 
-		fun newInstance(columnCount: Int, orders: ArrayList<Order>): StatusFragment {
-			val fragment = StatusFragment()
+		fun newInstance(columnCount: Int, orders: ArrayList<Order>): OrderFragment {
+			val fragment = OrderFragment()
 			val args = Bundle()
 			args.putInt(ARG_COLUMN_COUNT, columnCount)
 			args.putParcelableArrayList(ARG_ORDERS, orders)

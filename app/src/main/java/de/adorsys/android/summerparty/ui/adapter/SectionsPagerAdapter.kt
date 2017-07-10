@@ -7,7 +7,7 @@ import android.support.v4.view.PagerAdapter
 import de.adorsys.android.summerparty.data.Cocktail
 import de.adorsys.android.summerparty.data.Order
 import de.adorsys.android.summerparty.ui.CocktailFragment
-import de.adorsys.android.summerparty.ui.StatusFragment
+import de.adorsys.android.summerparty.ui.OrderFragment
 
 class SectionsPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
     private val PAGER_COUNT: Int = 2
@@ -33,7 +33,7 @@ class SectionsPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdap
         return if (position == 0)
             CocktailFragment.newInstance(COCKTAIL_COLUMN_COUNT, cocktails)
         else
-            StatusFragment.newInstance(ORDER_COLUMN_COUNT, orders)
+            OrderFragment.newInstance(ORDER_COLUMN_COUNT, orders)
     }
 
     override fun getItemPosition(any: Any?): Int {
