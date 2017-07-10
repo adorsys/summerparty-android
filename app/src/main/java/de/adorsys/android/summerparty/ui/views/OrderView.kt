@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import de.adorsys.android.summerparty.R
+import de.adorsys.android.summerparty.data.CocktailUtils
 import de.adorsys.android.summerparty.data.Order
 import de.adorsys.android.summerparty.ui.MainActivity
 
@@ -63,10 +64,14 @@ class OrderView : LinearLayout {
         userNameTextView?.text = preferences.getString(MainActivity.KEY_USER_NAME, null)
 
         cocktailsContainer?.removeAllViews()
-        for (cocktail in order.beverages) {
+        val cocktailMap = CocktailUtils.cocktailListToMap(order.beverages.sortedWith(compareBy({ it.type })))
+        for ((cocktail, count) in cocktailMap) {
             val cocktailTextView = LayoutInflater.from(context).inflate(R.layout.text_view, cocktailsContainer, false) as TextView
-            cocktailTextView.text = cocktail.name
+            val text = cocktailTextView.context.getString(R.string.order_cocktail_placeholder, count, cocktail.name)
+            Log.d("TAG_ORDER", text)
+            cocktailTextView.text = text
             cocktailsContainer?.addView(cocktailTextView)
         }
+
     }
 }

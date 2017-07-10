@@ -19,4 +19,5 @@
 	<string name="availability_unavailable">not available</string>
 	<string name="order_successfully_send">Order successfully send</string>
     <string name="cart_count_standard">1</string>
+	<string name="order_cocktail_placeholder">%1$d x %2$s</string>
 </resources>

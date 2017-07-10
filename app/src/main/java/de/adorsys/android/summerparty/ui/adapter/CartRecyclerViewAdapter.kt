@@ -1,4 +1,4 @@
-package de.adorsys.android.summerparty.ui
+package de.adorsys.android.summerparty.ui.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
@@ -11,47 +11,31 @@ import android.widget.ImageView
 import android.widget.TextView
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.Cocktail
-import de.adorsys.android.summerparty.data.CocktailUtil
+import de.adorsys.android.summerparty.data.CocktailUtils
 
 class CartRecyclerViewAdapter(
-        private val cocktails: MutableList<Cocktail>, private val cocktailMap: HashMap<Cocktail, Int>) : RecyclerView.Adapter<CartRecyclerViewAdapter.ViewHolder>() {
+        private val cocktails: MutableList<Cocktail>, private var cocktailMap: HashMap<Cocktail, Int>) : RecyclerView.Adapter<CartRecyclerViewAdapter.ViewHolder>() {
     init {
-        for (cocktail in cocktails) {
-            if (cocktailMap.containsKey(cocktail)) {
-                var idCount = cocktailMap[cocktail]
-                idCount = idCount?.plus(1)
-                idCount?.let { cocktailMap.replace(cocktail, it) }
-            } else {
-                cocktailMap.put(cocktail, 1)
-            }
-        }
+        cocktailMap = CocktailUtils.cocktailListToMap(cocktails)
 
-        // build again cocktail list from cocktailMap as cocktailMap is sorted
+        // build again cocktail list from cocktailMap as cocktailMap is sorted and doesn't contain duplicates
         cocktails.clear()
         for ((cocktail) in cocktailMap) {
             cocktails.add(cocktail)
         }
     }
 
-    fun getCocktailIds(): MutableList<String> {
-        val cocktailIdList = ArrayList<String>()
-        for ((key, count) in cocktailMap) {
-            var counter = 0
-            while (counter < count) {
-                cocktailIdList.add(key.id)
-                counter += 1
-            }
-        }
-        return cocktailIdList
+    fun getCocktailIds(): List<String> {
+        return CocktailUtils.cocktailMapToIdList(cocktailMap)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartRecyclerViewAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_cart, parent, false)
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holderOrder: CartRecyclerViewAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holderOrder: ViewHolder, position: Int) {
         holderOrder.bindItem(cocktails[position])
     }
 
@@ -81,7 +65,7 @@ class CartRecyclerViewAdapter(
                     cocktailMap.replace(cocktail, cocktailCount)
                 }
             })
-            val cocktailDrawable = CocktailUtil.getCocktailDrawableForId(cocktailImage.context, cocktail.id)
+            val cocktailDrawable = CocktailUtils.getCocktailDrawableForId(cocktailImage.context, cocktail.id)
             cocktailImage.setImageDrawable(cocktailDrawable)
             cocktailName.text = cocktail.name
         }

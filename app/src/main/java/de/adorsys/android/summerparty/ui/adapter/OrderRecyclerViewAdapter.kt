@@ -1,4 +1,4 @@
-package de.adorsys.android.summerparty.ui
+package de.adorsys.android.summerparty.ui.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater

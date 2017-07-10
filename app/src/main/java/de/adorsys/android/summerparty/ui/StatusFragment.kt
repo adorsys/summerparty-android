@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.Order
+import de.adorsys.android.summerparty.ui.adapter.OrderRecyclerViewAdapter
 
 
 class StatusFragment : Fragment() {

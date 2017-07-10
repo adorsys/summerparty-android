@@ -43,6 +43,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionGo"
                     android:inputType="number"
+                    android:selectAllOnFocus="true"
                     android:text="@string/cart_count_standard"/>
 
             </LinearLayout>

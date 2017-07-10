@@ -1,4 +1,4 @@
-package de.adorsys.android.summerparty.ui
+package de.adorsys.android.summerparty.ui.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -8,19 +8,20 @@ import android.widget.ImageView
 import android.widget.TextView
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.Cocktail
-import de.adorsys.android.summerparty.data.CocktailUtil
+import de.adorsys.android.summerparty.data.CocktailUtils
+import de.adorsys.android.summerparty.ui.CocktailFragment
 
 class CocktailRecyclerViewAdapter(
         private val cocktails: List<Cocktail>,
         private val listener: CocktailFragment.OnListFragmentInteractionListener?) : RecyclerView.Adapter<CocktailRecyclerViewAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CocktailRecyclerViewAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_cocktail, parent, false)
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holderOrder: CocktailRecyclerViewAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holderOrder: ViewHolder, position: Int) {
         holderOrder.bindItem(cocktails[position])
     }
 
@@ -40,7 +41,7 @@ class CocktailRecyclerViewAdapter(
 
         fun bindItem(cocktail: Cocktail) {
             item = cocktail
-            val cocktailDrawable = CocktailUtil.getCocktailDrawableForId(cocktailImageView.context, cocktail.id)
+            val cocktailDrawable = CocktailUtils.getCocktailDrawableForId(cocktailImageView.context, cocktail.id)
             cocktailImageView.setImageDrawable(cocktailDrawable)
 
             contentView.text = cocktail.name

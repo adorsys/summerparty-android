@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import de.adorsys.android.summerparty.R
 
-class CocktailUtil {
+class CocktailUtils {
     companion object {
         fun getCocktailDrawableForId(context: Context, id: String): Drawable? {
             when (id.toInt()) {
@@ -32,6 +32,44 @@ class CocktailUtil {
                 -> return context.resources.getDrawable(R.drawable.gin_tonic, context.theme)
             }
             return null
+        }
+
+        fun cocktailListToMap(cocktails: List<Cocktail>): HashMap<Cocktail, Int> {
+            val cocktailMap = HashMap<Cocktail, Int>()
+            for (cocktail in cocktails) {
+                if (cocktailMap.containsKey(cocktail)) {
+                    var idCount = cocktailMap[cocktail]
+                    idCount = idCount?.plus(1)
+                    idCount?.let { cocktailMap.replace(cocktail, it) }
+                } else {
+                    cocktailMap.put(cocktail, 1)
+                }
+            }
+            return cocktailMap
+        }
+
+        fun cocktailMapToList(cocktailMap: HashMap<Cocktail, Int>): List<Cocktail> {
+            val cocktails = ArrayList<Cocktail>()
+            for ((cocktail, count) in cocktailMap) {
+                var counter = 0
+                while (counter < count) {
+                    cocktails.add(cocktail)
+                    counter += 1
+                }
+            }
+            return cocktails
+        }
+
+        fun cocktailMapToIdList(cocktailMap: HashMap<Cocktail, Int>): List<String> {
+            val cocktailIds = ArrayList<String>()
+            for ((key, count) in cocktailMap) {
+                var counter = 0
+                while (counter < count) {
+                    cocktailIds.add(key.id)
+                    counter += 1
+                }
+            }
+            return cocktailIds
         }
     }
 }

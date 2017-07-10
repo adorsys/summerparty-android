@@ -23,6 +23,7 @@ import de.adorsys.android.summerparty.data.Cocktail
 import de.adorsys.android.summerparty.data.Customer
 import de.adorsys.android.summerparty.data.Order
 import de.adorsys.android.summerparty.data.mock.UserFactory
+import de.adorsys.android.summerparty.ui.adapter.SectionsPagerAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
