@@ -11,7 +11,7 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        preferences = getSharedPreferences(MainActivity.PREFS_FILENAME, Context.MODE_PRIVATE)
+        preferences = getSharedPreferences(MainActivity.KEY_PREFS_FILENAME, Context.MODE_PRIVATE)
 
         val intent: Intent
         if ((preferences as SharedPreferences).contains(MainActivity.KEY_USER_NAME)) {

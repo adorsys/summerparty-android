@@ -1,22 +1,29 @@
 package de.adorsys.android.summerparty.ui
 
-import android.content.Context
-import android.content.SharedPreferences
+import android.app.Activity
+import android.content.*
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
+import android.support.v4.content.LocalBroadcastManager
+import android.support.v4.view.MenuItemCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
-import android.widget.Toast
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import com.google.firebase.iid.FirebaseInstanceId
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.ApiManager
 import de.adorsys.android.summerparty.data.Cocktail
 import de.adorsys.android.summerparty.data.Customer
 import de.adorsys.android.summerparty.data.Order
-import de.adorsys.android.summerparty.data.mock.UserFactory
-import de.adorsys.android.summerparty.data.mutable.MutableOrder
+import de.adorsys.android.summerparty.data.mutable.MutableCustomer
+import de.adorsys.android.summerparty.ui.adapter.SectionsPagerAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -132,12 +139,12 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                                 user = response?.body()
                                 (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, user?.id).apply()
                             }
-                        }
 
-                        override fun onFailure(call: Call<Customer>?, t: Throwable?) {
-                            Log.i("TAG_USER", t?.message)
-                        }
-                    })
+                            override fun onFailure(call: Call<Customer>?, t: Throwable?) {
+                                Log.i("TAG_USER", t?.message)
+                            }
+                        })
+            }
         }
     }
 
@@ -193,56 +200,39 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
 
     override fun onListFragmentInteraction(item: Cocktail) {
         if (viewContainer != null && item.available) {
-            val cocktail = ArrayList<String>(1)
-            cocktail.add(item.id)
 
-            val currentOrder = MutableOrder(cocktail, if (user == null) "" else (user as Customer).id)
-            Snackbar.make(viewContainer, getString(R.string.order_cocktail, item.name), Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.action_cart) {
-                        if ((preferences as SharedPreferences).contains(MainActivity.KEY_USER_ID)) {
-                            createOrder(currentOrder)
-                        } else {
-                            ApiManager.INSTANCE.createCustomer(MutableCustomer((preferences as SharedPreferences).getString(KEY_USER_NAME, ""), FirebaseInstanceId.getInstance().token),
-                                    object : Callback<Customer> {
-                                        override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
-                                            val customer = response?.body()
-                                            (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, customer?.id).apply()
-                                            createOrder(currentOrder)
-                                        }
 
-                                        override fun onFailure(call: Call<Customer>?, t: Throwable?) {
-                                            Log.i("TAG_USER", t?.message)
-                                        }
-                                    })
-                        }
-                    }
-                    .show()
+            if ((preferences as SharedPreferences).contains(MainActivity.KEY_USER_ID)) {
+                val cocktail = ArrayList<String>(1)
+                cocktail.add(item.id)
+
+                pendingCocktails.add(item)
+                updateCartMenuItem()
+            } else {
+                ApiManager.INSTANCE.createCustomer(MutableCustomer((preferences as SharedPreferences).getString(KEY_USER_NAME, ""), FirebaseInstanceId.getInstance().token),
+                        object : Callback<Customer> {
+                            override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
+                                val customer = response?.body()
+                                (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, customer?.id).apply()
+                                val cocktail = ArrayList<String>(1)
+                                cocktail.add(item.id)
+
+                                pendingCocktails.add(item)
+                                updateCartMenuItem()
+                            }
+
+                            override fun onFailure(call: Call<Customer>?, t: Throwable?) {
+                                Log.i("TAG_USER", t?.message)
+                            }
+                        })
+            }
         } else if (viewContainer != null) {
-            Snackbar.make(viewContainer, getString(R.string.cocktail_out_of_stock, item.name), Snackbar.LENGTH_LONG)
+            Snackbar.make(viewContainer!!, getString(R.string.cocktail_out_of_stock, item.name), Snackbar.LENGTH_LONG)
                     .show()
         }
     }
 
-    private fun createOrder(currentOrder: MutableOrder) {
-        ApiManager.INSTANCE.createOrder(
-                currentOrder,
-                object : Callback<Void> {
-                    override fun onResponse(call: Call<Void>?, response: Response<Void>?) {
-                        if (response != null && response.isSuccessful) {
-                            Toast.makeText(this@MainActivity, "Successfully created order", Toast.LENGTH_SHORT).show()
-                            if (user != null) {
-                                getOrdersForUser()
-                            }
-                        }
-                    }
-
-                    override fun onFailure(call: Call<Void>?, t: Throwable?) {
-                        Log.i("TAG_ORDER_CREATE", t?.message)
-                    }
-                })
-    }
-
-    private fun updateCartMenuItem() {
+    fun updateCartMenuItem() {
         menuItem?.isVisible = !pendingCocktails.isEmpty()
         cartOptionsItemCount?.text = pendingCocktails.size.toString()
     }

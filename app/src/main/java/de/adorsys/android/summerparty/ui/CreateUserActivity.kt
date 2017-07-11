@@ -26,7 +26,7 @@ class CreateUserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_user)
 
-        preferences = getSharedPreferences(MainActivity.PREFS_FILENAME, Context.MODE_PRIVATE)
+        preferences = getSharedPreferences(MainActivity.KEY_PREFS_FILENAME, Context.MODE_PRIVATE)
 
         val usernameEditText = findViewById(R.id.username_edit_text) as EditText
         val registerButton = findViewById(R.id.register_button) as Button
