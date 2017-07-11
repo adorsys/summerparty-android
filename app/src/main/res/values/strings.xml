@@ -5,8 +5,8 @@
 
 	<string name="cart">Cart</string>
 	<string name="cocktail_out_of_stock">%1$s is currently out of stock.</string>
-	<string name="register">Register</string>
-	<string name="username">Username</string>
+	<string name="start">Start</string>
+	<string name="username">Name</string>
     <string name="order_state_mixed">Ready for collection</string>
     <string name="order_state_delivered">Fetched</string>
     <string name="order_state_ordered">Ordered</string>

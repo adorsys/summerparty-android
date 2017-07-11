@@ -3,20 +3,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="@dimen/activity_vertical_margin"
     android:gravity="center"
     android:orientation="vertical"
     tools:context="de.adorsys.android.summerparty.ui.CreateUserActivity">
 
-    <EditText
-        android:id="@+id/username_edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/username" />
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:adjustViewBounds="true"
+        android:src="@drawable/ic_cocktail_icon" />
 
-    <Button
-        android:id="@+id/register_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/register" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/username_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_vertical_margin"
+            android:hint="@string/username" />
+
+        <Button
+            android:id="@+id/register_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="@color/colorPrimary"
+            android:text="@string/start"
+            android:textColor="#ffffff" />
+
+    </LinearLayout>
 
 </LinearLayout>
