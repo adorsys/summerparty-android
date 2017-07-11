@@ -1,10 +1,10 @@
 package de.adorsys.android.summerparty.ui
 
-import android.content.Context
-import android.content.SharedPreferences
+import android.content.*
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -23,12 +23,20 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
+
 class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInteractionListener {
     companion object {
         val KEY_USER_ID = "preferences_key_user_id"
         val KEY_USER_NAME = "preferences_key_user_name"
         val PREFS_FILENAME = "de.adorsys.android.summerparty.prefs"
+    }
 
+    private val mMessageReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.extras.getBoolean("reload")) {
+                goToOrdersAndRefresh()
+            }
+        }
     }
 
     private var user: Customer? = null
@@ -55,6 +63,22 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
 
         getUser()
         getCocktails()
+    }
+
+    private fun goToOrdersAndRefresh() {
+        viewPager!!.setCurrentItem(1)
+        //TODO refresh order adapter
+    }
+
+    override fun onStart() {
+        super.onStart()
+        LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),
+                IntentFilter("NotificationBroadcast"))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
 
     private fun getCocktails() {
@@ -108,6 +132,13 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
                             }
                         })
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (intent!!.getBooleanExtra("reload", false)) {
+            goToOrdersAndRefresh()
         }
     }
 

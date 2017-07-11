@@ -1,16 +1,19 @@
 package de.adorsys.android.summerparty.network
 
+import android.app.ActivityManager
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.support.v4.app.NotificationCompat
+import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
 import com.firebase.jobdispatcher.FirebaseJobDispatcher
 import com.firebase.jobdispatcher.GooglePlayDriver
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.ui.MainActivity
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
@@ -60,6 +63,26 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
     // [END receive_message]
 
+    override fun handleIntent(p0: Intent?) {
+        super.handleIntent(p0)
+
+        val am = this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val cn = am.getRunningTasks(1)[0].topActivity
+        if (cn.className.equals(MainActivity::class.java.name)) {
+            Log.d("LOGTAG", "" + p0!!.getStringExtra("gcm.notification.body"))
+            //TODO set current fragment and refresh adapter
+            val intent = Intent("NotificationBroadcast")
+            intent.putExtra("reload", true)
+            broadcaster!!.sendBroadcast(intent)
+        } else {
+            val i = Intent()
+            i.setClass(this, MainActivity::class.java)
+            i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            i.putExtra("reload", true)
+            startActivity(i)
+        }
+    }
+
     /**
      * Schedule a job using FirebaseJobDispatcher.
      */
@@ -87,6 +110,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
      * @param messageBody FCM message body received.
      */
     private fun sendNotification(messageBody: String) {
+
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
@@ -94,8 +118,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this)
-                //                .setSmallIcon(R.drawable.ic_stat_ic_notification)
-                .setContentTitle("FCM Message")
+                .setSmallIcon(R.drawable.cocktail_ready)
                 .setContentText(messageBody)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
@@ -105,6 +128,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
     }
+
+    override fun onCreate() {
+        super.onCreate()
+        broadcaster = LocalBroadcastManager.getInstance(this);
+    }
+
+    private var broadcaster: LocalBroadcastManager? = null
 
     companion object {
 
