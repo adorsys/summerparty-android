@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/action_cart_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    style="@android:style/Widget.ActionButton"
+    tools:ignore="UseCompoundDrawables">
+
+    <ImageView
+        android:id="@+id/action_cart_image"
+        android:src="@drawable/ic_shopping_cart_white_24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/action_cart_count_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="12sp"
+        android:minHeight="12sp"
+        android:textSize="12sp"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:paddingRight="4dp"
+        android:paddingLeft="4dp"
+        android:background="@drawable/shape_cart_notification"/>
+
+</LinearLayout>

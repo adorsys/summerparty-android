@@ -21,16 +21,8 @@ enum class ApiManager {
         return cocktailService.createOrder(mutableOrder).enqueue(orderCallback)
     }
 
-    fun getOrder(id: String, orderCallback: Callback<Order>) {
-        return cocktailService.getOrder(id).enqueue(orderCallback)
-    }
-
     fun getCocktails(cocktailsCallback: Callback<List<Cocktail>>) {
         return cocktailService.getCocktails().enqueue(cocktailsCallback)
-    }
-
-    fun getCocktail(id: String, cocktailCallback: Callback<Cocktail>) {
-        return cocktailService.getCocktail(id).enqueue(cocktailCallback)
     }
 
     fun createCustomer(mutableCustomer: MutableCustomer, customerCallback: Callback<Customer>) {

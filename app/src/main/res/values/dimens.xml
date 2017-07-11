@@ -2,6 +2,7 @@
 	<!-- Default screen margins, per the Android Design guidelines. -->
 	<dimen name="activity_horizontal_margin">16dp</dimen>
 	<dimen name="activity_vertical_margin">16dp</dimen>
+	<dimen name="activity_vertical_margin_small">8dp</dimen>
 
 	<dimen name="padding_top_appbar">8dp</dimen>
 
@@ -12,4 +13,5 @@
 
 	<dimen name="margin_text">16dp</dimen>
 	<dimen name="margin_recycler_view_item">8dp</dimen>
+	<dimen name="size_delete_button">42dp</dimen>
 </resources>
