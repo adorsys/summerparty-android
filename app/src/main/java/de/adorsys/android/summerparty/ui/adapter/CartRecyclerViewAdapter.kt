@@ -75,7 +75,7 @@ class CartRecyclerViewAdapter(
                     onListEmptyListener.onListEmpty()
                 }
             })
-            val cocktailDrawable = CocktailUtils.getCocktailDrawableForId(cocktailImage.context, cocktail.id)
+            val cocktailDrawable = CocktailUtils.getCocktailDrawableForName(cocktailImage.context, cocktail.name)
             cocktailImage.setImageDrawable(cocktailDrawable)
             cocktailName.text = cocktail.name
         }

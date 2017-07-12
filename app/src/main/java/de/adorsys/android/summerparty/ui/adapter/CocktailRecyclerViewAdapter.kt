@@ -41,7 +41,7 @@ class CocktailRecyclerViewAdapter(
 
         fun bindItem(cocktail: Cocktail) {
             item = cocktail
-            val cocktailDrawable = CocktailUtils.getCocktailDrawableForId(cocktailImageView.context, cocktail.id)
+            val cocktailDrawable = CocktailUtils.getCocktailDrawableForName(cocktailImageView.context, cocktail.name)
             cocktailImageView.setImageDrawable(cocktailDrawable)
 
             contentView.text = cocktail.name
