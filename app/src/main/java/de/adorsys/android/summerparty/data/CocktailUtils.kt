@@ -6,32 +6,30 @@ import de.adorsys.android.summerparty.R
 
 class CocktailUtils {
     companion object {
-        fun getCocktailDrawableForId(context: Context, id: String): Drawable? {
-            when (id.toInt()) {
-                CocktailType.ITALIAN_COLADA.id
+        fun getCocktailDrawableForName(context: Context, id: String?): Drawable? {
+            when (id) {
+                CocktailType.PINA_COLADA.nomination
                 -> return context.resources.getDrawable(R.drawable.pina_colada, context.theme)
-                CocktailType.SEX_ON_THE_BEACH.id
+                CocktailType.SEX_ON_THE_BEACH.nomination
                 -> return context.resources.getDrawable(R.drawable.sex_on_the_beach, context.theme)
-                CocktailType.CAIPIRINHA.id
+                CocktailType.CAIPIRINHA.nomination
                 -> return context.resources.getDrawable(R.drawable.caipirinha, context.theme)
-                CocktailType.MAI_TAI.id
+                CocktailType.MAI_TAI.nomination
                 -> return context.resources.getDrawable(R.drawable.mai_tai, context.theme)
-                CocktailType.CHINATOWN.id
-                -> return context.resources.getDrawable(R.drawable.chinatown, context.theme)
-                CocktailType.COCONUT_KISS.id
+                CocktailType.COCONUT_KISS.nomination
                 -> return context.resources.getDrawable(R.drawable.coconut_kiss, context.theme)
-                CocktailType.SUNFLOWER.id
+                CocktailType.SUNFLOWER.nomination
                 -> return context.resources.getDrawable(R.drawable.sunflower, context.theme)
-                CocktailType.WODKA_LEMON.id
+                CocktailType.WODKA_LEMON.nomination
                 -> return context.resources.getDrawable(R.drawable.wodka_lemon, context.theme)
-                CocktailType.CUBA_LIBRE.id
+                CocktailType.CUBA_LIBRE.nomination
                 -> return context.resources.getDrawable(R.drawable.cuba_libre, context.theme)
-                CocktailType.APEROL_SPRITZ.id
+                CocktailType.APEROL_SPRITZ.nomination
                 -> return context.resources.getDrawable(R.drawable.aperol_sprizz, context.theme)
-                CocktailType.GIN_TONIC.id
+                CocktailType.GIN_TONIC.nomination
                 -> return context.resources.getDrawable(R.drawable.gin_tonic, context.theme)
             }
-            return null
+            return context.resources.getDrawable(R.drawable.cocktail_ordered, context.theme)
         }
 
         fun cocktailListToMap(cocktails: List<Cocktail>): HashMap<Cocktail, Int> {
