@@ -33,11 +33,11 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         val KEY_USER_ID = "preferences_key_user_id"
         val KEY_USER_NAME = "preferences_key_user_name"
         val KEY_PREFS_FILENAME = "de.adorsys.android.summerparty.prefs"
-        val REQUEST_CODE_CART = 23
-        val REQUEST_CODE_NAME = 24
         val KEY_FIREBASE_RECEIVER = "firebase_receiver"
         val KEY_FIREBASE_RELOAD = "reload"
         val KEY_FIREBASE_TOKEN = "firebase_token"
+        val REQUEST_CODE_CART = 23
+        val REQUEST_CODE_NAME = 24
     }
 
     private val messageReceiver = object : BroadcastReceiver() {
@@ -55,6 +55,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     private var cartOptionsItemCount: TextView? = null
     private var preferences: SharedPreferences? = null
     private var pendingCocktails: ArrayList<Cocktail> = ArrayList()
+    private var firebaseToken: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,9 +77,12 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         viewPager!!.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewPager))
 
-        getUser()
         getCocktails()
+        if (preferences!!.contains(KEY_USER_ID)) {
+            getUser()
+        }
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -88,6 +92,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         }
         if (intent!!.getStringExtra(KEY_FIREBASE_TOKEN) != null) {
             startActivityForResult(Intent(this, CreateUserActivity::class.java), REQUEST_CODE_NAME)
+            firebaseToken = intent!!.getStringExtra(KEY_FIREBASE_TOKEN)
             intent!!.removeExtra(KEY_FIREBASE_TOKEN)
         }
     }
@@ -127,7 +132,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         }
 
         if (requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_OK && data != null) {
-            createAndPersistUser(data.getStringExtra(CreateUserActivity.KEY_USERNAME))
+            createAndPersistUser(data.getStringExtra(CreateUserActivity.KEY_USERNAME), firebaseToken)
         }
     }
 
@@ -157,14 +162,15 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     }
 
 
-    private fun createAndPersistUser(username: String) {
+    private fun createAndPersistUser(username: String, firebaseToken: String?) {
         Log.d("TAG_USER", username)
-        ApiManager.INSTANCE.createCustomer(MutableCustomer(username, FirebaseInstanceId.getInstance().token),
+        ApiManager.INSTANCE.createCustomer(MutableCustomer(username, firebaseToken),
                 object : Callback<Customer> {
                     override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
                         val customer = response?.body()
                         (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, customer?.id).apply()
                         (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_NAME, customer?.name).apply()
+                        user = customer
                     }
 
                     override fun onFailure(call: Call<Customer>?, t: Throwable?) {
@@ -191,28 +197,24 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
 
     private fun getUser() {
         // Update adapter's cocktail list
-        if (preferences!!.contains(KEY_USER_ID)) {
-            ApiManager.INSTANCE.getCustomer(preferences!!.getString(KEY_USER_ID, null),
-                    object : Callback<Customer> {
-                        override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
-                            user = response?.body()
-                            if (user == null) {
-                                // backend has hard-reset the database
-                                (preferences as SharedPreferences).edit().clear().apply()
-                                getUser()
-                                return
-                            }
-                            (preferences as SharedPreferences).edit().putString(KEY_USER_NAME, this@MainActivity.user?.name).apply()
-                            getOrdersForUser()
+        ApiManager.INSTANCE.getCustomer(preferences!!.getString(KEY_USER_ID, null),
+                object : Callback<Customer> {
+                    override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
+                        user = response?.body()
+                        if (user == null) {
+                            // backend has hard-reset the database
+                            (preferences as SharedPreferences).edit().clear().apply()
+                            getUser()
+                            return
                         }
+                        (preferences as SharedPreferences).edit().putString(KEY_USER_NAME, this@MainActivity.user?.name).apply()
+                        getOrdersForUser()
+                    }
 
-                        override fun onFailure(call: Call<Customer>?, t: Throwable?) {
-                            Log.i("TAG_USER", t?.message)
-                        }
-                    })
-        } else {
-            startActivityForResult(Intent(this, CreateUserActivity::class.java), REQUEST_CODE_NAME)
-        }
+                    override fun onFailure(call: Call<Customer>?, t: Throwable?) {
+                        Log.i("TAG_USER", t?.message)
+                    }
+                })
     }
 
     private fun getOrdersForUser() {
