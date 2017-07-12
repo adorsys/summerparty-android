@@ -48,22 +48,23 @@ class CartRecyclerViewAdapter(
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val cocktailImage = view.findViewById(R.id.cocktail_image) as ImageView
         private val cocktailName = view.findViewById(R.id.name_text) as TextView
-        private val cocktailCount = view.findViewById(R.id.cocktail_count) as EditText
+        private val cocktailCountText = view.findViewById(R.id.cocktail_count) as EditText
         private val cocktailDelete = view.findViewById(R.id.cocktail_delete) as ImageButton
 
         private var item: Cocktail? = null
 
         fun bindItem(cocktail: Cocktail) {
             item = cocktail
-            cocktailCount.setText(cocktailMap[cocktail]?.toString())
-            cocktailCount.setOnClickListener({
-                cocktailCount.selectAll()
+            cocktailCountText.setText(cocktailMap[cocktail]?.toString())
+            cocktailCountText.setOnClickListener({
+                cocktailCountText.selectAll()
             })
-            cocktailCount.addTextChangedListener(object : TextWatcher {
+            cocktailCountText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {}
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
                     val cocktailCount = charSequence?.toString()
+                    cocktailCountText.selectAll()
                     if (!TextUtils.isEmpty(cocktailCount) && !cocktailCount.equals(" ")) {
                         cocktailMap.remove(cocktail)
                         cocktailMap.put(cocktail, cocktailCount!!.toInt())
