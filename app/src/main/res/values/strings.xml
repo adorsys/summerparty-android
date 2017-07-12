@@ -8,6 +8,8 @@
     <string name="order_state_mixed">Ready for collection</string>
     <string name="order_state_delivered">Fetched</string>
     <string name="order_state_ordered">Ordered</string>
+	<string name="enter">Enter</string>
+	<string name="username">Name</string>
 	<string name="cocktail_type_cocktail">Cocktails</string>
 	<string name="cocktail_type_nonalcoholic">Non Alcoholic</string>
 	<string name="cocktail_type_long_drink">Long Drinks</string>
@@ -15,4 +17,8 @@
 	<string name="availability_unavailable">not available</string>
     <string name="cart_count_standard">1</string>
 	<string name="order_cocktail_placeholder">%1$d x %2$s</string>
+    <string name="enter_user_name">Enter a username</string>
+	<string name="error_user_not_specified">The user cannot be empty</string>
+	<string name="notification_content_text">Your order detail have changed. Have a look.</string>
+	<string name="notification_content_title">Your order</string>
 </resources>

@@ -2,7 +2,6 @@ package de.adorsys.android.summerparty.ui
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -16,7 +15,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CartActivity : AppCompatActivity() {
+class CartActivity : BaseActivity() {
     companion object {
         val EXTRA_COCKTAILS = "extra_cocktail_ids"
         val EXTRA_USER_ID = "extra_user_id"

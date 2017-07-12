@@ -38,7 +38,10 @@ class CocktailUtils {
                 if (cocktailMap.containsKey(cocktail)) {
                     var idCount = cocktailMap[cocktail]
                     idCount = idCount?.plus(1)
-                    idCount?.let { cocktailMap.replace(cocktail, it) }
+                    idCount.let {
+                        cocktailMap.remove(cocktail)
+                        cocktailMap.put(cocktail, it!!)
+                    }
                 } else {
                     cocktailMap.put(cocktail, 1)
                 }

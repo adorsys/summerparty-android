@@ -1,15 +1,14 @@
 package de.adorsys.android.summerparty.ui
 
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.app.AlertDialog
+import android.content.*
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.view.MenuItemCompat
 import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
@@ -17,37 +16,57 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.google.firebase.iid.FirebaseInstanceId
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.ApiManager
 import de.adorsys.android.summerparty.data.Cocktail
 import de.adorsys.android.summerparty.data.Customer
 import de.adorsys.android.summerparty.data.Order
-import de.adorsys.android.summerparty.data.mock.UserFactory
+import de.adorsys.android.summerparty.data.mutable.MutableCustomer
 import de.adorsys.android.summerparty.ui.adapter.SectionsPagerAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
-
-
-
-class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInteractionListener {
+class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionListener {
     companion object {
         val KEY_USER_ID = "preferences_key_user_id"
         val KEY_USER_NAME = "preferences_key_user_name"
         val KEY_PREFS_FILENAME = "de.adorsys.android.summerparty.prefs"
+        val KEY_FIREBASE_RECEIVER = "firebase_receiver"
+        val KEY_FIREBASE_RELOAD = "reload"
+        val KEY_FIREBASE_TOKEN = "firebase_token"
         val REQUEST_CODE_CART = 23
+        val REQUEST_CODE_NAME = 24
     }
 
-    // TODO get real user from login instead of creating one
+    private val messageReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.extras.getBoolean(KEY_FIREBASE_RELOAD)) {
+                val dialog = AlertDialog.Builder(this@MainActivity)
+                        .setIcon(R.drawable.ic_cocktail_icon)
+                        .setTitle(R.string.notification_content_title)
+                        .setMessage(R.string.notification_content_text)
+                        .setPositiveButton(android.R.string.ok) { _, _ -> goToOrdersAndRefresh() }
+                dialog.create().show()
+            }
+            if (intent.extras.getString(KEY_FIREBASE_TOKEN) != null) {
+                startActivityForResult(Intent(this@MainActivity, CreateUserActivity::class.java), REQUEST_CODE_NAME)
+                firebaseToken = intent.getStringExtra(KEY_FIREBASE_TOKEN)
+            }
+        }
+    }
+
     private var user: Customer? = null
     private var viewPager: ViewPager? = null
     private var viewContainer: View? = null
     private var menuItem: MenuItem? = null
     private var cartOptionsItemCount: TextView? = null
-
     private var preferences: SharedPreferences? = null
     private var pendingCocktails: ArrayList<Cocktail> = ArrayList()
+    private var firebaseToken: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,85 +87,39 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
         viewPager!!.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewPager))
 
-        getUser()
         getCocktails()
-    }
-
-    private fun getCocktails() {
-        ApiManager.INSTANCE.getCocktails(
-                object : Callback<List<Cocktail>> {
-                    override fun onResponse(call: Call<List<Cocktail>>?, response: Response<List<Cocktail>>?) {
-                        val cocktailResponse: List<Cocktail>? = response?.body()
-                        // Update adapter's cocktail list
-                        cocktailResponse?.let { (viewPager?.adapter as SectionsPagerAdapter).setCocktails(it) }
-                        viewPager?.adapter?.notifyDataSetChanged()
-                    }
-
-                    override fun onFailure(call: Call<List<Cocktail>>?, t: Throwable?) {
-                        Log.i("TAG_COCKTAILS", t?.message)
-                    }
-                })
-    }
-
-    private fun getUser() {
-        // TODO create user via user login instead of using the mock content -> delete mock package and content
-        // Update adapter's cocktail list
         if (preferences!!.contains(KEY_USER_ID)) {
-            ApiManager.INSTANCE.getCustomer(preferences!!.getString(KEY_USER_ID, null),
-                    object : Callback<Customer> {
-                        override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
-                            user = response?.body()
-                            if (user == null) {
-                                // backend has hard-reset the database
-                                preferences?.edit()?.clear()?.apply()
-                                getUser()
-                                return
-                            }
-                            preferences?.edit()?.putString(KEY_USER_NAME, this@MainActivity.user?.name)?.apply()
-                            getOrdersForUser()
-                        }
-
-                        override fun onFailure(call: Call<Customer>?, t: Throwable?) {
-                            Log.i("TAG_USER", t?.message)
-                        }
-                    })
-        } else {
-            val user = UserFactory.create()
-            ApiManager.INSTANCE.createCustomer(user,
-                    object : Callback<Customer> {
-                        override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
-                            if (response?.body() != null) {
-                                this@MainActivity.user = response.body()
-                                preferences?.edit()?.putString(KEY_USER_ID, this@MainActivity.user?.id)?.apply()
-                                preferences?.edit()?.putString(KEY_USER_NAME, this@MainActivity.user?.name)?.apply()
-                                getOrdersForUser()
-                            }
-                        }
-
-                        override fun onFailure(call: Call<Customer>?, t: Throwable?) {
-                            Log.i("TAG_USER", t?.message)
-                        }
-                    })
+            getUser()
         }
     }
 
-    private fun getOrdersForUser() {
-        if (user == null) {
-            return
-        }
-        ApiManager.INSTANCE.getOrdersForCustomer(user!!.id,
-                object : Callback<List<Order>> {
-                    override fun onResponse(call: Call<List<Order>>?, response: Response<List<Order>>?) {
-                        val cocktailResponse: List<Order>? = response?.body()
-                        // Update adapter's order list
-                        cocktailResponse?.let { (viewPager?.adapter as SectionsPagerAdapter).setOrders(it) }
-                        viewPager?.adapter?.notifyDataSetChanged()
-                    }
 
-                    override fun onFailure(call: Call<List<Order>>?, t: Throwable?) {
-                        Log.i("TAG_CUSTOMER_ORDERS", t?.message)
-                    }
-                })
+    override fun onResume() {
+        super.onResume()
+        if (intent!!.getBooleanExtra(KEY_FIREBASE_RELOAD, false)) {
+            val dialog = AlertDialog.Builder(this@MainActivity)
+                    .setIcon(R.drawable.ic_cocktail_icon)
+                    .setTitle(R.string.notification_content_title)
+                    .setMessage(R.string.notification_content_text)
+                    .setPositiveButton(android.R.string.ok) { _, _ -> goToOrdersAndRefresh() }
+            dialog.create().show()
+        }
+        if (intent!!.getStringExtra(KEY_FIREBASE_TOKEN) != null) {
+            startActivityForResult(Intent(this, CreateUserActivity::class.java), REQUEST_CODE_NAME)
+            firebaseToken = intent!!.getStringExtra(KEY_FIREBASE_TOKEN)
+            intent!!.removeExtra(KEY_FIREBASE_TOKEN)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        LocalBroadcastManager.getInstance(this).registerReceiver((messageReceiver),
+                IntentFilter(KEY_FIREBASE_RECEIVER))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -171,20 +144,119 @@ class MainActivity : AppCompatActivity(), CocktailFragment.OnListFragmentInterac
             updateCartMenuItem()
             getOrdersForUser()
         }
+
+        if (requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_OK && data != null) {
+            createAndPersistUser(data.getStringExtra(CreateUserActivity.KEY_USERNAME), firebaseToken)
+        }
     }
 
     override fun onListFragmentInteraction(item: Cocktail) {
         if (viewContainer != null && item.available) {
-            pendingCocktails.add(item)
-            updateCartMenuItem()
+            if ((preferences as SharedPreferences).contains(MainActivity.KEY_USER_ID)) {
+                pendingCocktails.add(item)
+                updateCartMenuItem()
+            } else {
+                ApiManager.INSTANCE.createCustomer(MutableCustomer((preferences as SharedPreferences).getString(KEY_USER_NAME, ""), FirebaseInstanceId.getInstance().token),
+                        object : Callback<Customer> {
+                            override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
+                                val customer = response?.body()
+                                (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, customer?.id).apply()
+                                pendingCocktails.add(item)
+                                updateCartMenuItem()
+                            }
+
+                            override fun onFailure(call: Call<Customer>?, t: Throwable?) {
+                                Log.i("TAG_USER", t?.message)
+                            }
+                        })
+            }
         } else if (viewContainer != null) {
-            Snackbar.make(viewContainer!!, getString(R.string.cocktail_out_of_stock, item.name), Snackbar.LENGTH_LONG)
-                    .show()
+            Snackbar.make(viewContainer!!, getString(R.string.cocktail_out_of_stock, item.name), Snackbar.LENGTH_LONG).show()
         }
+    }
+
+
+    private fun createAndPersistUser(username: String, firebaseToken: String?) {
+        Log.d("TAG_USER", username)
+        ApiManager.INSTANCE.createCustomer(MutableCustomer(username, firebaseToken),
+                object : Callback<Customer> {
+                    override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
+                        val customer = response?.body()
+                        (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, customer?.id).apply()
+                        (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_NAME, customer?.name).apply()
+                        user = customer
+                    }
+
+                    override fun onFailure(call: Call<Customer>?, t: Throwable?) {
+                        Log.i("TAG_USER", t?.message)
+                    }
+                })
+    }
+
+    private fun getCocktails() {
+        ApiManager.INSTANCE.getCocktails(
+                object : Callback<List<Cocktail>> {
+                    override fun onResponse(call: Call<List<Cocktail>>?, response: Response<List<Cocktail>>?) {
+                        val cocktailResponse: List<Cocktail>? = response?.body()
+                        // Update adapter's cocktail list
+                        cocktailResponse?.let { (viewPager?.adapter as SectionsPagerAdapter).setCocktails(it) }
+                        viewPager?.adapter?.notifyDataSetChanged()
+                    }
+
+                    override fun onFailure(call: Call<List<Cocktail>>?, t: Throwable?) {
+                        Log.i("TAG_COCKTAILS", t?.message)
+                    }
+                })
+    }
+
+    private fun getUser() {
+        // Update adapter's cocktail list
+        ApiManager.INSTANCE.getCustomer(preferences!!.getString(KEY_USER_ID, null),
+                object : Callback<Customer> {
+                    override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
+                        user = response?.body()
+                        if (user == null) {
+                            // backend has hard-reset the database
+                            (preferences as SharedPreferences).edit().clear().apply()
+                            getUser()
+                            return
+                        }
+                        (preferences as SharedPreferences).edit().putString(KEY_USER_NAME, this@MainActivity.user?.name).apply()
+                        getOrdersForUser()
+                    }
+
+                    override fun onFailure(call: Call<Customer>?, t: Throwable?) {
+                        Log.i("TAG_USER", t?.message)
+                    }
+                })
+    }
+
+    private fun getOrdersForUser() {
+        if (user == null) {
+            return
+        }
+        ApiManager.INSTANCE.getOrdersForCustomer(user!!.id,
+                object : Callback<List<Order>> {
+                    override fun onResponse(call: Call<List<Order>>?, response: Response<List<Order>>?) {
+                        val cocktailResponse: List<Order>? = response?.body()
+                        // Update adapter's order list
+                        cocktailResponse?.let { (viewPager?.adapter as SectionsPagerAdapter).setOrders(it) }
+                        viewPager?.adapter?.notifyDataSetChanged()
+                    }
+
+                    override fun onFailure(call: Call<List<Order>>?, t: Throwable?) {
+                        Log.i("TAG_CUSTOMER_ORDERS", t?.message)
+                    }
+                })
     }
 
     private fun updateCartMenuItem() {
         menuItem?.isVisible = !pendingCocktails.isEmpty()
         cartOptionsItemCount?.text = pendingCocktails.size.toString()
+    }
+
+    private fun goToOrdersAndRefresh() {
+        viewPager?.adapter?.notifyDataSetChanged()
+        viewPager?.currentItem = 1
     }
 }

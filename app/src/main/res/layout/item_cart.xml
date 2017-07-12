@@ -30,12 +30,6 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/name_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"/>
-
                 <EditText
                     android:id="@+id/cocktail_count"
                     android:layout_width="wrap_content"
@@ -43,8 +37,15 @@
                     android:imeOptions="actionGo"
                     android:inputType="number"
                     android:textColor="@android:color/darker_gray"
+                    android:textSize="24sp"
                     android:selectAllOnFocus="true"
                     android:text="@string/cart_count_standard"/>
+
+                <TextView
+                    android:id="@+id/name_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"/>
 
             </LinearLayout>
 
