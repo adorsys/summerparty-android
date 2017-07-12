@@ -33,20 +33,13 @@ class FirebaseInstanceIDService : FirebaseInstanceIdService() {
         sendRegistrationToServer(refreshedToken)
     }
 
-    /**
-     * Persist token to third-party servers.
-
-     * Modify this method to associate the user's FCM InstanceID token with any server-side account
-     * maintained by your application.
-
-     * @param token The new token.
-     */
     private fun sendRegistrationToServer(token: String) {
         if ((application as SummerpartyApp).currentActivity == MainActivity::class.java) {
             val intent = Intent(MainActivity.KEY_FIREBASE_RECEIVER)
             intent.putExtra(MainActivity.KEY_FIREBASE_TOKEN, token)
             broadcaster?.sendBroadcast(intent)
         } else {
+            // TODO bad, don't --> starts application when it is in background
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             intent.putExtra(MainActivity.KEY_FIREBASE_TOKEN, token)

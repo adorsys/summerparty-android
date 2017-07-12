@@ -19,4 +19,6 @@
 	<string name="order_cocktail_placeholder">%1$d x %2$s</string>
     <string name="enter_user_name">Erstelle einen Nutzer</string>
     <string name="error_user_not_specified">Der Nutzer darf nicht leer sein</string>
+	<string name="notification_content_text">Deine Bestellung hat sich verändert. Schau sie Dir mal an.</string>
+	<string name="notification_content_title">Deine Bestellung</string>
 </resources>

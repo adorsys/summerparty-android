@@ -1,6 +1,7 @@
 package de.adorsys.android.summerparty.ui
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.*
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -43,7 +44,16 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     private val messageReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.extras.getBoolean(KEY_FIREBASE_RELOAD)) {
-                goToOrdersAndRefresh()
+                val dialog = AlertDialog.Builder(this@MainActivity)
+                        .setIcon(R.drawable.ic_cocktail_icon)
+                        .setTitle(R.string.notification_content_title)
+                        .setMessage(R.string.notification_content_text)
+                        .setPositiveButton(android.R.string.ok) { _, _ -> goToOrdersAndRefresh() }
+                dialog.create().show()
+            }
+            if (intent.extras.getString(KEY_FIREBASE_TOKEN) != null) {
+                startActivityForResult(Intent(this@MainActivity, CreateUserActivity::class.java), REQUEST_CODE_NAME)
+                firebaseToken = intent.getStringExtra(KEY_FIREBASE_TOKEN)
             }
         }
     }
@@ -87,8 +97,12 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     override fun onResume() {
         super.onResume()
         if (intent!!.getBooleanExtra(KEY_FIREBASE_RELOAD, false)) {
-            goToOrdersAndRefresh()
-            intent!!.removeExtra(KEY_FIREBASE_RELOAD)
+            val dialog = AlertDialog.Builder(this@MainActivity)
+                    .setIcon(R.drawable.ic_cocktail_icon)
+                    .setTitle(R.string.notification_content_title)
+                    .setMessage(R.string.notification_content_text)
+                    .setPositiveButton(android.R.string.ok) { _, _ -> goToOrdersAndRefresh() }
+            dialog.create().show()
         }
         if (intent!!.getStringExtra(KEY_FIREBASE_TOKEN) != null) {
             startActivityForResult(Intent(this, CreateUserActivity::class.java), REQUEST_CODE_NAME)
