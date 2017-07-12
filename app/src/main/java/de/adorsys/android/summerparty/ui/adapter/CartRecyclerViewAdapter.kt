@@ -2,6 +2,7 @@ package de.adorsys.android.summerparty.ui.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -62,10 +63,11 @@ class CartRecyclerViewAdapter(
                 override fun afterTextChanged(s: Editable?) {}
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                    val cocktailCount = charSequence?.toString()?.toInt()
-                    if (cocktailCount != null)
+                    val cocktailCount = charSequence?.toString()
+                    if (!TextUtils.isEmpty(cocktailCount) && !cocktailCount.equals(" ")) {
                         cocktailMap.remove(cocktail)
-                        cocktailMap.put(cocktail, cocktailCount!!)
+                        cocktailMap.put(cocktail, cocktailCount!!.toInt())
+                    }
                 }
             })
             cocktailDelete.setOnClickListener({
