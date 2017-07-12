@@ -5,11 +5,11 @@
 
 	<string name="cart">Cart</string>
 	<string name="cocktail_out_of_stock">%1$s is currently out of stock.</string>
-	<string name="start">Start</string>
-	<string name="username">Name</string>
     <string name="order_state_mixed">Ready for collection</string>
     <string name="order_state_delivered">Fetched</string>
     <string name="order_state_ordered">Ordered</string>
+	<string name="enter">Enter</string>
+	<string name="username">Name</string>
 	<string name="cocktail_type_cocktail">Cocktails</string>
 	<string name="cocktail_type_nonalcoholic">Non Alcoholic</string>
 	<string name="cocktail_type_long_drink">Long Drinks</string>
@@ -17,4 +17,6 @@
 	<string name="availability_unavailable">not available</string>
     <string name="cart_count_standard">1</string>
 	<string name="order_cocktail_placeholder">%1$d x %2$s</string>
+    <string name="enter_user_name">Enter a username</string>
+	<string name="error_user_not_specified">The user cannot be empty</string>
 </resources>

@@ -1,62 +1,43 @@
 package de.adorsys.android.summerparty.ui
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import android.support.design.widget.TextInputEditText
+import android.support.design.widget.TextInputLayout
 import android.text.TextUtils
-import android.util.Log
 import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
-import com.google.firebase.iid.FirebaseInstanceId
 import de.adorsys.android.summerparty.R
-import de.adorsys.android.summerparty.data.ApiManager
-import de.adorsys.android.summerparty.data.Customer
-import de.adorsys.android.summerparty.data.mutable.MutableCustomer
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-class CreateUserActivity : AppCompatActivity() {
+class CreateUserActivity : BaseActivity() {
+    companion object {
+        val KEY_USERNAME = "key_username"
+    }
     private var preferences: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_create_user)
+        setResult(Activity.RESULT_CANCELED)
 
         preferences = getSharedPreferences(MainActivity.KEY_PREFS_FILENAME, Context.MODE_PRIVATE)
 
-        val usernameEditText = findViewById(R.id.username_edit_text) as EditText
+        setContentView(R.layout.activity_create_user)
+        val usernameInputLayout = findViewById(R.id.username_input_layout) as TextInputLayout
+        val usernameEditText = findViewById(R.id.username_edit_text) as TextInputEditText
         val registerButton = findViewById(R.id.register_button) as Button
 
         registerButton.setOnClickListener({
-            if (TextUtils.isEmpty(usernameEditText.text.toString())) {
-                Toast.makeText(this@CreateUserActivity, "Cannot be empty", Toast.LENGTH_SHORT).show()
+            val username = usernameEditText.text.toString()
+            if (TextUtils.isEmpty(username)) {
+                usernameInputLayout.error = getString(R.string.error_user_not_specified)
+                usernameInputLayout.isErrorEnabled = true
             } else {
-                if (FirebaseInstanceId.getInstance().token != null) {
-                    ApiManager.INSTANCE.createCustomer(MutableCustomer(usernameEditText.text.toString(), FirebaseInstanceId.getInstance().token),
-                            object : Callback<Customer> {
-                                override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
-                                    val customer = response?.body()
-                                    (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, customer?.id).apply()
-                                    (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_NAME, usernameEditText.text.toString()).apply()
-                                    val intent = Intent(this@CreateUserActivity, MainActivity::class.java)
-                                    startActivity(intent)
-                                    finish()
-                                }
-
-                                override fun onFailure(call: Call<Customer>?, t: Throwable?) {
-                                    Log.i("TAG_USER", t?.message)
-                                }
-                            })
-                } else {
-                    (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_NAME, usernameEditText.text.toString()).apply()
-                    val intent = Intent(this@CreateUserActivity, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
+                val intent = Intent()
+                intent.putExtra(KEY_USERNAME, username)
+                setResult(Activity.RESULT_OK, intent)
+                finish()
             }
         })
 

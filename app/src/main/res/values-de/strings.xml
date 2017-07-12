@@ -3,14 +3,20 @@
 	<string name="tab_text_1">Cocktails</string>
 	<string name="tab_text_2">Bestellungen</string>
 
+	<string name="cart">Warenkorb</string>
 	<string name="cocktail_out_of_stock">%1$s is aktuell nicht verfügbar.</string>
     <string name="order_state_mixed">Abholbereit</string>
     <string name="order_state_delivered">Abgeholt</string>
     <string name="order_state_ordered">Bestellt</string>
+	<string name="enter">Los</string>
+	<string name="username">Name</string>
 	<string name="cocktail_type_cocktail">Cocktails</string>
 	<string name="cocktail_type_nonalcoholic">Alkoholfrei</string>
 	<string name="cocktail_type_long_drink">Longdrinks</string>
 	<string name="availability_available">verfügbar</string>
 	<string name="availability_unavailable">nicht verfügbar</string>
 	<string name="cart_count_standard">1</string>
+	<string name="order_cocktail_placeholder">%1$d x %2$s</string>
+    <string name="enter_user_name">Erstelle einen Nutzer</string>
+    <string name="error_user_not_specified">Der Nutzer darf nicht leer sein</string>
 </resources>
