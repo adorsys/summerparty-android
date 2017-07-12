@@ -1,6 +1,6 @@
 package de.adorsys.android.summerparty.data
 
-enum class CocktailType(val id: String) {
+enum class CocktailType(val nomination: String) {
     PINA_COLADA("Pina Colada"),
     SEX_ON_THE_BEACH("Sex on the Beach"),
     CAIPIRINHA("Caipirinha"),
