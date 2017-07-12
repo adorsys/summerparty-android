@@ -31,9 +31,8 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
 	implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
 	implementation "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
-	implementation 'com.google.firebase:firebase-core:11.0.2'
-	implementation 'com.google.firebase:firebase-messaging:11.0.2'
-	implementation 'com.firebase:firebase-jobdispatcher:0.6.0'
+	implementation "com.google.firebase:firebase-core:${firebaseVersion}"
+	implementation "com.google.firebase:firebase-messaging:${firebaseVersion}"
 	testImplementation "junit:junit:${jUnitVersion}"
 }
 

@@ -21,6 +21,7 @@ ext {
     supportLibVersion = "25.4.0"
     jUnitVersion = "4.12"
     retrofitVersion = "2.3.0"
+    firebaseVersion = "11.0.2"
 }
 
 allprojects {

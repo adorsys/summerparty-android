@@ -16,7 +16,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.google.firebase.iid.FirebaseInstanceId
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.ApiManager
 import de.adorsys.android.summerparty.data.Cocktail
@@ -103,6 +102,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
                     .setMessage(R.string.notification_content_text)
                     .setPositiveButton(android.R.string.ok) { _, _ -> goToOrdersAndRefresh() }
             dialog.create().show()
+            intent!!.removeExtra(KEY_FIREBASE_RELOAD)
         }
         if (intent!!.getStringExtra(KEY_FIREBASE_TOKEN) != null) {
             startActivityForResult(Intent(this, CreateUserActivity::class.java), REQUEST_CODE_NAME)
@@ -152,24 +152,8 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
 
     override fun onListFragmentInteraction(item: Cocktail) {
         if (viewContainer != null && item.available) {
-            if ((preferences as SharedPreferences).contains(MainActivity.KEY_USER_ID)) {
-                pendingCocktails.add(item)
-                updateCartMenuItem()
-            } else {
-                ApiManager.INSTANCE.createCustomer(MutableCustomer((preferences as SharedPreferences).getString(KEY_USER_NAME, ""), FirebaseInstanceId.getInstance().token),
-                        object : Callback<Customer> {
-                            override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
-                                val customer = response?.body()
-                                (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, customer?.id).apply()
-                                pendingCocktails.add(item)
-                                updateCartMenuItem()
-                            }
-
-                            override fun onFailure(call: Call<Customer>?, t: Throwable?) {
-                                Log.i("TAG_USER", t?.message)
-                            }
-                        })
-            }
+            pendingCocktails.add(item)
+            updateCartMenuItem()
         } else if (viewContainer != null) {
             Snackbar.make(viewContainer!!, getString(R.string.cocktail_out_of_stock, item.name), Snackbar.LENGTH_LONG).show()
         }
