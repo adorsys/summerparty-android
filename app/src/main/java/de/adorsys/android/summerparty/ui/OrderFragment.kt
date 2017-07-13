@@ -43,7 +43,7 @@ class OrderFragment : Fragment() {
     }
 
     private fun sortOrders(orders: ArrayList<Order>): List<Order> {
-        return orders.sortedWith(compareBy({ it.state }))
+        return orders.sortedWith(compareBy({ it.state })).asReversed()
     }
 
     companion object {
