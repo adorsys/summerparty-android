@@ -130,12 +130,12 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         if (requestCode == REQUEST_CODE_CART && resultCode == Activity.RESULT_OK) {
             pendingCocktails.clear()
             updateCartMenuItem()
-            getOrdersForUser(false)
+            getOrdersForUser(true)
         }
 
         if (requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_OK && data != null) {
             createAndPersistUser(data.getStringExtra(CreateUserActivity.KEY_USERNAME), firebaseToken)
-        } else if (requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_CANCELED) {
             preferences!!.edit().putBoolean(KEY_FIRST_START, true).apply()
             finish()
         }
