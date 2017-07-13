@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.Order
 import de.adorsys.android.summerparty.ui.adapter.OrderRecyclerViewAdapter
@@ -26,14 +27,18 @@ class OrderFragment : Fragment() {
         val view = inflater!!.inflate(R.layout.fragment_order_list, container, false)
 
         // Set the adapter
-        if (view is RecyclerView) {
-            val context = view.getContext()
-            val recyclerView = view
-            recyclerView.layoutManager = LinearLayoutManager(context)
-            val sortedOrders = sortOrders(orders)
-            recyclerView.adapter = OrderRecyclerViewAdapter(sortedOrders)
-            recyclerView.setHasFixedSize(true)
-        }
+        val context = view.context
+        val recyclerView = view.findViewById(R.id.list) as RecyclerView
+        val emptyListText = view.findViewById(R.id.empty_list_text) as TextView
+
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        val sortedOrders = sortOrders(orders)
+        recyclerView.adapter = OrderRecyclerViewAdapter(sortedOrders)
+        recyclerView.setHasFixedSize(true)
+
+        recyclerView.visibility = if (orders.isEmpty()) {View.GONE} else {View.VISIBLE}
+        emptyListText.visibility = if (orders.isEmpty()) {View.VISIBLE} else {View.GONE}
+
         return view
     }
 

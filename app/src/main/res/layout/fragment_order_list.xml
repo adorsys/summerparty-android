@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/list"
-	android:name="de.adorsys.android.summerparty.ui.OrderFragment"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	app:layoutManager="LinearLayoutManager"
-	tools:context="de.adorsys.android.summerparty.ui.OrderFragment"
-	tools:listitem="@layout/item_order"/>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:name="de.adorsys.android.summerparty.ui.OrderFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="LinearLayoutManager"
+        tools:context="de.adorsys.android.summerparty.ui.OrderFragment"
+        tools:listitem="@layout/item_order"/>
+
+    <TextView
+        android:id="@+id/empty_list_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:gravity="center"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/orders_empty"/>
+
+</FrameLayout>
