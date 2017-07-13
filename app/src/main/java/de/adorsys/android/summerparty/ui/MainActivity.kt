@@ -40,15 +40,19 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         val REQUEST_CODE_NAME = 24
     }
 
+    private var dialog: AlertDialog? = null
     private val messageReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.extras.getBoolean(KEY_FIREBASE_RELOAD)) {
-                val dialog = AlertDialog.Builder(this@MainActivity)
+                if (dialog != null && dialog!!.isShowing) {
+                    val dialogBuilder = AlertDialog.Builder(this@MainActivity)
                         .setIcon(R.drawable.ic_cocktail_icon)
                         .setTitle(R.string.notification_content_title)
                         .setMessage(R.string.notification_content_text)
                         .setPositiveButton(android.R.string.ok) { _, _ -> goToOrdersAndRefresh() }
-                dialog.create().show()
+                    dialog = dialogBuilder.create()
+                    dialog?.show()
+                }
             }
             if (intent.extras.getString(KEY_FIREBASE_TOKEN) != null) {
                 startActivityForResult(Intent(this@MainActivity, CreateUserActivity::class.java), REQUEST_CODE_NAME)
