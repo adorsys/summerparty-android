@@ -45,27 +45,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     private var dialog: AlertDialog? = null
     private val messageReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            handleIntent(intent)
-        }
-    }
-
-    private fun handleIntent(intent: Intent) {
-        progressBar?.visibility = View.GONE
-        viewPager?.visibility = View.VISIBLE
-        if (intent.getBooleanExtra(KEY_FIREBASE_RELOAD, false)) {
-            if (dialog == null || !(dialog as AlertDialog).isShowing) {
-                val dialogBuilder = AlertDialog.Builder(this@MainActivity)
-                        .setIcon(R.drawable.ic_cocktail_icon)
-                        .setTitle(R.string.notification_content_title)
-                        .setMessage(R.string.notification_content_text)
-                        .setPositiveButton(android.R.string.ok) { _, _ -> goToOrdersAndRefresh() }
-                dialog = dialogBuilder.create()
-                dialog?.show()
-            }
-        }
-        if (intent.getStringExtra(KEY_FIREBASE_TOKEN) != null) {
-            firebaseToken = intent.getStringExtra(KEY_FIREBASE_TOKEN)
-            startActivityForResult(Intent(this@MainActivity, CreateUserActivity::class.java), REQUEST_CODE_NAME)
+            handleIntent(intent, true)
         }
     }
 
@@ -82,7 +62,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        handleIntent(intent)
+        handleIntent(intent, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,20 +91,6 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         } else if (firstStart()) {
             progressBar?.visibility = View.VISIBLE
             viewPager?.visibility = View.GONE
-        }
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        if (intent!!.getBooleanExtra(KEY_FIREBASE_RELOAD, false)) {
-            goToOrdersAndRefresh()
-            intent!!.removeExtra(KEY_FIREBASE_RELOAD)
-        }
-        if (intent!!.getStringExtra(KEY_FIREBASE_TOKEN) != null) {
-            startActivityForResult(Intent(this, CreateUserActivity::class.java), REQUEST_CODE_NAME)
-            firebaseToken = intent!!.getStringExtra(KEY_FIREBASE_TOKEN)
-            intent!!.removeExtra(KEY_FIREBASE_TOKEN)
         }
     }
 
@@ -164,7 +130,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         if (requestCode == REQUEST_CODE_CART && resultCode == Activity.RESULT_OK) {
             pendingCocktails.clear()
             updateCartMenuItem()
-            getOrdersForUser()
+            getOrdersForUser(false)
         }
 
         if (requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_OK && data != null) {
@@ -231,7 +197,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
                             return
                         }
                         (preferences as SharedPreferences).edit().putString(KEY_USER_NAME, this@MainActivity.user?.name).apply()
-                        getOrdersForUser()
+                        getOrdersForUser(false)
                     }
 
                     override fun onFailure(call: Call<Customer>?, t: Throwable?) {
@@ -240,7 +206,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
                 })
     }
 
-    private fun getOrdersForUser() {
+    private fun getOrdersForUser(goToOrders: Boolean) {
         if (user == null) {
             return
         }
@@ -251,6 +217,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
                         // Update adapter's order list
                         cocktailResponse?.let { (viewPager?.adapter as SectionsPagerAdapter).setOrders(it) }
                         viewPager?.adapter?.notifyDataSetChanged()
+                        if (goToOrders) { viewPager?.currentItem = 1 }
                     }
 
                     override fun onFailure(call: Call<List<Order>>?, t: Throwable?) {
@@ -264,17 +231,37 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         cartOptionsItemCount?.text = pendingCocktails.size.toString()
     }
 
-    private fun goToOrdersAndRefresh() {
-        viewPager?.currentItem = 1
-        viewPager?.adapter?.notifyDataSetChanged()
-    }
-
     private fun firstStart(): Boolean {
         if ((preferences as SharedPreferences).contains(KEY_FIRST_START)) {
             return false
         } else {
             preferences!!.edit().putBoolean(KEY_FIRST_START, true).apply()
             return true
+        }
+    }
+
+    private fun handleIntent(intent: Intent?, showDialog: Boolean) {
+        progressBar?.visibility = View.GONE
+        viewPager?.visibility = View.VISIBLE
+        if (intent == null) {
+            return
+        }
+        if (intent.getBooleanExtra(KEY_FIREBASE_RELOAD, false)) {
+            if (showDialog && (dialog == null || !(dialog as AlertDialog).isShowing)) {
+                val dialogBuilder = AlertDialog.Builder(this@MainActivity)
+                        .setIcon(R.drawable.ic_cocktail_icon)
+                        .setTitle(R.string.notification_content_title)
+                        .setMessage(R.string.notification_content_text)
+                        .setPositiveButton(android.R.string.ok) { _, _ -> getOrdersForUser(true) }
+                dialog = dialogBuilder.create()
+                dialog?.show()
+            } else if (!showDialog) {
+                getOrdersForUser(true)
+            }
+        }
+        if (intent.getStringExtra(KEY_FIREBASE_TOKEN) != null) {
+            firebaseToken = intent.getStringExtra(KEY_FIREBASE_TOKEN)
+            startActivityForResult(Intent(this@MainActivity, CreateUserActivity::class.java), REQUEST_CODE_NAME)
         }
     }
 }
