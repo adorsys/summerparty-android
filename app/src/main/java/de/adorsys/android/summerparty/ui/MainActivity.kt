@@ -10,6 +10,7 @@ import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.view.MenuItemCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
+import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -133,9 +134,10 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
             getOrdersForUser(true)
         }
 
-        if (requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_OK && data != null) {
+        if (requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_OK && data != null && !TextUtils.isEmpty(firebaseToken)) {
             createAndPersistUser(data.getStringExtra(CreateUserActivity.KEY_USERNAME), firebaseToken)
-        } else if (requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_CANCELED) {
+        } else if (requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_OK
+                || requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_CANCELED) {
             preferences!!.edit().putBoolean(KEY_FIRST_START, true).apply()
             finish()
         }
