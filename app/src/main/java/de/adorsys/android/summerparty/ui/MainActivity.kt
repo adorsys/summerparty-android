@@ -16,6 +16,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.google.firebase.iid.FirebaseInstanceId
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.ApiManager
 import de.adorsys.android.summerparty.data.Cocktail
@@ -36,6 +37,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         val KEY_FIREBASE_RECEIVER = "firebase_receiver"
         val KEY_FIREBASE_RELOAD = "reload"
         val KEY_FIREBASE_TOKEN = "firebase_token"
+        val KEY_FIRST_START = "first_start"
         val REQUEST_CODE_CART = 23
         val REQUEST_CODE_NAME = 24
     }
@@ -43,26 +45,33 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     private var dialog: AlertDialog? = null
     private val messageReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.extras.getBoolean(KEY_FIREBASE_RELOAD)) {
-                if (dialog != null && dialog!!.isShowing) {
-                    val dialogBuilder = AlertDialog.Builder(this@MainActivity)
+            handleIntent(intent)
+        }
+    }
+
+    private fun handleIntent(intent: Intent) {
+        progressBar?.visibility = View.GONE
+        viewPager?.visibility = View.VISIBLE
+        if (intent.getBooleanExtra(KEY_FIREBASE_RELOAD, false)) {
+            if (dialog == null || !(dialog as AlertDialog).isShowing) {
+                val dialogBuilder = AlertDialog.Builder(this@MainActivity)
                         .setIcon(R.drawable.ic_cocktail_icon)
                         .setTitle(R.string.notification_content_title)
                         .setMessage(R.string.notification_content_text)
                         .setPositiveButton(android.R.string.ok) { _, _ -> goToOrdersAndRefresh() }
-                    dialog = dialogBuilder.create()
-                    dialog?.show()
-                }
+                dialog = dialogBuilder.create()
+                dialog?.show()
             }
-            if (intent.extras.getString(KEY_FIREBASE_TOKEN) != null) {
-                startActivityForResult(Intent(this@MainActivity, CreateUserActivity::class.java), REQUEST_CODE_NAME)
-                firebaseToken = intent.getStringExtra(KEY_FIREBASE_TOKEN)
-            }
+        }
+        if (intent.getStringExtra(KEY_FIREBASE_TOKEN) != null) {
+            firebaseToken = intent.getStringExtra(KEY_FIREBASE_TOKEN)
+            startActivityForResult(Intent(this@MainActivity, CreateUserActivity::class.java), REQUEST_CODE_NAME)
         }
     }
 
     private var user: Customer? = null
     private var viewPager: ViewPager? = null
+    private var progressBar: View? = null
     private var viewContainer: View? = null
     private var menuItem: MenuItem? = null
     private var cartOptionsItemCount: TextView? = null
@@ -71,12 +80,18 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     private var firebaseToken: String? = null
 
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         // init views
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         val tabLayout = findViewById(R.id.tabs) as TabLayout
+        progressBar = findViewById(R.id.progressBar)
         viewPager = findViewById(R.id.container) as ViewPager
         viewContainer = findViewById(R.id.main_content)
         preferences = getSharedPreferences(KEY_PREFS_FILENAME, Context.MODE_PRIVATE)
@@ -93,6 +108,9 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         getCocktails()
         if (preferences!!.contains(KEY_USER_ID)) {
             getUser()
+        } else if (firstStart()) {
+            progressBar?.visibility = View.VISIBLE
+            viewPager?.visibility = View.GONE
         }
     }
 
@@ -127,10 +145,15 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         MenuItemCompat.setActionView(menuItem, R.layout.view_action_cart)
         val cartOptionsItemContainer = MenuItemCompat.getActionView(menuItem) as ViewGroup
         cartOptionsItemContainer.setOnClickListener {
-            val intent = Intent(this@MainActivity, CartActivity::class.java)
-            intent.putExtra(CartActivity.EXTRA_COCKTAILS, pendingCocktails)
-            intent.putExtra(CartActivity.EXTRA_USER_ID, user?.id)
-            this@MainActivity.startActivityForResult(intent, REQUEST_CODE_CART)
+            if (preferences!!.contains(KEY_USER_ID)) {
+                val intent = Intent(this@MainActivity, CartActivity::class.java)
+                intent.putExtra(CartActivity.EXTRA_COCKTAILS, pendingCocktails)
+                intent.putExtra(CartActivity.EXTRA_USER_ID, user?.id)
+                this@MainActivity.startActivityForResult(intent, REQUEST_CODE_CART)
+            } else {
+                firebaseToken = FirebaseInstanceId.getInstance().token
+                startActivityForResult(Intent(this, CreateUserActivity::class.java), REQUEST_CODE_NAME)
+            }
         }
         cartOptionsItemCount = cartOptionsItemContainer.findViewById(R.id.action_cart_count_text) as TextView
         updateCartMenuItem()
@@ -146,6 +169,9 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
 
         if (requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_OK && data != null) {
             createAndPersistUser(data.getStringExtra(CreateUserActivity.KEY_USERNAME), firebaseToken)
+        } else if (requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_OK) {
+            preferences!!.edit().putBoolean(KEY_FIRST_START, true).apply()
+            finish()
         }
     }
 
@@ -239,7 +265,16 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     }
 
     private fun goToOrdersAndRefresh() {
-        viewPager?.adapter?.notifyDataSetChanged()
         viewPager?.currentItem = 1
+        viewPager?.adapter?.notifyDataSetChanged()
+    }
+
+    private fun firstStart(): Boolean {
+        if ((preferences as SharedPreferences).contains(KEY_FIRST_START)) {
+            return false
+        } else {
+            preferences!!.edit().putBoolean(KEY_FIRST_START, true).apply()
+            return true
+        }
     }
 }

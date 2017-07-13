@@ -5,4 +5,6 @@
 	<color name="colorAccent">#eed525</color>
 	<color name="colorSecondary">#0984bf</color>
 	<color name="colorStatusBar">@color/colorPrimaryDark</color>
+	<color name="colorProgress">#80484848</color>
+	<color name="textColor">#484848</color>
 </resources>
