@@ -100,12 +100,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     override fun onResume() {
         super.onResume()
         if (intent!!.getBooleanExtra(KEY_FIREBASE_RELOAD, false)) {
-            val dialog = AlertDialog.Builder(this@MainActivity)
-                    .setIcon(R.drawable.ic_cocktail_icon)
-                    .setTitle(R.string.notification_content_title)
-                    .setMessage(R.string.notification_content_text)
-                    .setPositiveButton(android.R.string.ok) { _, _ -> goToOrdersAndRefresh() }
-            dialog.create().show()
+            goToOrdersAndRefresh()
             intent!!.removeExtra(KEY_FIREBASE_RELOAD)
         }
         if (intent!!.getStringExtra(KEY_FIREBASE_TOKEN) != null) {
