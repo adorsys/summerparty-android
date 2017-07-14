@@ -14,7 +14,7 @@ class SectionsPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdap
         private val PAGER_COUNT: Int = 2
     }
 
-    private val cocktails = ArrayList<Cocktail>()
+    val cocktails = ArrayList<Cocktail>()
     private val orders = ArrayList<Order>()
 
     fun setCocktails(cocktails: List<Cocktail>) {
