@@ -43,7 +43,6 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         val REQUEST_CODE_NAME = 24
     }
 
-    private var dialog: AlertDialog? = null
     private val messageReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             handleIntent(intent, true)
@@ -54,11 +53,14 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     private var viewPager: ViewPager? = null
     private var progressBar: View? = null
     private var viewContainer: View? = null
-    private var menuItem: MenuItem? = null
+    private var cartMenuItem: MenuItem? = null
+    private val userMenuItem: MenuItem? = null
     private var cartOptionsItemCount: TextView? = null
     private var preferences: SharedPreferences? = null
     private var pendingCocktails: ArrayList<Cocktail> = ArrayList()
     private var firebaseToken: String? = null
+    private var userDialog: AlertDialog? = null
+    private var notificationDialog: AlertDialog? = null
 
 
     override fun onNewIntent(intent: Intent) {
@@ -84,7 +86,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         // Set up the ViewPager with the sections adapter.
         viewPager!!.adapter = sectionsPagerAdapter
         viewPager!!.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
-        viewPager!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+        viewPager!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
@@ -92,7 +94,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
             }
         })
         tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewPager))
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 getCocktails()
             }
@@ -111,6 +113,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     override fun onResume() {
         super.onResume()
         getCocktails()
+        getOrdersForUser(false)
     }
 
     override fun onStart() {
@@ -126,9 +129,9 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        menuItem = menu.findItem(R.id.action_cart)
-        MenuItemCompat.setActionView(menuItem, R.layout.view_action_cart)
-        val cartOptionsItemContainer = MenuItemCompat.getActionView(menuItem) as ViewGroup
+        cartMenuItem = menu.findItem(R.id.action_cart)
+        MenuItemCompat.setActionView(cartMenuItem, R.layout.view_action_cart)
+        val cartOptionsItemContainer = MenuItemCompat.getActionView(cartMenuItem) as ViewGroup
         cartOptionsItemContainer.setOnClickListener {
             if (preferences!!.contains(KEY_USER_ID)) {
                 val intent = Intent(this@MainActivity, CartActivity::class.java)
@@ -143,6 +146,13 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         cartOptionsItemCount = cartOptionsItemContainer.findViewById(R.id.action_cart_count_text) as TextView
         updateCartMenuItem()
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.action_user) {
+            createUserInfoDialog()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -214,6 +224,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
                 object : Callback<Customer> {
                     override fun onResponse(call: Call<Customer>?, response: Response<Customer>?) {
                         user = response?.body()
+                        updateUserMenuItem()
                         if (user == null) {
                             // backend has hard-reset the database
                             (preferences as SharedPreferences).edit().clear().apply()
@@ -239,9 +250,15 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
                     override fun onResponse(call: Call<List<Order>>?, response: Response<List<Order>>?) {
                         val cocktailResponse: List<Order>? = response?.body()
                         // Update adapter's order list
-                        cocktailResponse?.let { (viewPager?.adapter as SectionsPagerAdapter).setOrders(it) }
-                        viewPager?.adapter?.notifyDataSetChanged()
-                        if (goToOrders) { viewPager?.currentItem = 1 }
+                        cocktailResponse?.let {
+                            if ((viewPager?.adapter as SectionsPagerAdapter).orders != it) {
+                                (viewPager?.adapter as SectionsPagerAdapter).setOrders(it)
+                                viewPager?.adapter?.notifyDataSetChanged()
+                                if (goToOrders) {
+                                    viewPager?.currentItem = 1
+                                }
+                            }
+                        }
                     }
 
                     override fun onFailure(call: Call<List<Order>>?, t: Throwable?) {
@@ -251,8 +268,24 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     }
 
     private fun updateCartMenuItem() {
-        menuItem?.isVisible = !pendingCocktails.isEmpty()
+        cartMenuItem?.isVisible = !pendingCocktails.isEmpty()
         cartOptionsItemCount?.text = pendingCocktails.size.toString()
+    }
+
+    private fun updateUserMenuItem() {
+        userMenuItem?.isVisible = user != null
+        cartOptionsItemCount?.text = pendingCocktails.size.toString()
+    }
+
+    private fun createUserInfoDialog() {
+        if (userDialog == null || !(userDialog as AlertDialog).isShowing) {
+            val dialogBuilder = AlertDialog.Builder(this@MainActivity)
+                    .setTitle(R.string.user_content_title)
+                    .setMessage(getString(R.string.user_content_text, user?.name, user?.id))
+                    .setPositiveButton(android.R.string.ok, null)
+            userDialog = dialogBuilder.create()
+            userDialog?.show()
+        }
     }
 
     private fun firstStart(): Boolean {
@@ -271,14 +304,14 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
             return
         }
         if (intent.getBooleanExtra(KEY_FIREBASE_RELOAD, false)) {
-            if (showDialog && (dialog == null || !(dialog as AlertDialog).isShowing)) {
+            if (showDialog && (notificationDialog == null || !(notificationDialog as AlertDialog).isShowing)) {
                 val dialogBuilder = AlertDialog.Builder(this@MainActivity)
                         .setIcon(R.drawable.ic_cocktail_icon)
                         .setTitle(R.string.notification_content_title)
                         .setMessage(R.string.notification_content_text)
                         .setPositiveButton(android.R.string.ok) { _, _ -> getOrdersForUser(true) }
-                dialog = dialogBuilder.create()
-                dialog?.show()
+                notificationDialog = dialogBuilder.create()
+                notificationDialog?.show()
             } else if (!showDialog) {
                 getOrdersForUser(true)
             }

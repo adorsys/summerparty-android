@@ -23,4 +23,6 @@
 	<string name="notification_content_title">Your order</string>
     <string name="orders_empty">There are currently no orders to show. :(</string>
     <string name="x">x</string>
+    <string name="user_content_title">User</string>
+	<string name="user_content_text">You are %1$s and your user id is %2$s.</string>
 </resources>
