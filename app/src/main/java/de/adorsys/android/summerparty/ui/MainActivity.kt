@@ -54,13 +54,14 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     private var progressBar: View? = null
     private var viewContainer: View? = null
     private var cartMenuItem: MenuItem? = null
-    private val userMenuItem: MenuItem? = null
+    private var userMenuItem: MenuItem? = null
     private var cartOptionsItemCount: TextView? = null
     private var preferences: SharedPreferences? = null
     private var pendingCocktails: ArrayList<Cocktail> = ArrayList()
     private var firebaseToken: String? = null
     private var userDialog: AlertDialog? = null
     private var notificationDialog: AlertDialog? = null
+    private var fallbackUserCreation = false
 
 
     override fun onNewIntent(intent: Intent) {
@@ -130,25 +131,33 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         cartMenuItem = menu.findItem(R.id.action_cart)
+        userMenuItem = menu.findItem(R.id.action_user)
         MenuItemCompat.setActionView(cartMenuItem, R.layout.view_action_cart)
         val cartOptionsItemContainer = MenuItemCompat.getActionView(cartMenuItem) as ViewGroup
         cartOptionsItemContainer.setOnClickListener {
             if (preferences!!.contains(KEY_USER_ID)) {
-                val intent = Intent(this@MainActivity, CartActivity::class.java)
-                intent.putExtra(CartActivity.EXTRA_COCKTAILS, pendingCocktails)
-                intent.putExtra(CartActivity.EXTRA_USER_ID, user?.id)
-                this@MainActivity.startActivityForResult(intent, REQUEST_CODE_CART)
+                openCartActivity()
             } else {
+                fallbackUserCreation = true
                 firebaseToken = FirebaseInstanceId.getInstance().token
                 startActivityForResult(Intent(this, CreateUserActivity::class.java), REQUEST_CODE_NAME)
             }
         }
         cartOptionsItemCount = cartOptionsItemContainer.findViewById(R.id.action_cart_count_text) as TextView
         updateCartMenuItem()
+        updateUserMenuItem()
         return true
+    }
+
+    private fun openCartActivity() {
+        val intent = Intent(this@MainActivity, CartActivity::class.java)
+        intent.putExtra(CartActivity.EXTRA_COCKTAILS, pendingCocktails)
+        intent.putExtra(CartActivity.EXTRA_USER_ID, user?.id)
+        this@MainActivity.startActivityForResult(intent, REQUEST_CODE_CART)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -162,7 +171,9 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         if (requestCode == REQUEST_CODE_CART && resultCode == Activity.RESULT_OK) {
             pendingCocktails.clear()
             updateCartMenuItem()
-            getOrdersForUser(true)
+            if (!fallbackUserCreation) {
+                getOrdersForUser(true)
+            }
         }
 
         if (requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_OK && data != null && !TextUtils.isEmpty(firebaseToken)) {
@@ -193,6 +204,10 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
                         (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, customer?.id).apply()
                         (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_NAME, customer?.name).apply()
                         user = customer
+                        if (fallbackUserCreation) {
+                            openCartActivity()
+                            fallbackUserCreation = false
+                        }
                     }
 
                     override fun onFailure(call: Call<Customer>?, t: Throwable?) {
@@ -277,7 +292,6 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
 
     private fun updateUserMenuItem() {
         userMenuItem?.isVisible = user != null
-        cartOptionsItemCount?.text = pendingCocktails.size.toString()
     }
 
     private fun createUserInfoDialog() {
