@@ -84,15 +84,33 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         // Set up the ViewPager with the sections adapter.
         viewPager!!.adapter = sectionsPagerAdapter
         viewPager!!.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
+        viewPager!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageSelected(position: Int) {
+                getCocktails()
+            }
+        })
         tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewPager))
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                getCocktails()
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabSelected(tab: TabLayout.Tab?) {}
+        })
 
-        getCocktails()
         if (preferences!!.contains(KEY_USER_ID)) {
             getUser()
         } else if (firstStart()) {
             progressBar?.visibility = View.VISIBLE
             viewPager?.visibility = View.GONE
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getCocktails()
     }
 
     override fun onStart() {
@@ -176,8 +194,12 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
                     override fun onResponse(call: Call<List<Cocktail>>?, response: Response<List<Cocktail>>?) {
                         val cocktailResponse: List<Cocktail>? = response?.body()
                         // Update adapter's cocktail list
-                        cocktailResponse?.let { (viewPager?.adapter as SectionsPagerAdapter).setCocktails(it) }
-                        viewPager?.adapter?.notifyDataSetChanged()
+                        cocktailResponse?.let {
+                            if ((viewPager?.adapter as SectionsPagerAdapter).cocktails != it) {
+                                (viewPager?.adapter as SectionsPagerAdapter).setCocktails(it)
+                                viewPager?.adapter?.notifyDataSetChanged()
+                            }
+                        }
                     }
 
                     override fun onFailure(call: Call<List<Cocktail>>?, t: Throwable?) {
