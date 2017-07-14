@@ -204,6 +204,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
                         (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, customer?.id).apply()
                         (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_NAME, customer?.name).apply()
                         user = customer
+                        updateUserMenuItem()
                         if (fallbackUserCreation) {
                             openCartActivity()
                             fallbackUserCreation = false
