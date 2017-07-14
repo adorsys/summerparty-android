@@ -1,9 +1,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_user"
+        android:icon="@drawable/ic_person_white_24dp"
+        android:title=""
+        app:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/action_cart"
-        android:title="@string/cart"
         android:actionLayout="@layout/view_action_cart"
+        android:title="@string/cart"
         app:showAsAction="always">
     </item>
 </menu>
