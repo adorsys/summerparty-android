@@ -22,4 +22,5 @@
 	<string name="notification_content_text">Your order detail have changed. Have a look.</string>
 	<string name="notification_content_title">Your order</string>
     <string name="orders_empty">There are currently no orders to show. :(</string>
+    <string name="x">x</string>
 </resources>
