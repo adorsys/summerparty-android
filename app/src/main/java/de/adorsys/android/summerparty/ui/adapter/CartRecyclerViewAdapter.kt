@@ -64,8 +64,10 @@ class CartRecyclerViewAdapter(
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
                     val cocktailCount = charSequence?.toString()
-                    if (!TextUtils.isEmpty(cocktailCount) && !cocktailCount.equals(" ") && cocktailCount!!.length > 1) {
-                        cocktailCountText.selectAll()
+                    if (!TextUtils.isEmpty(cocktailCount) && !cocktailCount.equals(" ")) {
+                        if (cocktailCount!!.length > 1) {
+                            cocktailCountText.selectAll()
+                        }
                         cocktailMap.remove(cocktail)
                         cocktailMap.put(cocktail, cocktailCount.toInt())
                     }
