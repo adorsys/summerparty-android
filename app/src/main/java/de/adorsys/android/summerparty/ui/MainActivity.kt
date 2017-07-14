@@ -91,13 +91,16 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
                 getCocktails()
+                getOrdersForUser(false)
             }
         })
         tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewPager))
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 getCocktails()
+                getOrdersForUser(false)
             }
+
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabSelected(tab: TabLayout.Tab?) {}
         })
