@@ -16,23 +16,22 @@ class CocktailFragment : Fragment() {
     private var listener: CocktailFragment.OnListFragmentInteractionListener? = null
     private val cocktails: ArrayList<Cocktail> = ArrayList()
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        if (arguments != null) {
+        arguments?.let {
             cocktails.clear()
-            cocktails.addAll(arguments.getParcelableArrayList<Cocktail>(Companion.ARG_COCKTAILS))
+            cocktails.addAll(it.getParcelableArrayList(ARG_COCKTAILS))
         }
 
-        val view = inflater!!.inflate(R.layout.fragment_cocktail_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_cocktail_list, container, false)
 
         // Set the adapter
         if (view is RecyclerView) {
             val context = view.getContext()
-            val recyclerView = view
-            recyclerView.layoutManager = LinearLayoutManager(context)
+            view.layoutManager = LinearLayoutManager(context)
             val sortedCocktails = sortCocktails(cocktails)
-            recyclerView.adapter = CocktailRecyclerViewAdapter(sortedCocktails, listener)
-            recyclerView.setHasFixedSize(true)
+            view.adapter = CocktailRecyclerViewAdapter(sortedCocktails, listener)
+            view.setHasFixedSize(true)
         }
         return view
     }
@@ -61,12 +60,12 @@ class CocktailFragment : Fragment() {
     }
 
     companion object {
-        private val ARG_COCKTAILS = "cocktails"
+        private const val ARG_COCKTAILS = "cocktails"
 
         fun newInstance(cocktails: ArrayList<Cocktail>): CocktailFragment {
             val fragment = CocktailFragment()
             val args = Bundle()
-            args.putParcelableArrayList(CocktailFragment.Companion.ARG_COCKTAILS, cocktails)
+            args.putParcelableArrayList(CocktailFragment.ARG_COCKTAILS, cocktails)
             fragment.arguments = args
             return fragment
         }

@@ -13,7 +13,6 @@ import de.adorsys.android.summerparty.ui.MainActivity
 
 class OrderView : LinearLayout {
     var order: Order? = null
-        get() = field
         set(value) {
             field = value
             bindOrder(field)

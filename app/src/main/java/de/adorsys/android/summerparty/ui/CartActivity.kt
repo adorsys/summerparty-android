@@ -6,14 +6,14 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import de.adorsys.android.summerparty.R
+import de.adorsys.android.summerparty.data.Android
 import de.adorsys.android.summerparty.data.ApiManager
 import de.adorsys.android.summerparty.data.Cocktail
 import de.adorsys.android.summerparty.data.mutable.MutableOrder
 import de.adorsys.android.summerparty.ui.adapter.CartRecyclerViewAdapter
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.experimental.launch
 
 class CartActivity : BaseActivity() {
     companion object {
@@ -39,7 +39,7 @@ class CartActivity : BaseActivity() {
             return
         }
 
-        recyclerView = findViewById(R.id.cart_order_items_recycler_view) as RecyclerView
+        recyclerView = findViewById(R.id.cart_order_items_recycler_view)
         recyclerView?.layoutManager = LinearLayoutManager(this)
         val sortedCocktails: List<Cocktail> = pendingCocktails.sortedWith(compareBy({ it.id }))
         recyclerView?.adapter = CartRecyclerViewAdapter(sortedCocktails.toMutableList(), object : CartRecyclerViewAdapter.OnListEmptyListener {
@@ -50,9 +50,10 @@ class CartActivity : BaseActivity() {
         })
         recyclerView?.setHasFixedSize(true)
 
-        findViewById(R.id.cart_send_order_button).setOnClickListener {
+        findViewById<View>(R.id.cart_send_order_button).setOnClickListener {
             val currentOrder = MutableOrder((recyclerView?.adapter as CartRecyclerViewAdapter).getCocktailIds(), userId ?: "")
-            sendOrder(currentOrder) }
+            sendOrder(currentOrder)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -64,19 +65,21 @@ class CartActivity : BaseActivity() {
     }
 
     private fun sendOrder(currentOrder: MutableOrder) {
-        ApiManager.INSTANCE.createOrder(
-                currentOrder,
-                object : Callback<Void> {
-                    override fun onResponse(call: Call<Void>?, response: Response<Void>?) {
-                        setResult(Activity.RESULT_OK)
-                        finish()
-                    }
-
-                    override fun onFailure(call: Call<Void>?, t: Throwable?) {
-                        Log.i("TAG_ORDER_CREATE", t?.message)
-                        setResult(Activity.RESULT_CANCELED)
-                        finish()
-                    }
-                })
+        launch(Android) {
+            val response = ApiManager.createOrder(currentOrder).await()
+            try {
+                if (response.isSuccessful) {
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                } else {
+                    setResult(Activity.RESULT_CANCELED)
+                    finish()
+                }
+            } catch (e: Exception) {
+                Log.i("TAG_ORDER_CREATE", e.message)
+                setResult(Activity.RESULT_CANCELED)
+                finish()
+            }
+        }
     }
 }

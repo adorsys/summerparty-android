@@ -11,7 +11,7 @@ import de.adorsys.android.summerparty.ui.OrderFragment
 
 class SectionsPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
     companion object {
-        private val PAGER_COUNT: Int = 2
+        private const val PAGER_COUNT: Int = 2
     }
 
     val cocktails = ArrayList<Cocktail>()
@@ -36,7 +36,7 @@ class SectionsPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdap
             OrderFragment.newInstance(orders)
     }
 
-    override fun getItemPosition(any: Any?): Int {
+    override fun getItemPosition(any: Any): Int {
         return PagerAdapter.POSITION_NONE
     }
 
