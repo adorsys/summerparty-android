@@ -8,11 +8,11 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import de.adorsys.android.summerparty.R
-import de.adorsys.android.summerparty.data.Android
 import de.adorsys.android.summerparty.data.ApiManager
 import de.adorsys.android.summerparty.data.Cocktail
 import de.adorsys.android.summerparty.data.mutable.MutableOrder
 import de.adorsys.android.summerparty.ui.adapter.CartRecyclerViewAdapter
+import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 
 class CartActivity : BaseActivity() {
@@ -65,7 +65,7 @@ class CartActivity : BaseActivity() {
     }
 
     private fun sendOrder(currentOrder: MutableOrder) {
-        launch(Android) {
+        launch(UI) {
             val response = ApiManager.createOrder(currentOrder).await()
             try {
                 if (response.isSuccessful) {

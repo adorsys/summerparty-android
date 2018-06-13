@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.content.LocalBroadcastManager
-import android.support.v4.view.MenuItemCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
@@ -137,8 +136,8 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         menuInflater.inflate(R.menu.menu_main, menu)
         cartMenuItem = menu.findItem(R.id.action_cart)
         userMenuItem = menu.findItem(R.id.action_user)
-        MenuItemCompat.setActionView(cartMenuItem, R.layout.view_action_cart)
-        val cartOptionsItemContainer = MenuItemCompat.getActionView(cartMenuItem) as ViewGroup
+        cartMenuItem?.setActionView(R.layout.view_action_cart)
+        val cartOptionsItemContainer = cartMenuItem?.actionView as ViewGroup
         cartOptionsItemContainer.setOnClickListener {
             if (preferences!!.contains(KEY_USER_ID)) {
                 openCartActivity()
