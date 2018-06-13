@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.*
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.content.LocalBroadcastManager
@@ -16,6 +17,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import com.google.firebase.iid.FirebaseInstanceId
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.ApiManager
@@ -24,6 +26,7 @@ import de.adorsys.android.summerparty.data.Customer
 import de.adorsys.android.summerparty.data.Order
 import de.adorsys.android.summerparty.data.mutable.MutableCustomer
 import de.adorsys.android.summerparty.ui.adapter.SectionsPagerAdapter
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import java.util.*
@@ -112,6 +115,14 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
             progressBar?.visibility = View.VISIBLE
             viewPager?.visibility = View.GONE
         }
+
+        bottom_navigation.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.cocktail_order -> startActivity(Intent(this@MainActivity, MainActivity::class.java))
+                R.id.feed -> Toast.makeText(this@MainActivity, "Toast 2", Toast.LENGTH_SHORT).show()
+            }
+            true
+        })
     }
 
     override fun onResume() {
