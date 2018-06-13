@@ -17,8 +17,8 @@ import kotlinx.coroutines.experimental.launch
 
 class CartActivity : BaseActivity() {
     companion object {
-        val EXTRA_COCKTAILS = "extra_cocktail_ids"
-        val EXTRA_USER_ID = "extra_user_id"
+        const val EXTRA_COCKTAILS = "extra_cocktail_ids"
+        const val EXTRA_USER_ID = "extra_user_id"
     }
 
     private var recyclerView: RecyclerView? = null

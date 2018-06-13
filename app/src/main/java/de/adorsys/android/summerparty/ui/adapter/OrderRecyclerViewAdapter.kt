@@ -9,8 +9,8 @@ import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.data.Order
 import de.adorsys.android.summerparty.ui.views.OrderView
 
-class OrderRecyclerViewAdapter(
-        private val orders: List<Order>) : RecyclerView.Adapter<OrderRecyclerViewAdapter.OrderViewHolder>() {
+class OrderRecyclerViewAdapter(private val orders: List<Order>)
+    : RecyclerView.Adapter<OrderRecyclerViewAdapter.OrderViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_order, parent, false)
