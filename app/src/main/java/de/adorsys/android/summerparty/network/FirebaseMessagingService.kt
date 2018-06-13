@@ -13,8 +13,6 @@ import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.SummerpartyApp
 import de.adorsys.android.summerparty.ui.MainActivity
 
-
-
 class FirebaseMessagingService : FirebaseMessagingService() {
     private var broadcaster: LocalBroadcastManager? = null
 

@@ -13,7 +13,8 @@ import de.adorsys.android.summerparty.ui.CocktailFragment
 
 class CocktailRecyclerViewAdapter(
         private val cocktails: List<Cocktail>,
-        private val listener: CocktailFragment.OnListFragmentInteractionListener?) : RecyclerView.Adapter<CocktailRecyclerViewAdapter.CocktailViewHolder>() {
+        private val listener: CocktailFragment.OnListFragmentInteractionListener?)
+    : RecyclerView.Adapter<CocktailRecyclerViewAdapter.CocktailViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CocktailViewHolder {
         val view = LayoutInflater.from(parent.context)

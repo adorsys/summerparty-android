@@ -16,7 +16,9 @@ import de.adorsys.android.summerparty.data.Cocktail
 import de.adorsys.android.summerparty.data.CocktailUtils
 
 class CartRecyclerViewAdapter(
-        private val cocktails: MutableList<Cocktail>, private val onListEmptyListener: OnListEmptyListener, private var cocktailMap: HashMap<Cocktail, Int> = HashMap()) : RecyclerView.Adapter<CartRecyclerViewAdapter.ViewHolder>() {
+        private val cocktails: MutableList<Cocktail>,
+        private val onListEmptyListener: OnListEmptyListener,
+        private var cocktailMap: MutableMap<Cocktail, Int> = mutableMapOf()) : RecyclerView.Adapter<CartRecyclerViewAdapter.ViewHolder>() {
     init {
         cocktailMap = CocktailUtils.cocktailListToMap(cocktails)
 
@@ -69,7 +71,7 @@ class CartRecyclerViewAdapter(
                             cocktailCountText.selectAll()
                         }
                         cocktailMap.remove(cocktail)
-                        cocktailMap.put(cocktail, cocktailCount.toInt())
+                        cocktailMap[cocktail] = cocktailCount.toInt()
                     }
                 }
             })
@@ -86,7 +88,6 @@ class CartRecyclerViewAdapter(
             cocktailName.text = cocktail.name
         }
     }
-
 
     interface OnListEmptyListener {
         fun onListEmpty()
