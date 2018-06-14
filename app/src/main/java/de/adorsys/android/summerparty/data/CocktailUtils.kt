@@ -22,11 +22,18 @@ object CocktailUtils {
             CocktailType.WODKA_LEMON.nomination
             -> return context.resources.getDrawable(R.drawable.wodka_lemon, context.theme)
             CocktailType.CUBA_LIBRE.nomination
-            -> return context.resources.getDrawable(R.drawable.cuba_libre, context.theme)
+            -> return context.resources.getDrawable(R.drawable.cubalibre, context.theme)
             CocktailType.APEROL_SPRITZ.nomination
             -> return context.resources.getDrawable(R.drawable.aperol_sprizz, context.theme)
             CocktailType.GIN_TONIC.nomination
             -> return context.resources.getDrawable(R.drawable.gin_tonic, context.theme)
+            CocktailType.VODKA_BULL.nomination
+            -> return context.resources.getDrawable(R.drawable.wodka_bull, context.theme)
+            CocktailType.MOJITO.nomination
+            -> return context.resources.getDrawable(R.drawable.mojito, context.theme)
+
+
+
         }
         return context.resources.getDrawable(R.drawable.cocktail_ordered, context.theme)
     }

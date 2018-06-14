@@ -8,7 +8,9 @@ enum class CocktailType(val nomination: String) {
     COCONUT_KISS("Coconut Kiss"),
     SUNFLOWER("Sunflower"),
     WODKA_LEMON("Wodka Lemon"),
+    VODKA_BULL("Wodka Bull"),
     CUBA_LIBRE("Cuba Libre"),
     APEROL_SPRITZ("Aperol Spritz"),
-    GIN_TONIC("Gin Tonic");
+    GIN_TONIC("Gin Tonic"),
+    MOJITO("Mojito");
 }
