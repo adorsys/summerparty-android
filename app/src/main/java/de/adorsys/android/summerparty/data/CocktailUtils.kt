@@ -31,6 +31,9 @@ object CocktailUtils {
             -> return context.resources.getDrawable(R.drawable.wodka_bull, context.theme)
             CocktailType.MOJITO.nomination
             -> return context.resources.getDrawable(R.drawable.mojito, context.theme)
+            CocktailType.PINK_GIN_TONIC.nomination
+            -> return context.resources.getDrawable(R.drawable.pink_tonic, context.theme)
+
 
 
 
