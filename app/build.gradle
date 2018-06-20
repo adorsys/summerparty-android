@@ -37,7 +37,8 @@ dependencies {
 	implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
 	implementation "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
 	implementation "com.google.firebase:firebase-core:${firebaseVersion}"
-	implementation "com.google.firebase:firebase-messaging:${firebaseVersion}"
+	implementation "com.google.firebase:firebase-firestore:${firebaseDatabaseVersion}"
+	implementation "com.google.firebase:firebase-messaging:${firebaseMessagingVersion}"
 	testImplementation "junit:junit:${jUnitVersion}"
 }
 

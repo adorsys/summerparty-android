@@ -16,7 +16,9 @@ ext {
     supportLibVersion = "27.1.1"
     jUnitVersion = "4.12"
     retrofitVersion = "2.4.0"
-    firebaseVersion = "11.2.2"
+    firebaseVersion = "16.0.1"
+    firebaseDatabaseVersion = "17.0.1"
+    firebaseMessagingVersion = "17.0.0"
     kotlinCoroutinesVersion = "0.22.5"
     androidThingsVersion = "1.0"
 }
