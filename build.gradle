@@ -18,6 +18,7 @@ ext {
     retrofitVersion = "2.4.0"
     firebaseVersion = "11.2.2"
     kotlinCoroutinesVersion = "0.22.5"
+    androidThingsVersion = "1.0"
 }
 
 allprojects {
