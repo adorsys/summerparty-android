@@ -109,7 +109,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        data class Post(val user: String?, val image: String?, val text: String?)
     }
 
     class OrderStateFragment : Fragment() {
