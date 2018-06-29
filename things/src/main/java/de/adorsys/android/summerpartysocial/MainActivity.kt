@@ -8,7 +8,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.QuerySnapshot
 
 
 /**
@@ -32,10 +36,10 @@ import com.google.firebase.firestore.*
  *
  */
 class MainActivity : AppCompatActivity() {
-    val firestore = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
         val feedFragment = FeedFragment()
         val orderStateFragment = OrderStateFragment()
@@ -45,17 +49,18 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.container_start, feedFragment)
                 .replace(R.id.container_end, orderStateFragment)
                 .commit()
-
-        setContentView(R.layout.activity_main)
     }
 
     class FeedFragment : Fragment() {
+        val firestore = FirebaseFirestore.getInstance()
+
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-            return inflater.inflate(R.layout.fragment_feed, container)
+            return inflater.inflate(R.layout.fragment_feed, container, false)
         }
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
+
 
         }
 
@@ -109,7 +114,7 @@ class MainActivity : AppCompatActivity() {
 
     class OrderStateFragment : Fragment() {
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-            return inflater.inflate(R.layout.fragment_order_state, container)
+            return inflater.inflate(R.layout.fragment_order_state, container, false)
         }
     }
 }
