@@ -8,11 +8,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.firebase.firestore.DocumentChange
-import com.google.firebase.firestore.EventListener
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.QuerySnapshot
+import android.widget.ImageView
+import android.widget.TextView
+import com.google.firebase.firestore.*
+import kotlinx.android.synthetic.main.fragment_feed.*
 
 
 /**
@@ -52,8 +51,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     class FeedFragment : Fragment() {
-        val firestore = FirebaseFirestore.getInstance()
-
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
             return inflater.inflate(R.layout.fragment_feed, container, false)
         }
@@ -61,26 +58,41 @@ class MainActivity : AppCompatActivity() {
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
 
+            FirebaseFirestore.setLoggingEnabled(true)
+            val firestore = FirebaseFirestore.getInstance()
+            val settings = FirebaseFirestoreSettings.Builder()
+                    .setTimestampsInSnapshotsEnabled(true)
+                    .build()
+            firestore.firestoreSettings = settings
 
+            val query = firestore.collection("summerparty")
+
+            val adapter = FeedAdapter(query)
+
+            feed_recycler_view.adapter = adapter
         }
 
-        class FirestoreAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>(), EventListener<QuerySnapshot> {
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        class FeedAdapter(private var query: Query?) : RecyclerView.Adapter<PostViewHolder>(), EventListener<QuerySnapshot> {
+            private val snapshots = mutableListOf<DocumentSnapshot>()
+            private var listener: ListenerRegistration? = null
+
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
+                val inflater = LayoutInflater.from(parent.context)
+
+                startListening()
+
+                return PostViewHolder(inflater.inflate(R.layout.item_post, parent, false))
             }
 
-            override fun getItemCount(): Int {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onBindViewHolder(holder: VH, position: Int) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
+                holder.bind(snapshots[position])
             }
 
             override fun onEvent(feedSnapshot: QuerySnapshot?, e: FirebaseFirestoreException?) {
                 // Handle errors
                 if (e != null) {
-                    Log.w("MAIN ACTIVITY", "onEvent:error", e)
+                    Log.w(javaClass.canonicalName, "onEvent:error", e)
                     return
                 }
 
@@ -90,22 +102,70 @@ class MainActivity : AppCompatActivity() {
 
                 // Dispatch the event
                 for (change in feedSnapshot.documentChanges) {
-                    // Snapshot of the changed document
-                    val snapshot = change.document
-
                     when (change.type) {
-                        DocumentChange.Type.ADDED -> {
-                        }
-                        DocumentChange.Type.MODIFIED -> {
-                        }
-                        DocumentChange.Type.REMOVED -> {
-                        }
+                        DocumentChange.Type.ADDED -> onDocumentAdded(change)
+                        DocumentChange.Type.MODIFIED -> onDocumentModified(change)
+                        DocumentChange.Type.REMOVED -> onDocumentRemoved(change)
                     }
-                    // TODO: handle document added
-                    // TODO: handle document modified
-                    // TODO: handle document removed
-                    // TODO continue here: https://codelabs.developers.google.com/codelabs/firestore-android/index.html#4
                 }
+            }
+
+            fun startListening() {
+                if (query != null && listener == null) {
+                    listener = query?.addSnapshotListener(this)
+                }
+            }
+
+            fun stopListening() {
+                if (listener != null) {
+                    listener?.remove()
+                    listener = null
+                }
+
+                snapshots.clear()
+                notifyDataSetChanged()
+            }
+
+            override fun getItemCount(): Int {
+                return snapshots.size
+            }
+
+
+            protected fun onDocumentAdded(change: DocumentChange) {
+                snapshots.add(change.newIndex, change.document)
+                notifyItemInserted(change.newIndex)
+            }
+
+            protected fun onDocumentModified(change: DocumentChange) {
+                if (change.oldIndex == change.newIndex) {
+                    // Item changed but remained in same position
+                    snapshots[change.oldIndex] = change.document
+                    notifyItemChanged(change.oldIndex)
+                } else {
+                    // Item changed and changed position
+                    snapshots.removeAt(change.oldIndex)
+                    snapshots.add(change.newIndex, change.document)
+                    notifyItemMoved(change.oldIndex, change.newIndex)
+                }
+            }
+
+            protected fun onDocumentRemoved(change: DocumentChange) {
+                snapshots.removeAt(change.oldIndex)
+                notifyItemRemoved(change.oldIndex)
+            }
+        }
+
+        class PostViewHolder(view: View?) : RecyclerView.ViewHolder(view) {
+            private val imageView = view?.findViewById<ImageView>(R.id.imageView)
+            private val titleTextView = view?.findViewById<TextView>(R.id.titleTextView)
+            private val descriptionTextView = view?.findViewById<TextView>(R.id.descriptionTextView)
+
+
+            fun bind(snapshot: DocumentSnapshot) {
+                val post = snapshot.toObject(Post::class.java)
+                // TODO imageString to image
+                titleTextView?.text = "Foto geteilt von ${post?.username}"
+                descriptionTextView?.text = post?.text
             }
         }
 
