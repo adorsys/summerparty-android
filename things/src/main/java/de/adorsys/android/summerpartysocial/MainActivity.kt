@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     class FeedFragment : Fragment() {
+
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
             return inflater.inflate(R.layout.fragment_feed, container, false)
         }
@@ -72,16 +73,23 @@ class MainActivity : AppCompatActivity() {
             feed_recycler_view.adapter = adapter
         }
 
+        override fun onStart() {
+            super.onStart()
+            (feed_recycler_view.adapter as FeedAdapter).startListening()
+        }
 
-        class FeedAdapter(private var query: Query?) : RecyclerView.Adapter<PostViewHolder>(), EventListener<QuerySnapshot> {
+        override fun onStop() {
+            super.onStop()
+            (feed_recycler_view.adapter as FeedAdapter).stopListening()
+        }
+
+        open class FeedAdapter(private var query: Query?) : RecyclerView.Adapter<PostViewHolder>(), EventListener<QuerySnapshot> {
             private val snapshots = mutableListOf<DocumentSnapshot>()
             private var listener: ListenerRegistration? = null
 
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
                 val inflater = LayoutInflater.from(parent.context)
-
-                startListening()
-
+                // TODO continue here: https://github.com/firebase/quickstart-android/blob/master/firestore/app/src/main/java/com/google/firebase/example/fireeats/MainActivity.java
                 return PostViewHolder(inflater.inflate(R.layout.item_post, parent, false))
             }
 
@@ -131,12 +139,12 @@ class MainActivity : AppCompatActivity() {
             }
 
 
-            protected fun onDocumentAdded(change: DocumentChange) {
+            private fun onDocumentAdded(change: DocumentChange) {
                 snapshots.add(change.newIndex, change.document)
                 notifyItemInserted(change.newIndex)
             }
 
-            protected fun onDocumentModified(change: DocumentChange) {
+            private fun onDocumentModified(change: DocumentChange) {
                 if (change.oldIndex == change.newIndex) {
                     // Item changed but remained in same position
                     snapshots[change.oldIndex] = change.document
@@ -149,7 +157,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            protected fun onDocumentRemoved(change: DocumentChange) {
+            private fun onDocumentRemoved(change: DocumentChange) {
                 snapshots.removeAt(change.oldIndex)
                 notifyItemRemoved(change.oldIndex)
             }

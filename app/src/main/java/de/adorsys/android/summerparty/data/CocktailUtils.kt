@@ -2,6 +2,8 @@ package de.adorsys.android.summerparty.data
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import de.adorsys.android.network.Cocktail
+import de.adorsys.android.network.CocktailType
 import de.adorsys.android.summerparty.R
 
 object CocktailUtils {
@@ -33,10 +35,6 @@ object CocktailUtils {
             -> return context.resources.getDrawable(R.drawable.mojito, context.theme)
             CocktailType.PINK_GIN_TONIC.nomination
             -> return context.resources.getDrawable(R.drawable.pink_tonic, context.theme)
-
-
-
-
         }
         return context.resources.getDrawable(R.drawable.cocktail_ordered, context.theme)
     }

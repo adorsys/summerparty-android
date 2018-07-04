@@ -1,10 +1,7 @@
-package de.adorsys.android.summerparty.network
+package de.adorsys.android.network
 
-import de.adorsys.android.summerparty.data.Cocktail
-import de.adorsys.android.summerparty.data.Customer
-import de.adorsys.android.summerparty.data.Order
-import de.adorsys.android.summerparty.data.mutable.MutableCustomer
-import de.adorsys.android.summerparty.data.mutable.MutableOrder
+import de.adorsys.android.network.mutable.MutableCustomer
+import de.adorsys.android.network.mutable.MutableOrder
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET

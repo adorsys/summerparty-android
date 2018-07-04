@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import de.adorsys.android.network.Order
 import de.adorsys.android.summerparty.R
-import de.adorsys.android.summerparty.data.Order
 import de.adorsys.android.summerparty.ui.views.OrderView
 
 class OrderRecyclerViewAdapter(private val orders: List<Order>)

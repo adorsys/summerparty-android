@@ -7,10 +7,10 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import de.adorsys.android.network.ApiManager
+import de.adorsys.android.network.Cocktail
+import de.adorsys.android.network.mutable.MutableOrder
 import de.adorsys.android.summerparty.R
-import de.adorsys.android.summerparty.data.ApiManager
-import de.adorsys.android.summerparty.data.Cocktail
-import de.adorsys.android.summerparty.data.mutable.MutableOrder
 import de.adorsys.android.summerparty.ui.adapter.CartRecyclerViewAdapter
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -41,7 +41,7 @@ class CartActivity : BaseActivity() {
 
         recyclerView = findViewById(R.id.cart_order_items_recycler_view)
         recyclerView?.layoutManager = LinearLayoutManager(this)
-        val sortedCocktails: List<Cocktail> = pendingCocktails.sortedWith(compareBy({ it.id }))
+        val sortedCocktails: List<Cocktail> = pendingCocktails.sortedWith(compareBy { it.id })
         recyclerView?.adapter = CartRecyclerViewAdapter(sortedCocktails.toMutableList(), object : CartRecyclerViewAdapter.OnListEmptyListener {
             override fun onListEmpty() {
                 setResult(Activity.RESULT_OK)

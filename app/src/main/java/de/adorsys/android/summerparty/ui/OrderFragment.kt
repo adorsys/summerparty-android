@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import de.adorsys.android.network.Order
 import de.adorsys.android.summerparty.R
-import de.adorsys.android.summerparty.data.Order
 import de.adorsys.android.summerparty.ui.adapter.OrderRecyclerViewAdapter
 
 
@@ -50,7 +50,7 @@ class OrderFragment : Fragment() {
     }
 
     private fun sortOrders(orders: List<Order>): List<Order> {
-        return orders.sortedWith(compareBy({ it.state })).asReversed()
+        return orders.sortedWith(compareBy { it.state }).asReversed()
     }
 
     companion object {

@@ -1,4 +1,4 @@
-package de.adorsys.android.summerparty.data
+package de.adorsys.android.network
 
 enum class CocktailType(val nomination: String) {
     PINA_COLADA("Pina Colada"),

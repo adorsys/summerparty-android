@@ -8,10 +8,9 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import de.adorsys.android.network.Cocktail
+import de.adorsys.android.network.Order
 import de.adorsys.android.summerparty.R
-import de.adorsys.android.summerparty.data.ApiManager.getCocktails
-import de.adorsys.android.summerparty.data.Cocktail
-import de.adorsys.android.summerparty.data.Order
 import de.adorsys.android.summerparty.ui.adapter.SectionsPagerAdapter
 
 
@@ -57,7 +56,6 @@ class CocktailMainFragment : Fragment() {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
-                getCocktails()
                 listener.onGetUserCocktails()
             }
         })
@@ -66,7 +64,6 @@ class CocktailMainFragment : Fragment() {
         tabLayout.addOnTabSelectedListener(
                 object : TabLayout.OnTabSelectedListener {
                     override fun onTabReselected(tab: TabLayout.Tab?) {
-                        getCocktails()
                         listener.onGetUserCocktails()
                     }
 

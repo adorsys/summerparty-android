@@ -3,12 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-	compileSdkVersion 27
+	compileSdkVersion 28
 	buildToolsVersion '27.0.3'
 	defaultConfig {
 		applicationId "de.adorsys.android.summerparty"
 		minSdkVersion 21
-		targetSdkVersion 27
+		targetSdkVersion 28
 		versionCode 1
 		versionName "1.0.2"
 		testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -21,12 +21,10 @@ android {
 	}
 }
 
-androidExtensions {
-	experimental = true
-}
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+	implementation project(path: ':network', configuration: 'default')
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${kotlinCoroutinesVersion}"
 	implementation "com.android.support:appcompat-v7:${supportLibVersion}"
@@ -35,11 +33,11 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
     implementation "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
 	implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
-	implementation "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
 	implementation "com.google.firebase:firebase-core:${firebaseVersion}"
 	implementation "com.google.firebase:firebase-firestore:${firebaseDatabaseVersion}"
 	implementation "com.google.firebase:firebase-messaging:${firebaseMessagingVersion}"
 	testImplementation "junit:junit:${jUnitVersion}"
+
 }
 
 apply plugin: 'com.google.gms.google-services'

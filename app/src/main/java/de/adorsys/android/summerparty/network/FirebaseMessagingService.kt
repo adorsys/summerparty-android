@@ -26,11 +26,6 @@ class FirebaseMessagingService : FirebaseMessagingService() {
         sendBroadcast()
     }
 
-    // happens when app is in background
-    override fun handleIntent(p0: Intent?) {
-        sendBroadcast(p0?.getStringExtra("gcm.notification.body"))
-    }
-
     private fun sendBroadcast(body: String? = null, icon: Int = R.drawable.ic_cocktail_icon) {
         val app = (application as SummerpartyApp)
         if (app.currentActivity != null

@@ -1,9 +1,7 @@
-package de.adorsys.android.summerparty.data
+package de.adorsys.android.network
 
-import android.util.Log
-import de.adorsys.android.summerparty.data.mutable.MutableCustomer
-import de.adorsys.android.summerparty.data.mutable.MutableOrder
-import de.adorsys.android.summerparty.network.CocktailService
+import de.adorsys.android.network.mutable.MutableCustomer
+import de.adorsys.android.network.mutable.MutableOrder
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
@@ -31,12 +29,10 @@ object ApiManager {
     }
 
     fun getCustomer(id: String): Deferred<Response<Customer>> {
-        Log.i("TAG_CUSTOMER", id)
         return async(CommonPool) { cocktailService.getCustomer(id).execute() }
     }
 
     fun getOrdersForCustomer(id: String): Deferred<Response<List<Order>>> {
-        Log.i("TAG_CUSTOMER", id)
         return async(CommonPool) { cocktailService.getOrdersForCustomer(id).execute() }
     }
 }
