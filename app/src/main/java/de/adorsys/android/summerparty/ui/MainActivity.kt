@@ -195,14 +195,16 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
                 val response = ApiManager.createCustomer(MutableCustomer(username, firebaseToken)).await()
                 if (response.isSuccessful) {
                     val customer = response.body()
-                    (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, customer?.id).apply()
-                    (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_NAME, customer?.name).apply()
                     launch(UI) {
-                        user = customer
-                        updateUserMenuItem()
-                        if (fallbackUserCreation) {
-                            openCartActivity()
-                            fallbackUserCreation = false
+                        (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, customer?.id).apply()
+                        (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_NAME, customer?.name).apply()
+                        launch(UI) {
+                            user = customer
+                            updateUserMenuItem()
+                            if (fallbackUserCreation) {
+                                openCartActivity()
+                                fallbackUserCreation = false
+                            }
                         }
                     }
                 } else {
@@ -243,12 +245,14 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
                 if (response.isSuccessful) {
                     user = response.body()
                     updateUserMenuItem()
-                    if (user == null) {
-                        // backend has hard-reset the database
-                        (preferences as SharedPreferences).edit().clear().apply()
-                        getUser()
+                    launch(UI) {
+                        if (user == null) {
+                            // backend has hard-reset the database
+                            (preferences as SharedPreferences).edit().clear().apply()
+                            getUser()
+                        }
+                        (preferences as SharedPreferences).edit().putString(KEY_USER_NAME, this@MainActivity.user?.name).apply()
                     }
-                    (preferences as SharedPreferences).edit().putString(KEY_USER_NAME, this@MainActivity.user?.name).apply()
                 } else {
                     Log.i("TAG_USER", response.message())
                 }
@@ -263,14 +267,13 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
             return
         }
         launch {
-
             try {
                 val response = ApiManager.getOrdersForCustomer(user!!.id).await()
                 if (response.isSuccessful) {
                     val cocktailResponse: List<Order>? = response.body()
                     // Update adapter's order list
                     cocktailResponse?.let {
-                        cocktailMainFragment?.notifyDataSetChanged(orderList = it, goToOrders = goToOrders)
+                        launch(UI) { cocktailMainFragment?.notifyDataSetChanged(orderList = it, goToOrders = goToOrders) }
                     }
                 } else {
                     Log.i("TAG_CUSTOMER_ORDERS", response.message())
@@ -302,11 +305,11 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     }
 
     private fun firstStart(): Boolean {
-        if ((preferences as SharedPreferences).contains(KEY_FIRST_START)) {
-            return false
+        return if ((preferences as SharedPreferences).contains(KEY_FIRST_START)) {
+            false
         } else {
-            preferences!!.edit().putBoolean(KEY_FIRST_START, true).apply()
-            return true
+            (preferences as SharedPreferences).edit().putBoolean(KEY_FIRST_START, true).apply()
+            true
         }
     }
 
