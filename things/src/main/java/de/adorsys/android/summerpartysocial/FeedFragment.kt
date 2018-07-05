@@ -18,6 +18,8 @@ import kotlinx.android.synthetic.main.fragment_feed.*
 import java.io.ByteArrayOutputStream
 
 
+
+
 class FeedFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_feed, container, false)
@@ -36,7 +38,16 @@ class FeedFragment : Fragment() {
         val query = firestore.collection("summerparty").orderBy("timestamp", Query.Direction.DESCENDING)
         val adapter = FeedAdapter(query)
         feed_recycler_view.adapter = adapter
-        feed_recycler_view.layoutManager = GridLayoutManager(context, 3)
+        val layoutManager = GridLayoutManager(context, 3)
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return when(position) {
+                    0 -> 2
+                    else -> 1
+                }
+            }
+        }
+        feed_recycler_view.layoutManager = layoutManager
     }
 
     override fun onStart() {
@@ -49,7 +60,7 @@ class FeedFragment : Fragment() {
         (feed_recycler_view.adapter as FeedAdapter).stopListening()
     }
 
-    open class FeedAdapter(private var query: Query?) : RecyclerView.Adapter<PostViewHolder>(), EventListener<QuerySnapshot> {
+    class FeedAdapter(private var query: Query?) : RecyclerView.Adapter<PostViewHolder>(), EventListener<QuerySnapshot> {
         private val snapshots = mutableListOf<DocumentSnapshot>()
         private var listener: ListenerRegistration? = null
 
@@ -60,6 +71,14 @@ class FeedFragment : Fragment() {
 
         override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
             holder.bind(snapshots[position])
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return when (position) {
+                0 -> TYPE_BIG
+                1 -> TYPE_MEDIUM
+                else -> TYPE_SMALL
+            }
         }
 
         override fun onEvent(feedSnapshot: QuerySnapshot?, e: FirebaseFirestoreException?) {
@@ -125,6 +144,12 @@ class FeedFragment : Fragment() {
         private fun onDocumentRemoved(change: DocumentChange) {
             snapshots.removeAt(change.oldIndex)
             notifyItemRemoved(change.oldIndex)
+        }
+
+        companion object {
+            private const val TYPE_BIG: Int = 0
+            private const val TYPE_MEDIUM: Int = 1
+            private const val TYPE_SMALL: Int = 2
         }
     }
 
