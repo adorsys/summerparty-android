@@ -15,6 +15,9 @@ interface CocktailService {
     @GET("order/{id}")
     fun getOrder(@Path("id") id: String): Call<Order>
 
+    @GET("order")
+    fun getOrders(): Call<List<Order>>
+
     @GET("beverage")
     fun getCocktails(): Call<List<Cocktail>>
 

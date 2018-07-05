@@ -19,6 +19,10 @@ object ApiManager {
         return async { cocktailService.createOrder(mutableOrder).execute() }
     }
 
+    fun getOrders(): Deferred<Response<List<Order>>> {
+        return async { cocktailService.getOrders().execute() }
+    }
+
     fun getCocktails(): Deferred<Response<List<Cocktail>>> {
         return async { cocktailService.getCocktails().execute() }
     }

@@ -25,6 +25,7 @@
     <string name="x">x</string>
     <string name="user_content_title">User</string>
 	<string name="user_content_text">You are %1$s and your user id is %2$s.</string>
-    <string name="channel_name">general</string>
-	<string name="channel_description">cocktail notifications</string>
+
+	<string name="channel_name" translatable="false">general</string>
+	<string name="channel_description" translatable="false">cocktail notifications</string>
 </resources>
