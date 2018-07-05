@@ -1,8 +1,12 @@
 package de.adorsys.android.summerpartysocial
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +15,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.google.firebase.firestore.*
 import kotlinx.android.synthetic.main.fragment_feed.*
+import java.io.ByteArrayOutputStream
+
 
 class FeedFragment : Fragment() {
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_feed, container, false)
     }
@@ -28,9 +33,10 @@ class FeedFragment : Fragment() {
                 .build()
         firestore.firestoreSettings = settings
 
-        val query = firestore.collection("summerparty")
+        val query = firestore.collection("summerparty").orderBy("timestamp", Query.Direction.DESCENDING)
         val adapter = FeedAdapter(query)
         feed_recycler_view.adapter = adapter
+        feed_recycler_view.layoutManager = GridLayoutManager(context, 3)
     }
 
     override fun onStart() {
@@ -130,9 +136,29 @@ class FeedFragment : Fragment() {
 
         fun bind(snapshot: DocumentSnapshot) {
             val post = snapshot.toObject(Post::class.java)
-            // TODO imageString to image
-            titleTextView?.text = "Foto geteilt von ${post?.name}"
+            val bitmap = post?.image?.let { getBitmapFromEncodedBytes(it) }
+            bitmap?.let { imageView.setImageBitmap(null) }
+            titleTextView?.text = titleTextView.context.getString(R.string.image_shared_by, post?.name)
             descriptionTextView?.text = post?.text
+        }
+
+        private fun getEncodedBytesFromBitmap(bitmap: Bitmap): String? {
+            return try {
+                val stream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                Base64.encodeToString(stream.toByteArray(), Base64.DEFAULT)
+            } catch (e: Exception) {
+                null
+            }
+        }
+
+        private fun getBitmapFromEncodedBytes(encodedBytes: String): Bitmap? {
+            return try {
+                val decodedBytes = Base64.decode(encodedBytes, Base64.DEFAULT)
+                BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 

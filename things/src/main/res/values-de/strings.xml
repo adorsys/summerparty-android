@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Sommerparty-Feed</string>
+    <string name="image_shared_by">Foto geteilt von %s</string>
 </resources>
