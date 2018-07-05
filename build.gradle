@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.3'
+        classpath 'com.android.tools.build:gradle:3.2.0-beta02'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:3.3.0'
     }
@@ -13,10 +13,12 @@ buildscript {
 
 ext {
     constraintLayoutVersion = "1.1.2"
-    supportLibVersion = "27.1.1"
+    supportLibVersion = "28.0.0-alpha1"
     jUnitVersion = "4.12"
     retrofitVersion = "2.4.0"
-    firebaseVersion = "11.2.2"
+    firebaseVersion = "16.0.1"
+    firebaseDatabaseVersion = "17.0.1"
+    firebaseMessagingVersion = "17.0.0"
     kotlinCoroutinesVersion = "0.22.5"
     androidThingsVersion = "1.0"
 }

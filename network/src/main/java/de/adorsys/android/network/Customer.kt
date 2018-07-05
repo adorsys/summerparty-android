@@ -1,4 +1,4 @@
-package de.adorsys.android.summerparty.data
+package de.adorsys.android.network
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

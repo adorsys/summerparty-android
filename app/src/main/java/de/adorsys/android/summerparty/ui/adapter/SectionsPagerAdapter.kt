@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
-import de.adorsys.android.summerparty.data.Cocktail
-import de.adorsys.android.summerparty.data.Order
+import de.adorsys.android.network.Cocktail
+import de.adorsys.android.network.Order
 import de.adorsys.android.summerparty.ui.CocktailFragment
 import de.adorsys.android.summerparty.ui.OrderFragment
 

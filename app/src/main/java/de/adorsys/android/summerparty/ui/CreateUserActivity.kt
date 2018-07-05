@@ -28,7 +28,7 @@ class CreateUserActivity : BaseActivity() {
         val usernameEditText = findViewById<TextInputEditText>(R.id.username_edit_text)
         val registerButton = findViewById<Button>(R.id.register_button)
 
-        registerButton.setOnClickListener({
+        registerButton.setOnClickListener {
             val username = usernameEditText.text.toString()
             if (TextUtils.isEmpty(username)) {
                 usernameInputLayout.error = getString(R.string.error_user_not_specified)
@@ -39,6 +39,6 @@ class CreateUserActivity : BaseActivity() {
                 setResult(Activity.RESULT_OK, intent)
                 finish()
             }
-        })
+        }
     }
 }

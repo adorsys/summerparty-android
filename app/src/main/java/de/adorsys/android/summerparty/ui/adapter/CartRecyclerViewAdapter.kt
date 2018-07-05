@@ -11,8 +11,8 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import de.adorsys.android.network.Cocktail
 import de.adorsys.android.summerparty.R
-import de.adorsys.android.summerparty.data.Cocktail
 import de.adorsys.android.summerparty.data.CocktailUtils
 
 class CartRecyclerViewAdapter(
@@ -58,9 +58,9 @@ class CartRecyclerViewAdapter(
         fun bindItem(cocktail: Cocktail) {
             item = cocktail
             cocktailCountText.setText(cocktailMap[cocktail]?.toString())
-            cocktailCountText.setOnClickListener({
+            cocktailCountText.setOnClickListener {
                 cocktailCountText.selectAll()
-            })
+            }
             cocktailCountText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {}
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}

@@ -8,8 +8,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import de.adorsys.android.network.Cocktail
 import de.adorsys.android.summerparty.R
-import de.adorsys.android.summerparty.data.Cocktail
 import de.adorsys.android.summerparty.ui.adapter.CocktailRecyclerViewAdapter
 
 class CocktailFragment : Fragment() {
@@ -52,7 +52,7 @@ class CocktailFragment : Fragment() {
     }
 
     private fun sortCocktails(cocktails: ArrayList<Cocktail>): List<Cocktail> {
-        return cocktails.sortedWith(compareBy({ it.type }))
+        return cocktails.sortedWith(compareBy { it.type })
     }
 
     interface OnListFragmentInteractionListener {
