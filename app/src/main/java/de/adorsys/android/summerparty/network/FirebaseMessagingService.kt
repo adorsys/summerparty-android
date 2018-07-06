@@ -1,4 +1,4 @@
-package de.adorsys.android.summerparty.push
+package de.adorsys.android.summerparty.network
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

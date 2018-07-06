@@ -16,6 +16,7 @@
 	<string name="availability_available">available</string>
 	<string name="availability_unavailable">not available</string>
     <string name="cart_count_standard">1</string>
+	<string name="order_cocktail_placeholder">%1$d x %2$s</string>
     <string name="enter_user_name">Enter a username</string>
 	<string name="error_user_not_specified">The user cannot be empty</string>
 	<string name="notification_content_text">Your order detail have changed. Have a look.</string>

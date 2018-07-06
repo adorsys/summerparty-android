@@ -1,9 +1,10 @@
-package de.adorsys.android.shared
+package de.adorsys.android.summerparty.data
 
 import android.content.Context
 import android.graphics.drawable.Drawable
 import de.adorsys.android.network.Cocktail
-import java.util.*
+import de.adorsys.android.network.CocktailType
+import de.adorsys.android.summerparty.R
 
 object CocktailUtils {
     fun getCocktailDrawableForName(context: Context, id: String?): Drawable? {
