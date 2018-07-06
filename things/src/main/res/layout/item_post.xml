@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="@dimen/indent_8"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -22,6 +23,7 @@
 
     <TextView
         android:id="@+id/titleTextView"
+        style="@style/TextAppearance.AppCompat.Subhead"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/indent_8"
@@ -30,7 +32,7 @@
         android:layout_marginBottom="@dimen/indent_8"
         android:gravity="center"
         android:minHeight="@dimen/min_text_size"
-        android:text="TextView"
+        tools:text="Name"
         app:layout_constraintBottom_toTopOf="@+id/descriptionTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,6 +40,7 @@
 
     <TextView
         android:id="@+id/descriptionTextView"
+        style="@style/TextAppearance.AppCompat.Subhead"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/indent_8"
@@ -45,7 +48,7 @@
         android:layout_marginBottom="@dimen/indent_8"
         android:gravity="center"
         android:minHeight="@dimen/min_text_size"
-        android:text="TextView"
+        tools:text="Text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
