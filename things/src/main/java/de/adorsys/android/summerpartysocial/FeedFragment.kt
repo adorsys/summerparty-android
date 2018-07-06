@@ -73,14 +73,6 @@ class FeedFragment : Fragment() {
             holder.bind(snapshots[position])
         }
 
-        override fun getItemViewType(position: Int): Int {
-            return when (position) {
-                0 -> TYPE_BIG
-                1 -> TYPE_MEDIUM
-                else -> TYPE_SMALL
-            }
-        }
-
         override fun onEvent(feedSnapshot: QuerySnapshot?, e: FirebaseFirestoreException?) {
             // Handle errors
             if (e != null) {
@@ -144,12 +136,6 @@ class FeedFragment : Fragment() {
         private fun onDocumentRemoved(change: DocumentChange) {
             snapshots.removeAt(change.oldIndex)
             notifyItemRemoved(change.oldIndex)
-        }
-
-        companion object {
-            private const val TYPE_BIG: Int = 0
-            private const val TYPE_MEDIUM: Int = 1
-            private const val TYPE_SMALL: Int = 2
         }
     }
 
