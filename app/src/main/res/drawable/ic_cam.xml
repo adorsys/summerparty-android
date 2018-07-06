@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="80dp"
+    android:height="60dp"
+    android:viewportWidth="53"
+    android:viewportHeight="42">
+
+    <group
+        android:name="4-1-0-Upload"
+        android:translateX="-154.000000"
+        android:translateY="-183.000000">
+        <group
+            android:name="Group-2"
+            android:translateX="40.000000"
+            android:translateY="112.000000">
+            <group
+                android:name="icons8-camera"
+                android:translateX="114.000000"
+                android:translateY="71.000000">
+                <path
+                    android:name="Shape"
+                    android:fillColor="#D1D3D4"
+                    android:strokeWidth="1"
+                    android:pathData="M18.55,0 L13.25,4.66666667 L5.3,4.66666667 C2.3808607,4.66666667 0,6.763022 0,9.33333333 L0,37.3333333 C0,39.903647 2.3808607,42 5.3,42 L47.7,42 C50.6191419,42 53,39.903647 53,37.3333333 L53,9.33333333 C53,6.763022 50.6191419,4.66666667 47.7,4.66666667 L39.75,4.66666667 L34.45,0 L18.55,0 Z M27,11.6666667 C33.4417963,11.6666667 38.5,16.7981777 38.5,23.3333333 C38.5,29.868489 33.4417963,35 27,35 C20.5582037,35 15.5,29.868489 15.5,23.3333333 C15.5,16.7981777 20.5582037,11.6666667 27,11.6666667 Z M27,15.1666667 C22.5527338,15.1666667 18.95,18.821614 18.95,23.3333333 C18.95,27.8450527 22.5527338,31.5 27,31.5 C31.4472662,31.5 35.05,27.8450527 35.05,23.3333333 C35.05,18.821614 31.4472662,15.1666667 27,15.1666667 Z" />
+            </group>
+        </group>
+    </group>
+</vector>

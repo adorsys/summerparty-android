@@ -24,7 +24,17 @@
     <string name="x">x</string>
     <string name="user_content_title">User</string>
 	<string name="user_content_text">You are %1$s and your user id is %2$s.</string>
+<<<<<<< Updated upstream
 
 	<string name="channel_name" translatable="false">general</string>
 	<string name="channel_description" translatable="false">cocktail notifications</string>
+=======
+    <string name="postTitle">Foto teilen</string>
+    <string name="post_user_information">Du hast unser neues Feature entdeckt! Mache Fotos und poste sie in unseren Summerparty Feed. Vorab möchten wir dich bitten nur Fotos von Personen zu posten die mit der Abbildung einverstanden sind. Alle Bilder werden nach unserem Event gelöscht.</string>
+    <string name="agree">Verstanden</string>
+    <string name="upload">hochladen</string>
+	<string name="texthint">Schreibe etwas zu deinem Bild...</string>
+    <string name="post_empty">Mache ein Foto und poste es in  unseren Sommerfest Feed.</string>
+
+>>>>>>> Stashed changes
 </resources>

@@ -5,6 +5,8 @@
 	<dimen name="activity_vertical_margin_small">8dp</dimen>
 
 	<dimen name="padding_top_appbar">8dp</dimen>
+	<dimen name="padding_top">28dp</dimen>
+
 
 	<dimen name="width_cocktail_image">56dp</dimen>
 
@@ -15,4 +17,7 @@
 	<dimen name="margin_recycler_view_item">8dp</dimen>
 	<dimen name="size_delete_button">36dp</dimen>
     <dimen name="width_enter_image">120dp</dimen>
+    <dimen name="image_size">300dp</dimen>
+
+
 </resources>
