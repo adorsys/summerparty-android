@@ -3,10 +3,7 @@ package de.adorsys.android.network
 import de.adorsys.android.network.mutable.MutableCustomer
 import de.adorsys.android.network.mutable.MutableOrder
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface CocktailService {
     @POST("order")
@@ -16,7 +13,7 @@ interface CocktailService {
     fun getOrder(@Path("id") id: String): Call<Order>
 
     @GET("order")
-    fun getOrders(): Call<List<Order>>
+    fun getOrders(@Query("state") state: String? = ""): Call<List<Order>>
 
     @GET("beverage")
     fun getCocktails(): Call<List<Cocktail>>

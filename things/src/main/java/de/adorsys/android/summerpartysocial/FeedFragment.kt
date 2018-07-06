@@ -18,8 +18,6 @@ import kotlinx.android.synthetic.main.fragment_feed.*
 import java.io.ByteArrayOutputStream
 
 
-
-
 class FeedFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_feed, container, false)
@@ -41,7 +39,7 @@ class FeedFragment : Fragment() {
         val layoutManager = GridLayoutManager(context, 3)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return when(position) {
+                return when (position) {
                     0 -> 2
                     else -> 1
                 }
@@ -150,7 +148,13 @@ class FeedFragment : Fragment() {
             val bitmap = post?.image?.let { getBitmapFromEncodedBytes(it) }
             bitmap?.let { imageView.setImageBitmap(null) }
             titleTextView?.text = titleTextView.context.getString(R.string.image_shared_by, post?.name)
-            descriptionTextView?.text = post?.text
+            val text = post?.text
+            if (text.isNullOrBlank()) {
+                descriptionTextView.visibility = View.GONE
+            } else {
+                descriptionTextView.visibility = View.VISIBLE
+                descriptionTextView?.text = post?.text
+            }
         }
 
         private fun getEncodedBytesFromBitmap(bitmap: Bitmap): String? {

@@ -37,18 +37,21 @@ class OrderStateFragment : Fragment() {
     private fun getOrders() {
         launch {
             try {
-                val response = ApiManager.getOrders().await()
-                if (response.isSuccessful) {
-                    val orderResponse: List<Order>? = response.body()
+                val orderedResponse = ApiManager.getOrders("ordered").await()
+                val mixedResponse = ApiManager.getOrders("mixed").await()
+                if (orderedResponse.isSuccessful && mixedResponse.isSuccessful) {
+                    val orderedList: List<Order> = orderedResponse.body().orEmpty()
+                    val mixedList: List<Order> = mixedResponse.body().orEmpty()
                     // Update adapter's order list
-                    orderResponse?.let {
-                        if (orders == it) return@let
-                        orders.clear()
-                        orders.addAll(it)
-                        launch(UI) { updateAdapter(it) }
-                    }
+                    val orderList = mutableListOf<Order>()
+                    orderList.addAll(mixedList)
+                    orderList.addAll(orderedList)
+                    if (orders == orderList) return@launch
+                    orders.clear()
+                    orders.addAll(orderList)
+                    launch(UI) { updateAdapter(orderList) }
                 } else {
-                    Log.i("TAG_CUSTOMER_ORDERS", response.message())
+                    Log.i("TAG_CUSTOMER_ORDERS", "${orderedResponse.message()} ${mixedResponse.message()}")
                 }
             } catch (e: Exception) {
                 Log.i("TAG_CUSTOMER_ORDERS", e.message)
