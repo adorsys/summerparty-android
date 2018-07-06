@@ -12,8 +12,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import de.adorsys.android.network.Cocktail
+import de.adorsys.android.shared.CocktailUtils
 import de.adorsys.android.summerparty.R
-import de.adorsys.android.summerparty.data.CocktailUtils
 
 class CartRecyclerViewAdapter(
         private val cocktails: MutableList<Cocktail>,
