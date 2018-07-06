@@ -26,6 +26,15 @@ class OrderStateFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getOrders()
+        pollOrders(10000)
+
+        val adapter = OrderAdapter()
+        order_recycler_view.adapter = adapter
+        order_recycler_view.layoutManager = LinearLayoutManager(context)
+    }
+
+    private fun getOrders() {
         launch {
             try {
                 val response = ApiManager.getOrders().await()
@@ -33,6 +42,7 @@ class OrderStateFragment : Fragment() {
                     val orderResponse: List<Order>? = response.body()
                     // Update adapter's order list
                     orderResponse?.let {
+                        if (orders == it) return@let
                         orders.clear()
                         orders.addAll(it)
                         launch(UI) { updateAdapter(it) }
@@ -44,11 +54,15 @@ class OrderStateFragment : Fragment() {
                 Log.i("TAG_CUSTOMER_ORDERS", e.message)
             }
         }
-
-        val adapter = OrderAdapter()
-        order_recycler_view.adapter = adapter
-        order_recycler_view.layoutManager = LinearLayoutManager(context)
     }
+
+    private fun pollOrders(delay: Long) {
+        view?.postDelayed({
+            getOrders()
+            pollOrders(delay)
+        }, delay)
+    }
+
 
     private fun updateAdapter(list: List<Order?>) {
         (order_recycler_view.adapter as OrderAdapter).submitList(list)
