@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import de.adorsys.android.network.Cocktail
-import de.adorsys.android.shared.CocktailUtils
 import de.adorsys.android.summerparty.R
+import de.adorsys.android.summerparty.data.CocktailUtils
 import de.adorsys.android.summerparty.ui.CocktailFragment
 
 class CocktailRecyclerViewAdapter(

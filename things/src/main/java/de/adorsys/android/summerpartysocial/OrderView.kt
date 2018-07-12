@@ -1,4 +1,4 @@
-package de.adorsys.android.shared.views
+package de.adorsys.android.summerpartysocial
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,8 +7,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import de.adorsys.android.network.Order
-import de.adorsys.android.shared.CocktailUtils
-import de.adorsys.android.shared.R
 
 class OrderView : LinearLayout {
     var order: Order? = null
@@ -64,6 +62,5 @@ class OrderView : LinearLayout {
             cocktailTextView.text = text
             cocktailsContainer?.addView(cocktailTextView)
         }
-
     }
 }
