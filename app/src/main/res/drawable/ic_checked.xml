@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="70dp"
+    android:height="70dp"
+    android:viewportWidth="70"
+    android:viewportHeight="70">
+
+    <group
+        android:name="4-2-0-Upload_success"
+        android:translateX="-145.000000"
+        android:translateY="-195.000000">
+        <group
+            android:name="icons8-checked"
+            android:translateX="146.000000"
+            android:translateY="196.000000">
+            <path
+                android:name="Shape"
+                android:fillColor="#0B3D5F"
+                android:strokeColor="#0B3D5F"
+                android:strokeWidth="0.5"
+                android:pathData="M34,7.10542736e-15 C15.2512174,7.10542736e-15 0,15.2512174 0,34 C0,52.7487826 15.2512174,68 34,68 C52.7487826,68 68,52.7487826 68,34 C68,27.2591304 67.3955652,22.2892174 64,17 L62,20 C64.8013043,24.6624348 65.0434783,28.1756522 65.0434783,34 C65.0434783,51.1167826 51.1167826,65.0434783 34,65.0434783 C16.8832174,65.0434783 2.95652174,51.1167826 2.95652174,34 C2.95652174,16.8832174 16.8832174,2.95652174 34,2.95652174 C42.0461739,2.95652174 47.4786957,3.95913043 53,9 L55,7 C48.9613043,1.52304333 42.7734783,7.10542736e-15 34,7.10542736e-15 Z M62.7421871,6.75537206 L32.3947003,42.2112779 L20.3722826,30.9972826 L18.3569977,33.1598171 L32.6458894,46.4872628 L65,8.66671724 L62.7421871,6.75537206 Z" />
+        </group>
+    </group>
+</vector>

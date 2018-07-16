@@ -18,6 +18,10 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.iid.FirebaseInstanceId
+import de.adorsys.android.network.ApiManager
+import de.adorsys.android.network.Cocktail
+import de.adorsys.android.network.Customer
+import de.adorsys.android.network.Order
 import de.adorsys.android.network.mutable.MutableCustomer
 import de.adorsys.android.summerparty.R
 import kotlinx.android.synthetic.main.activity_main.*

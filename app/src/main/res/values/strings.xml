@@ -33,4 +33,5 @@
     <string name="upload">hochladen</string>
 	<string name="texthint">Schreibe etwas zu deinem Bild...</string>
     <string name="post_empty">Mache ein Foto und poste es in  unseren Sommerfest Feed.</string>
+    <string name="post_success">Deine Foto wurde in den Summerparty Feed hochgeladen. Du kannst ein weiteres Foto posten.</string>
 </resources>

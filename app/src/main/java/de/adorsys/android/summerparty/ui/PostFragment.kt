@@ -6,7 +6,9 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.opengl.Visibility
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.support.design.widget.TextInputEditText
 import android.support.v4.app.Fragment
@@ -17,6 +19,7 @@ import android.text.TextWatcher
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.*
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.Button
@@ -24,7 +27,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.R.string.username
-import kotlinx.android.synthetic.main.notification_template_lines_media.view.*
+import kotlinx.android.synthetic.main.fragment_post.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
@@ -44,11 +47,15 @@ internal class PostFragment : Fragment() {
     private lateinit var informedConsentContainer: LinearLayout
     private lateinit var photoEmptyContainer: LinearLayout
     private lateinit var pictureContainer: LinearLayout
+    private lateinit var successContainer: LinearLayout
     private lateinit var uploadImageButton: Button
+    private lateinit var descriptionEditText: TextInputEditText
+
     private var mCurrentPhotoPath: String = ""
     private val IS_INFORMED_CONSENT = "is_informed_consent"
     private var file: File? = null
-
+    // Initialize the handler instance
+    private var mHandler = Handler()
     private val REQUEST_CODE_CAMERA: Int = 942
 
 
@@ -62,6 +69,8 @@ internal class PostFragment : Fragment() {
         photoEmptyContainer = view.findViewById(R.id.photo_empty_container) as LinearLayout
         pictureContainer = view.findViewById(R.id.picture_container) as LinearLayout
         pictureImageView = view.findViewById(R.id.picture_image_view) as ImageView
+        successContainer = view.findViewById(R.id.success_upload_container) as LinearLayout
+
 
         if (isInformedConsent()) {
             hideInformedContainer()
@@ -73,26 +82,26 @@ internal class PostFragment : Fragment() {
 
         photoEmptyContainer.setOnClickListener {
             openCamera()
-            //dispatchTakePictureIntent()
         }
 
-        val descriptionEditText = view.findViewById(R.id.description_edit_text) as TextInputEditText
+        descriptionEditText = view.findViewById(R.id.description_edit_text) as TextInputEditText
         uploadImageButton = view.findViewById(R.id.upload_image_button) as Button
         uploadImageButton.setOnClickListener({
             val description = descriptionEditText.text.toString()
             if ( file != null) {
+                getEncodedBytesFromBitmap(BitmapFactory.decodeFile(file?.path))
+                setSuccessScreen()
+                mHandler.postDelayed({
+                    updateView()
+                }, 10000)
             } else {
-                getEncodedBytesFromBitmap(BitmapFactory.decodeFile(file))
 
-                //BITMAP in byte array
-                //Base64
-                //getBitmapfromexec.. (160)
-                //Firebase
 
             }
         })
 
         return view
+        updateView();
     }
 
 
@@ -111,8 +120,8 @@ internal class PostFragment : Fragment() {
     }
 
     private fun hideInformedContainer() {
-        postMainContainer?.visibility = View.VISIBLE
-        informedConsentContainer?.visibility = View.GONE
+        postMainContainer?.visibility = VISIBLE
+        informedConsentContainer?.visibility = GONE
     }
 
     private fun isInformedConsent(): Boolean {
@@ -199,9 +208,14 @@ internal class PostFragment : Fragment() {
         }
     }
 
+    private fun hideImageView(){
+        photoEmptyContainer?.visibility = VISIBLE
+        pictureContainer?.visibility = GONE
+    }
+
     private fun showImageView(){
-        photoEmptyContainer?.visibility = View.GONE
-        pictureContainer?.visibility = View.VISIBLE
+        photoEmptyContainer?.visibility = GONE
+        pictureContainer?.visibility = VISIBLE
 
         uploadImageButton.background = getResources().getDrawable(R.drawable.button_background)
         uploadImageButton.isEnabled = true;
@@ -216,5 +230,18 @@ internal class PostFragment : Fragment() {
             null
         }
     }
+
+    private fun setSuccessScreen() {
+        successContainer.visibility = VISIBLE
+        postMainContainer.visibility = GONE
+    }
+
+    private fun updateView(){
+        postMainContainer.visibility = VISIBLE
+        descriptionEditText.setText("")
+        successContainer.visibility = GONE
+        hideImageView()
+    }
+
 
 }
