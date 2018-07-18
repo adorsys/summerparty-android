@@ -6,6 +6,7 @@ import android.content.*
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.LocalBroadcastManager
+import android.support.v4.media.session.MediaButtonReceiver.handleIntent
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.util.Log
@@ -24,11 +25,16 @@ import de.adorsys.android.network.Order
 import de.adorsys.android.network.mutable.MutableCustomer
 import de.adorsys.android.summerparty.R
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.experimental.launch
+import de.adorsys.android.summerparty.R.id.bottom_navigation
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 
-class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionListener, CocktailMainFragment.OnGetUserCocktailsListener {
+
+class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionListener, CocktailMainFragment.OnGetUserCocktailsListener, PostFragment.OnGetPermissionsListener {
     private var cocktailMainFragment: CocktailMainFragment? = null
+    private var postFragment: PostFragment? = null
 
     companion object {
         const val KEY_USER_ID = "preferences_key_user_id"
@@ -39,6 +45,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         const val KEY_FIREBASE_TOKEN = "firebase_token"
         const val KEY_FIRST_START = "first_start"
         const val REQUEST_CODE_CART = 23
+        const val REQUEST_CODE_CAMERA: Int = 942
         const val REQUEST_CODE_NAME = 24
     }
 
@@ -90,17 +97,29 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.cocktail_order -> buildCocktailMainFragment()
-                R.id.feed -> Toast.makeText(this@MainActivity, "Toast 2", Toast.LENGTH_SHORT).show()
+                R.id.feed -> buildPostMainFragment()
             }
             true
         }
     }
 
     private fun buildCocktailMainFragment() {
+
+        toolbar.title = getString(R.string.app_name)
         if (cocktailMainFragment == null) {
             cocktailMainFragment = CocktailMainFragment()
         }
+        getCocktails()
+        getOrdersForUser(false)
         supportFragmentManager.beginTransaction().replace(R.id.fragment_container, cocktailMainFragment).commit()
+    }
+
+    private fun buildPostMainFragment(){
+        toolbar.setTitle(getString(R.string.postTitle))
+        if (postFragment == null) {
+            postFragment = PostFragment()
+        }
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, postFragment).commit()
     }
 
     override fun onResume() {
@@ -150,6 +169,11 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_CAMERA && resultCode == Activity.RESULT_OK){
+            postFragment?.onActivityResult(requestCode, resultCode, data)
+        }
+
+
         if (requestCode == REQUEST_CODE_CART && resultCode == Activity.RESULT_OK) {
             cocktailMainFragment?.clearCocktailList()
             updateCartMenuItem()
@@ -164,6 +188,15 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
                 || requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_CANCELED) {
             preferences!!.edit().putBoolean(KEY_FIRST_START, true).apply()
             finish()
+        }
+    }
+
+    override fun onGetPermission() {
+        if (PermissionManager.permissionPending( applicationContext, android.Manifest.permission.CAMERA)) {
+            PermissionManager.requestPermission(
+                    this,
+                    android.Manifest.permission.CAMERA,
+                    REQUEST_CODE_CAMERA)
         }
     }
 

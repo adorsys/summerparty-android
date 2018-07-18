@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 		  package="de.adorsys.android.summerparty">
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
 
 	<application
 		android:allowBackup="false"
@@ -21,6 +24,16 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel"
             android:value="0" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="de.adorsys.android.summerparty"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
 
         <activity
             android:name=".ui.MainActivity"
