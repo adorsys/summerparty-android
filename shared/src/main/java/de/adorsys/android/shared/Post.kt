@@ -1,6 +1,6 @@
-package de.adorsys.android.summerpartysocial
+package de.adorsys.android.shared
 
-import java.util.Date
+import java.util.*
 
 data class Post(val id: String = "",
                 val name: String = "",
