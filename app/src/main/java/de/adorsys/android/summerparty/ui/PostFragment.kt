@@ -13,25 +13,18 @@ import android.provider.MediaStore
 import android.support.design.widget.TextInputEditText
 import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
-import android.text.Editable
-import android.text.TextUtils
-import android.text.TextWatcher
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
-import android.webkit.MimeTypeMap
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import de.adorsys.android.summerparty.R
-import de.adorsys.android.summerparty.R.string.username
-import kotlinx.android.synthetic.main.fragment_post.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
-import java.nio.file.Files.createFile
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -89,7 +82,8 @@ internal class PostFragment : Fragment() {
         uploadImageButton.setOnClickListener({
             val description = descriptionEditText.text.toString()
             if ( file != null) {
-                getEncodedBytesFromBitmap(BitmapFactory.decodeFile(file?.path))
+                var imageAsString: String? = getEncodedBytesFromBitmap(BitmapFactory.decodeFile(file?.path))
+
                 setSuccessScreen()
                 mHandler.postDelayed({
                     updateView()
