@@ -2,13 +2,12 @@ package de.adorsys.android.summerparty.ui
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.arch.lifecycle.Observer
 import android.content.*
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.LocalBroadcastManager
-import android.support.v4.media.session.MediaButtonReceiver.handleIntent
 import android.support.v7.widget.Toolbar
-import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -16,23 +15,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
-import android.widget.Toast
-import com.google.firebase.iid.FirebaseInstanceId
-import de.adorsys.android.network.ApiManager
 import de.adorsys.android.network.Cocktail
-import de.adorsys.android.network.Customer
-import de.adorsys.android.network.Order
 import de.adorsys.android.network.mutable.MutableCustomer
 import de.adorsys.android.summerparty.R
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.experimental.launch
-import de.adorsys.android.summerparty.R.id.bottom_navigation
+import de.adorsys.android.summerparty.Repository
+import de.adorsys.android.summerparty.Repository.user
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 
-
-class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionListener, CocktailMainFragment.OnGetUserCocktailsListener, PostFragment.OnGetPermissionsListener {
+class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionListener, PostFragment.OnGetPermissionsListener {
     private var cocktailMainFragment: CocktailMainFragment? = null
     private var postFragment: PostFragment? = null
 
@@ -55,25 +47,23 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         }
     }
 
-    private var user: Customer? = null
-    private var progressBar: View? = null
+    private lateinit var preferences: SharedPreferences
+    private lateinit var progressBar: View
+    private lateinit var fragmentContainer: FrameLayout
+
+    private var firebaseToken: String? = null
     private var viewContainer: View? = null
     private var cartMenuItem: MenuItem? = null
     private var userMenuItem: MenuItem? = null
     private var cartOptionsItemCount: TextView? = null
-    private var preferences: SharedPreferences? = null
-    private var firebaseToken: String? = null
     private var userDialog: AlertDialog? = null
     private var notificationDialog: AlertDialog? = null
-    private var fallbackUserCreation = false
-    private lateinit var fragmentContainer: FrameLayout
 
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleIntent(intent, false)
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,46 +76,42 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         preferences = getSharedPreferences(KEY_PREFS_FILENAME, Context.MODE_PRIVATE)
 
         setSupportActionBar(toolbar)
-        buildCocktailMainFragment()
-
-        if (preferences!!.contains(KEY_USER_ID)) {
-            getUser()
-        } else if (firstStart()) {
-            progressBar?.visibility = View.VISIBLE
-        }
 
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.cocktail_order -> buildCocktailMainFragment()
-                R.id.feed -> buildPostMainFragment()
+                R.id.cocktail_order -> startCocktailMainFragment()
+                R.id.feed -> startPostMainFragment()
             }
             true
         }
-    }
 
-    private fun buildCocktailMainFragment() {
+        Repository.cocktailsLiveData.observe(this, Observer {
+            progressBar.visibility = View.GONE
+        })
 
-        toolbar.title = getString(R.string.app_name)
-        if (cocktailMainFragment == null) {
-            cocktailMainFragment = CocktailMainFragment()
-        }
-        getCocktails()
-        getOrdersForUser(false)
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, cocktailMainFragment).commit()
-    }
+        Repository.pendingCocktailsLiveData.observe(this, Observer {
+            updateCartMenuItem()
+        })
 
-    private fun buildPostMainFragment(){
-        toolbar.setTitle(getString(R.string.postTitle))
-        if (postFragment == null) {
-            postFragment = PostFragment()
-        }
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, postFragment).commit()
+        Repository.userLiveData.observe(this, Observer {
+            updateUserMenuItem()
+            launch {
+                it?.id?.let { userId ->
+                    Repository.fetchStartupData(userId).await()
+                }
+            }
+        })
+
+        val userId = preferences.getString(KEY_USER_ID, null)
+        userId?.let { Repository.getUser(it) }
+
+        startCocktailMainFragment()
     }
 
     override fun onResume() {
         super.onResume()
         getCocktails()
-        getOrdersForUser(false)
+        getOrdersForUser()
     }
 
     override fun onStart() {
@@ -136,9 +122,8 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
 
     override fun onDestroy() {
         super.onDestroy()
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver)
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -147,17 +132,13 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         cartMenuItem?.setActionView(R.layout.view_action_cart)
         val cartOptionsItemContainer = cartMenuItem?.actionView as ViewGroup
         cartOptionsItemContainer.setOnClickListener {
-            if (preferences!!.contains(KEY_USER_ID)) {
+            if (Repository.user != null) {
                 openCartActivity()
-            } else {
-                fallbackUserCreation = true
-                firebaseToken = FirebaseInstanceId.getInstance().token
-                startActivityForResult(Intent(this, CreateUserActivity::class.java), REQUEST_CODE_NAME)
             }
         }
         cartOptionsItemCount = cartOptionsItemContainer.findViewById(R.id.action_cart_count_text) as TextView
+
         updateCartMenuItem()
-        updateUserMenuItem()
         return true
     }
 
@@ -169,30 +150,25 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_CAMERA && resultCode == Activity.RESULT_OK){
+        if (requestCode == REQUEST_CODE_CAMERA
+                && resultCode == Activity.RESULT_OK) {
             postFragment?.onActivityResult(requestCode, resultCode, data)
         }
 
-
-        if (requestCode == REQUEST_CODE_CART && resultCode == Activity.RESULT_OK) {
-            cocktailMainFragment?.clearCocktailList()
-            updateCartMenuItem()
-            if (!fallbackUserCreation) {
-                getOrdersForUser(true)
-            }
+        if (requestCode == REQUEST_CODE_CART
+                && resultCode == Activity.RESULT_OK) {
+            getOrdersForUser(true)
         }
 
-        if (requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_OK && data != null && !TextUtils.isEmpty(firebaseToken)) {
-            createAndPersistUser(data.getStringExtra(CreateUserActivity.KEY_USERNAME), firebaseToken)
-        } else if (requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_OK
-                || requestCode == REQUEST_CODE_NAME && resultCode == Activity.RESULT_CANCELED) {
-            preferences!!.edit().putBoolean(KEY_FIRST_START, true).apply()
-            finish()
+        if (requestCode == REQUEST_CODE_NAME
+                && resultCode == Activity.RESULT_OK
+                && data != null) {
+            createAndPersistUser(data.getStringExtra(CreateUserActivity.KEY_USERNAME))
         }
     }
 
     override fun onGetPermission() {
-        if (PermissionManager.permissionPending( applicationContext, android.Manifest.permission.CAMERA)) {
+        if (PermissionManager.permissionPending(applicationContext, android.Manifest.permission.CAMERA)) {
             PermissionManager.requestPermission(
                     this,
                     android.Manifest.permission.CAMERA,
@@ -200,126 +176,69 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         }
     }
 
-    override fun onGetUserCocktails() {
-        getOrdersForUser(false)
-    }
-
     override fun onListFragmentInteraction(item: Cocktail) {
         if (viewContainer != null && item.available) {
-            cocktailMainFragment?.addToCocktailList(item)
-            updateCartMenuItem()
+            Repository.addToPendingCocktails(item)
         } else if (viewContainer != null) {
             Snackbar.make(viewContainer!!, getString(R.string.cocktail_out_of_stock, item.name), Snackbar.LENGTH_LONG).show()
         }
     }
 
+    private fun startCocktailMainFragment() {
+        toolbar.title = getString(R.string.app_name)
+        if (cocktailMainFragment == null) {
+            cocktailMainFragment = CocktailMainFragment()
+        }
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, cocktailMainFragment).commit()
+    }
+
+    private fun startPostMainFragment() {
+        toolbar.title = getString(R.string.postTitle)
+        if (postFragment == null) {
+            postFragment = PostFragment()
+        }
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, postFragment).commit()
+    }
 
     private fun openCartActivity() {
         val intent = Intent(this@MainActivity, CartActivity::class.java)
-        intent.putExtra(CartActivity.EXTRA_COCKTAILS, cocktailMainFragment?.getCocktailList())
-        intent.putExtra(CartActivity.EXTRA_USER_ID, user?.id)
         this@MainActivity.startActivityForResult(intent, REQUEST_CODE_CART)
     }
 
-    private fun createAndPersistUser(username: String, firebaseToken: String?) {
+    private fun createAndPersistUser(username: String) {
         Log.d("TAG_USER", username)
         launch {
-            try {
-                val response = ApiManager.createCustomer(MutableCustomer(username, firebaseToken)).await()
-                if (response.isSuccessful) {
-                    val customer = response.body()
+            firebaseToken?.let { token ->
+                Repository.createUser(MutableCustomer(username, token)) {
                     launch(UI) {
-                        (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_ID, customer?.id).apply()
-                        (preferences as SharedPreferences).edit().putString(MainActivity.KEY_USER_NAME, customer?.name).apply()
-                        launch(UI) {
-                            user = customer
-                            updateUserMenuItem()
-                            if (fallbackUserCreation) {
-                                openCartActivity()
-                                fallbackUserCreation = false
-                            }
-                        }
+                        preferences.edit().putString(MainActivity.KEY_USER_ID, it?.id).apply()
+                        preferences.edit().putString(MainActivity.KEY_USER_NAME, it?.name).apply()
                     }
-                } else {
-                    Log.i("TAG_USER", response.message())
+                    it?.id?.let { userId ->
+                        val success = Repository.fetchStartupData(userId)
+                        Log.d("TAG_STARTUP", "fetching startup data successful: $success")
+                    }
                 }
-            } catch (e: Exception) {
-                Log.i("TAG_USER", e.message)
             }
         }
     }
 
-    private fun getCocktails() {
-        launch {
-            try {
-                val response = ApiManager.getCocktails().await()
-                if (response.isSuccessful) {
-                    val cocktailResponse: List<Cocktail>? = response.body()
-                    // Update adapter's cocktail list
-                    cocktailResponse?.let {
-                        launch(UI) {
-                            cocktailMainFragment?.notifyDataSetChanged(cocktailList = it)
-                        }
-                    }
-                } else {
-                    Log.i("TAG_COCKTAILS", response.message())
+    private fun getOrdersForUser(goToOrders: Boolean = false, forceReload: Boolean = false) {
+        Repository.fetchOrders({
+            launch(UI) {
+                if (goToOrders) {
+                    cocktailMainFragment?.goToOrders()
                 }
-            } catch (e: Exception) {
-                Log.i("TAG_COCKTAILS", e.message)
             }
-        }
+        }, forceReload)
     }
 
-    private fun getUser() {
-        // Update adapter's cocktail list
-        launch {
-            try {
-                val response = ApiManager.getCustomer(preferences?.getString(KEY_USER_ID, null) ?: "").await()
-                if (response.isSuccessful) {
-                    user = response.body()
-                    updateUserMenuItem()
-                    launch(UI) {
-                        if (user == null) {
-                            // backend has hard-reset the database
-                            (preferences as SharedPreferences).edit().clear().apply()
-                            getUser()
-                        }
-                        (preferences as SharedPreferences).edit().putString(KEY_USER_NAME, this@MainActivity.user?.name).apply()
-                    }
-                } else {
-                    Log.i("TAG_USER", response.message())
-                }
-            } catch (e: Exception) {
-                Log.i("TAG_USER", e.message)
-            }
-        }
-    }
-
-    private fun getOrdersForUser(goToOrders: Boolean) {
-        if (user == null) {
-            return
-        }
-        launch {
-            try {
-                val response = ApiManager.getOrdersForCustomer(user!!.id).await()
-                if (response.isSuccessful) {
-                    val cocktailResponse: List<Order>? = response.body()
-                    // Update adapter's order list
-                    cocktailResponse?.let {
-                        launch(UI) { cocktailMainFragment?.notifyDataSetChanged(orderList = it, goToOrders = goToOrders) }
-                    }
-                } else {
-                    Log.i("TAG_CUSTOMER_ORDERS", response.message())
-                }
-            } catch (e: Exception) {
-                Log.i("TAG_CUSTOMER_ORDERS", e.message)
-            }
-        }
-    }
+    private fun getCocktails(forceReload: Boolean = false) = Repository.fetchCocktails({}, forceReload)
 
     private fun updateCartMenuItem() {
-        cartMenuItem?.isVisible = cocktailMainFragment?.getCocktailList()?.isNotEmpty() ?: false
-        cartOptionsItemCount?.text = cocktailMainFragment?.getCocktailList()?.size.toString()
+        val list = Repository.pendingCocktailList
+        cartMenuItem?.isVisible = list.isNotEmpty()
+        cartOptionsItemCount?.text = list.size.toString()
     }
 
     private fun updateUserMenuItem() {
@@ -338,16 +257,16 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     }
 
     private fun firstStart(): Boolean {
-        return if ((preferences as SharedPreferences).contains(KEY_FIRST_START)) {
+        return if (preferences.contains(KEY_FIRST_START)) {
             false
         } else {
-            (preferences as SharedPreferences).edit().putBoolean(KEY_FIRST_START, true).apply()
+            preferences.edit().putBoolean(KEY_FIRST_START, true).apply()
             true
         }
     }
 
     private fun handleIntent(intent: Intent?, showDialog: Boolean) {
-        progressBar?.visibility = View.GONE
+        progressBar.visibility = View.GONE
         if (intent == null) {
             return
         }

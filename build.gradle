@@ -21,6 +21,7 @@ ext {
     firebaseMessagingVersion = "17.0.0"
     kotlinCoroutinesVersion = "0.22.5"
     androidThingsVersion = "1.0"
+    architectureComponentsVersion = "1.1.1"
 }
 
 allprojects {

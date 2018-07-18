@@ -1,6 +1,5 @@
 package de.adorsys.android.summerparty.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
@@ -8,30 +7,13 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import de.adorsys.android.network.Cocktail
-import de.adorsys.android.network.Order
 import de.adorsys.android.summerparty.R
+import de.adorsys.android.summerparty.Repository
 import de.adorsys.android.summerparty.ui.adapter.SectionsPagerAdapter
 
 
 class CocktailMainFragment : Fragment() {
-    private var pendingCocktails = mutableListOf<Cocktail>()
-
-    interface OnGetUserCocktailsListener {
-        fun onGetUserCocktails()
-    }
-
     private lateinit var viewPager: ViewPager
-    private lateinit var listener: OnGetUserCocktailsListener
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try {
-            this.listener = context as OnGetUserCocktailsListener
-        } catch (e: ClassCastException) {
-            IllegalStateException("Your activity has to implement OnGetUserCocktailsListener")
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -56,7 +38,7 @@ class CocktailMainFragment : Fragment() {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
-                listener.onGetUserCocktails()
+                Repository.fetchCocktails()
             }
         })
 
@@ -64,7 +46,7 @@ class CocktailMainFragment : Fragment() {
         tabLayout.addOnTabSelectedListener(
                 object : TabLayout.OnTabSelectedListener {
                     override fun onTabReselected(tab: TabLayout.Tab?) {
-                        listener.onGetUserCocktails()
+                        Repository.fetchCocktails()
                     }
 
                     override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -72,34 +54,7 @@ class CocktailMainFragment : Fragment() {
                 })
     }
 
-    fun notifyDataSetChanged(orderList: List<Order> = emptyList(), cocktailList: List<Cocktail> = emptyList(), goToOrders: Boolean = false) {
-        val oldCocktailList = (viewPager.adapter as SectionsPagerAdapter).cocktails
-        if (oldCocktailList != cocktailList && cocktailList.isNotEmpty()) {
-            (viewPager.adapter as SectionsPagerAdapter).setCocktails(cocktailList)
-            viewPager.adapter?.notifyDataSetChanged()
-        }
-
-        val oldOrderList = (viewPager.adapter as SectionsPagerAdapter).orders
-        if (oldOrderList != orderList && orderList.isNotEmpty()) {
-            (viewPager.adapter as SectionsPagerAdapter).setOrders(orderList)
-            viewPager.adapter?.notifyDataSetChanged()
-
-            if (goToOrders) {
-                viewPager.currentItem = 1
-            }
-        }
+    fun goToOrders() {
+        viewPager.currentItem = 1
     }
-
-    fun clearCocktailList() {
-        pendingCocktails.clear()
-    }
-
-    fun addToCocktailList(item: Cocktail) {
-        pendingCocktails.add(item)
-    }
-
-    fun getCocktailList(): ArrayList<Cocktail> {
-        return ArrayList(pendingCocktails)
-    }
-
 }

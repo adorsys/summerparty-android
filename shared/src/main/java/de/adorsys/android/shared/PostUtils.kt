@@ -9,8 +9,8 @@ object PostUtils {
     fun getEncodedBytesFromBitmap(bitmap: Bitmap): String? {
         return try {
             val stream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-            Base64.encodeToString(stream.toByteArray(), Base64.DEFAULT)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
+            Base64.encodeToString(stream.toByteArray(), Base64.URL_SAFE)
         } catch (e: Exception) {
             null
         }
@@ -18,7 +18,7 @@ object PostUtils {
 
     fun getBitmapFromEncodedBytes(encodedBytes: String): Bitmap? {
         return try {
-            val decodedBytes = Base64.decode(encodedBytes, Base64.DEFAULT)
+            val decodedBytes = Base64.decode(encodedBytes, Base64.URL_SAFE)
             BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
         } catch (e: Exception) {
             null

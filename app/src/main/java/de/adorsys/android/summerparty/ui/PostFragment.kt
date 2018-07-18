@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
@@ -80,19 +81,21 @@ internal class PostFragment : Fragment() {
         uploadImageButton.setOnClickListener { button ->
             if (file != null) {
                 val name = preferences?.getString(MainActivity.KEY_USER_NAME, null)
-                val imageString = PostUtils
-                        .getEncodedBytesFromBitmap(BitmapFactory.decodeFile(file?.path))
+                val scaledBitmap = file?.path?.let { getScaledImage(500F, it) }
+                val imageString = scaledBitmap?.let {
+                    PostUtils.getEncodedBytesFromBitmap(it)
+                }
                 val text = descriptionEditText.text.toString()
 
                 if (!name.isNullOrBlank() && !imageString.isNullOrBlank()) {
-                    val post = Post(name = name!!, image = imageString!!, text = text)
+                    val post = Post(UUID.randomUUID().toString(), name = name!!, image = imageString!!, text = text)
                     FirebaseProvider.createPost(
                             post,
                             {
                                 setSuccessScreen()
                                 button.postDelayed({
                                     updateView()
-                                }, 2000)
+                                }, 4000)
                             },
                             { Log.e(javaClass.name, "firebase post not successful") })
                 }
@@ -184,27 +187,31 @@ internal class PostFragment : Fragment() {
 
     private fun setThumbnailImage(filePath: String?) {
         filePath?.let {
-            try {
+            val imageViewSize = pictureImageView.resources.getDimension(R.dimen.image_size)
+            pictureImageView.setImageBitmap(getScaledImage(imageViewSize, it))
+        }
+    }
 
-                val imageViewSize = pictureImageView.resources.getDimension(R.dimen.image_size)
-                // Get the dimensions of the bitmap
-                val options = BitmapFactory.Options()
-                options.inJustDecodeBounds = true
-                BitmapFactory.decodeFile(it, options)
-                val photoW = options.outWidth
-                val photoH = options.outHeight
+    private fun getScaledImage(size: Float, filePath: String): Bitmap? {
+        return try {
+            // Get the dimensions of the bitmap
+            val options = BitmapFactory.Options()
+            options.inJustDecodeBounds = true
+            BitmapFactory.decodeFile(filePath, options)
+            val photoW = options.outWidth
+            val photoH = options.outHeight
 
-                // Determine how much to scale down the image
-                val scaleFactor = Math.min(photoW / imageViewSize, photoH / imageViewSize)
+            // Determine how much to scale down the image
+            val scaleFactor = Math.min(photoW / size, photoH / size)
 
-                // Decode the image file into a Bitmap sized to fill the View
-                options.inJustDecodeBounds = false
-                options.inSampleSize = Math.round(scaleFactor)
+            // Decode the image file into a Bitmap sized to fill the View
+            options.inJustDecodeBounds = false
+            options.inSampleSize = Math.round(scaleFactor)
 
-                pictureImageView.setImageBitmap(BitmapFactory.decodeFile(it, options))
-            } catch (e: Exception) {
-                //Log
-            }
+            BitmapFactory.decodeFile(filePath, options)
+        } catch (e: Exception) {
+            Log.e(javaClass.name, e.message)
+            null
         }
     }
 
