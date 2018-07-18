@@ -105,10 +105,12 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
 
     private fun buildCocktailMainFragment() {
 
-        toolbar.setTitle(getString(R.string.app_name))
+        toolbar.title = getString(R.string.app_name)
         if (cocktailMainFragment == null) {
             cocktailMainFragment = CocktailMainFragment()
         }
+        getCocktails()
+        getOrdersForUser(false)
         supportFragmentManager.beginTransaction().replace(R.id.fragment_container, cocktailMainFragment).commit()
     }
 
