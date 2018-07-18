@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.firebase.firestore.*
+import de.adorsys.android.shared.Post
 import kotlinx.android.synthetic.main.fragment_feed.*
 import java.io.ByteArrayOutputStream
 
