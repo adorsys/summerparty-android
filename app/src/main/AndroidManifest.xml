@@ -55,12 +55,12 @@
         <activity android:name=".ui.CreateUserActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"/>
 
-        <service android:name=".network.FirebaseMessagingService">
+        <service android:name=".push.FirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".network.FirebaseInstanceIDService">
+        <service android:name=".push.FirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>

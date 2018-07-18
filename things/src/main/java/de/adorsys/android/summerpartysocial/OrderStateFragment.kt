@@ -13,6 +13,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import de.adorsys.android.network.ApiManager
 import de.adorsys.android.network.Order
+import de.adorsys.android.shared.Values
+import de.adorsys.android.shared.views.OrderView
 import kotlinx.android.synthetic.main.fragment_order_state.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
