@@ -1,4 +1,4 @@
-package de.adorsys.android.summerparty.network
+package de.adorsys.android.summerparty.push
 
 import android.content.Intent
 import android.support.v4.content.LocalBroadcastManager
