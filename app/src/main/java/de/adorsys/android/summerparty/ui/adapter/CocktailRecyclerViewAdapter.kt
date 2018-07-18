@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import de.adorsys.android.network.Cocktail
+import de.adorsys.android.shared.CocktailType
 import de.adorsys.android.shared.CocktailUtils
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.ui.CocktailFragment
@@ -37,6 +38,7 @@ class CocktailRecyclerViewAdapter(
         private val availabilityView = view.findViewById(R.id.available_image) as ImageView
         private val availabilityText = view.findViewById(R.id.available_text) as TextView
         private val addImage = view.findViewById(R.id.add_image) as ImageView
+        private val cocktailOftheyear = view.findViewById(R.id.bestsellerImg) as ImageView
 
         private var item: Cocktail? = null
 
@@ -52,6 +54,10 @@ class CocktailRecyclerViewAdapter(
             } else {
                 availabilityView.setImageDrawable(view.context.getDrawable(R.drawable.dot_red))
                 availabilityText.text = availabilityText.context.getString(R.string.availability_unavailable)
+            }
+
+            if (cocktail.name.equals(view.context.getString(R.string.cocktail_of_the_year))){
+                cocktailOftheyear.visibility = View.VISIBLE
             }
 
             addImage.setOnClickListener {

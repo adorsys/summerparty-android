@@ -27,4 +27,5 @@
 
 	<string name="channel_name" translatable="false">general</string>
 	<string name="channel_description" translatable="false">cocktail notifications</string>
+	<string name="cocktail_of_the_year">Pink Gin Tonic</string>
 </resources>
