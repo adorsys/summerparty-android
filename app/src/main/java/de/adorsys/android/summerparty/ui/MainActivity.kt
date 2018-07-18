@@ -104,6 +104,8 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     }
 
     private fun buildCocktailMainFragment() {
+
+        toolbar.setTitle(getString(R.string.app_name))
         if (cocktailMainFragment == null) {
             cocktailMainFragment = CocktailMainFragment()
         }
