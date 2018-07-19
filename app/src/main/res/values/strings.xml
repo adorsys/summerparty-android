@@ -33,7 +33,7 @@
     <string name="post_user_information">You discovered our new feature! Take pictures and post them to our summer party feed. Please make sure to only take pictures with people of who you have received the consent to do so.</string>
     <string name="agree">Accept</string>
     <string name="upload">Upload</string>
-	<string name="texthint">Add a comment to your picture</string>
+	<string name="text_hint">Add a comment to your picture</string>
     <string name="post_empty">Take a picture and post it to our summer party feed.</string>
     <string name="post_success">Your picture has been successfully uploaded to our summerparty feed. You can add another one.</string>
 
