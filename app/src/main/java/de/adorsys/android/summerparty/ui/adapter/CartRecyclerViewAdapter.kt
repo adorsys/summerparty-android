@@ -68,12 +68,9 @@ class CartRecyclerViewAdapter(
                         cocktailCountText.selectAll()
                         cocktailMap.remove(cocktail)
                         cocktailMap[cocktail] = cocktailCount!!.toInt()
-                        Repository.removeFromPendingCocktails(cocktail)
-                        for (i in 0..cocktailCount.toInt()) {
-                            Repository.addToPendingCocktails(cocktail)
-                        }
                     }
                 }
+
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {}
             })
