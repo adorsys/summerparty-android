@@ -10,6 +10,7 @@ import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.LocalBroadcastManager
+import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import de.adorsys.android.summerparty.R
@@ -28,6 +29,16 @@ class FirebaseMessagingService : FirebaseMessagingService() {
     // happens when app is in foreground
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
         sendBroadcast()
+    }
+
+    /**
+     * Called if InstanceID token is updated. This may occur if the security of
+     * the previous token had been compromised. Note that this is called when the InstanceID token
+     * is initially generated so this is where you would retrieve the token.
+     */
+    override fun onNewToken(newToken: String?) {
+        Log.d("TAG_FIREBASE", "Refreshed token: $newToken")
+        newToken?.let { sendRegistrationToServer(it) }
     }
 
     private fun sendBroadcast(body: String? = null, icon: Int = R.drawable.ic_cocktail_icon) {
@@ -62,7 +73,7 @@ class FirebaseMessagingService : FirebaseMessagingService() {
 
             notificationBuilder.setContentIntent(resultPendingIntent)
             // vibration
-            notificationBuilder.setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000, 1000, 1000))
+            notificationBuilder.setVibrate(longArrayOf(1000, 1000, 1000, 1000))
             // led
             notificationBuilder.setLights(Color.BLUE, 1000, 500)
             // from Android O on
@@ -89,5 +100,19 @@ class FirebaseMessagingService : FirebaseMessagingService() {
         val notificationManager = getSystemService(NotificationManager::class.java)
         notificationManager.createNotificationChannel(channel)
         return channel
+    }
+
+    private fun sendRegistrationToServer(token: String) {
+        if ((application as SummerpartyApp).currentActivity == MainActivity::class.java) {
+            val intent = Intent(MainActivity.KEY_FIREBASE_RECEIVER)
+            intent.putExtra(MainActivity.KEY_FIREBASE_TOKEN, token)
+            broadcaster?.sendBroadcast(intent)
+        } else {
+            // TODO bad, don't --> starts application when it is in background
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            intent.putExtra(MainActivity.KEY_FIREBASE_TOKEN, token)
+            startActivity(intent)
+        }
     }
 }

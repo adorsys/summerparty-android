@@ -39,6 +39,11 @@ dependencies {
 	implementation "com.google.firebase:firebase-core:${firebaseVersion}"
 	implementation "com.google.firebase:firebase-firestore:${firebaseDatabaseVersion}"
 	implementation "com.google.firebase:firebase-messaging:${firebaseMessagingVersion}"
+
+	// Architecture components
+	implementation "android.arch.lifecycle:extensions:$architectureComponentsVersion"
+	implementation "android.arch.lifecycle:reactivestreams:$architectureComponentsVersion"
+
 	testImplementation "junit:junit:${jUnitVersion}"
 
 }
