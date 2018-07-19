@@ -42,10 +42,8 @@ class OrderFragment : Fragment() {
 
         Repository.ordersLiveData.observe(this, Observer { orders ->
             setViewState(orders.orEmpty())
-            (view as? RecyclerView).let { recyclerView ->
-                val adapter = (recyclerView?.adapter as? OrderRecyclerViewAdapter)
-                adapter?.submitList(sortOrders(orders.orEmpty()))
-            }
+            val adapter = (recyclerView.adapter as? OrderRecyclerViewAdapter)
+            adapter?.submitList(sortOrders(orders.orEmpty()))
         })
     }
 
