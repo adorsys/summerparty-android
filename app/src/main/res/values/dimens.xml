@@ -18,6 +18,7 @@
 	<dimen name="size_delete_button">36dp</dimen>
     <dimen name="width_enter_image">120dp</dimen>
     <dimen name="image_size">300dp</dimen>
+    <dimen name="image_padding">30dp</dimen>
 
 
 </resources>

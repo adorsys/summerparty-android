@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.constraint.ConstraintLayout
 import android.support.design.widget.TextInputEditText
 import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
@@ -38,7 +39,7 @@ internal class PostFragment : Fragment() {
     private lateinit var listener: PostFragment.OnGetPermissionsListener
     private lateinit var pictureImageView: ImageView
     private lateinit var postMainContainer: LinearLayout
-    private lateinit var informedConsentContainer: LinearLayout
+    private lateinit var informedConsentContainer: ConstraintLayout
     private lateinit var photoEmptyContainer: LinearLayout
     private lateinit var pictureContainer: LinearLayout
     private lateinit var successContainer: LinearLayout
