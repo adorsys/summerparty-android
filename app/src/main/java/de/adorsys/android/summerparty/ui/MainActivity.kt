@@ -1,5 +1,6 @@
 package de.adorsys.android.summerparty.ui
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.arch.lifecycle.Observer
@@ -167,12 +168,20 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         }
     }
 
-    override fun onGetPermission() {
+    override fun onRequestPermission() {
         if (PermissionManager.permissionPending(applicationContext, android.Manifest.permission.CAMERA)) {
             PermissionManager.requestPermission(
                     this,
                     android.Manifest.permission.CAMERA,
                     REQUEST_CODE_CAMERA)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        PermissionManager.handlePermissionsResult(this, grantResults, arrayOf(Manifest.permission.CAMERA)) {
+            postFragment?.openCamera()
         }
     }
 

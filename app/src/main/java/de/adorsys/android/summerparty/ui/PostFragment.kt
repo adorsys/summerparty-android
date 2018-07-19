@@ -1,5 +1,6 @@
 package de.adorsys.android.summerparty.ui
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -32,7 +33,7 @@ import java.util.*
 
 internal class PostFragment : Fragment() {
     interface OnGetPermissionsListener {
-        fun onGetPermission()
+        fun onRequestPermission()
     }
 
     private var preferences: SharedPreferences? = null
@@ -47,11 +48,6 @@ internal class PostFragment : Fragment() {
     private lateinit var descriptionEditText: TextInputEditText
 
     private var file: File? = null
-
-    companion object {
-        private const val KEY_IS_INFORMED_CONSENT = "is_informed_consent"
-        private const val REQUEST_CODE_CAMERA: Int = 942
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -101,14 +97,12 @@ internal class PostFragment : Fragment() {
                             { Log.e(javaClass.name, "firebase post not successful") })
                 }
             } else {
-
-
+                Log.e(javaClass.name, "file is null")
             }
         }
 
         return view
     }
-
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -116,6 +110,28 @@ internal class PostFragment : Fragment() {
             this.listener = context as OnGetPermissionsListener
         } catch (e: ClassCastException) {
             IllegalStateException("Your activity has to implement OnGetPermissionsListener")
+        }
+    }
+
+    internal fun openCamera() {
+        if (PermissionManager.permissionPending(context!!, Manifest.permission.CAMERA)) {
+            listener.onRequestPermission()
+        } else {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            if (intent.resolveActivity(context!!.packageManager) != null) {
+                file = createFile(context!!, ".jpg")
+                try {
+                    file?.let {
+                        val currentPhotoUri = FileProvider.getUriForFile(
+                                context!!, "de.adorsys.android.summerparty",
+                                it)
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, currentPhotoUri)
+                        activity?.startActivityForResult(intent, REQUEST_CODE_CAMERA)
+                    }
+                } catch (e: Exception) {
+                    Log.e(javaClass.name, e.message)
+                }
+            }
         }
     }
 
@@ -136,28 +152,6 @@ internal class PostFragment : Fragment() {
         return true
     }
 
-    private fun openCamera() {
-        listener.onGetPermission()
-
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (intent.resolveActivity(context!!.packageManager) != null) {
-            file = createFile(context!!, ".jpg")
-            try {
-                file?.let {
-                    val currentPhotoUri = FileProvider.getUriForFile(
-                            context!!, "de.adorsys.android.summerparty",
-                            it)
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, currentPhotoUri)
-                    activity?.startActivityForResult(intent, REQUEST_CODE_CAMERA)
-                }
-            } catch (e: Exception) {
-                //Log
-            }
-
-        }
-
-    }
-
     private fun createFile(context: Context, suffix: String): File? {
         return try {
             val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
@@ -169,24 +163,26 @@ internal class PostFragment : Fragment() {
                         suffix,        /* suffix */
                         storageDir)    /* directory */
             } catch (e: Exception) {
+                Log.e(javaClass.name, e.message)
                 null
             }
 
             image
         } catch (e: IOException) {
-            //Log
+            Log.e(javaClass.name, e.message)
             null
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_CAMERA && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE_CAMERA
+                && resultCode == Activity.RESULT_OK) {
             showImageView()
-            setThumbnailImage(file?.path)
+            setScaledImage(file?.path)
         }
     }
 
-    private fun setThumbnailImage(filePath: String?) {
+    private fun setScaledImage(filePath: String?) {
         filePath?.let {
             val imageViewSize = pictureImageView.resources.getDimension(R.dimen.image_size)
             pictureImageView.setImageBitmap(getScaledImage(imageViewSize, it))
@@ -239,5 +235,10 @@ internal class PostFragment : Fragment() {
         descriptionEditText.setText("")
         successContainer.visibility = GONE
         hideImageView()
+    }
+
+    companion object {
+        private const val KEY_IS_INFORMED_CONSENT = "is_informed_consent"
+        private const val REQUEST_CODE_CAMERA: Int = 942
     }
 }
