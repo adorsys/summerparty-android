@@ -73,8 +73,8 @@ internal class PostFragment : Fragment() {
             openCamera()
         }
 
-        descriptionEditText = view.findViewById(R.id.description_edit_text) as TextInputEditText
-        uploadImageButton = view.findViewById(R.id.upload_image_button) as Button
+        descriptionEditText = view.findViewById(R.id.description_edit_text)
+        uploadImageButton = view.findViewById(R.id.upload_image_button)
         uploadImageButton.setOnClickListener { button ->
             if (file != null) {
                 val name = preferences?.getString(MainActivity.KEY_USER_NAME, null)
@@ -89,7 +89,7 @@ internal class PostFragment : Fragment() {
                     FirebaseProvider.createPost(
                             post,
                             {
-                                setSuccessScreen()
+                                showSuccessScreen()
                                 button.postDelayed({
                                     updateView()
                                 }, 4000)
@@ -225,9 +225,12 @@ internal class PostFragment : Fragment() {
         uploadImageButton.isEnabled = true
     }
 
-    private fun setSuccessScreen() {
+    private fun showSuccessScreen() {
         successContainer.visibility = VISIBLE
         postMainContainer.visibility = GONE
+
+        uploadImageButton.background = resources.getDrawable(R.drawable.button_background_disabled, activity?.theme)
+        uploadImageButton.isEnabled = false
     }
 
     private fun updateView() {
