@@ -24,15 +24,18 @@
     <string name="x">x</string>
     <string name="user_content_title">User</string>
 	<string name="user_content_text">You are %1$s and your user id is %2$s.</string>
+	<string name="order_cocktail_placeholder">%1$d x %2$s</string>
 
 	<string name="channel_name" translatable="false">general</string>
 	<string name="channel_description" translatable="false">cocktail notifications</string>
-    <string name="postTitle">Foto teilen</string>
-    <string name="post_user_information">Du hast unser neues Feature entdeckt! Mache Fotos und poste sie in unseren Summerparty Feed. Vorab möchten wir dich bitten nur Fotos von Personen zu posten die mit der Abbildung einverstanden sind. Alle Bilder werden nach unserem Event gelöscht.</string>
-    <string name="agree">Verstanden</string>
-    <string name="upload">hochladen</string>
-	<string name="texthint">Schreibe etwas zu deinem Bild...</string>
-    <string name="post_empty">Mache ein Foto und poste es in  unseren Sommerfest Feed.</string>
-    <string name="post_success">Deine Foto wurde in den Summerparty Feed hochgeladen. Du kannst ein weiteres Foto posten.</string>
+
+    <string name="postTitle">Share picture</string>
+    <string name="post_user_information">You discovered our new feature! Take pictures and post them to our summer party feed. Please make sure to only take pictures with people of who you have received the consent to do so.</string>
+    <string name="agree">Accept</string>
+    <string name="upload">Upload</string>
+	<string name="texthint">Add a comment to your picture</string>
+    <string name="post_empty">Take a picture and post it to our summer party feed.</string>
+    <string name="post_success">Your picture has been successfully uploaded to our summerparty feed. You can add another one.</string>
+
 	<string name="cocktail_of_the_year">Pink Gin Tonic</string>
 </resources>
