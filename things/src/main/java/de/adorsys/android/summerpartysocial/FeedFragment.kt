@@ -2,6 +2,7 @@ package de.adorsys.android.summerpartysocial
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -138,7 +139,11 @@ class FeedFragment : Fragment() {
         fun bind(snapshot: DocumentSnapshot) {
             val post = snapshot.toObject(Post::class.java)
             val bitmap = post?.image?.let { PostUtils.getBitmapFromEncodedBytes(it) }
-            bitmap?.let { imageView.setImageBitmap(null) }
+            if (bitmap == null ) {
+                imageView.setImageDrawable(ContextCompat.getDrawable(imageView.context, R.drawable.placeholder_post))
+            } else {
+                imageView.setImageBitmap(bitmap)
+            }
             titleTextView?.text = titleTextView.context.getString(R.string.image_shared_by, post?.name)
             val text = post?.text
             if (text.isNullOrBlank()) {
