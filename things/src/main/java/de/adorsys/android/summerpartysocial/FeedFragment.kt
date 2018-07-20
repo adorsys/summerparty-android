@@ -27,7 +27,9 @@ class FeedFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val query = FirebaseProvider.getFeed()
-        val adapter = FeedAdapter(query)
+        val adapter = FeedAdapter(query) {
+            feed_recycler_view.smoothScrollToPosition(0)
+        }
         feed_recycler_view.adapter = adapter
         val layoutManager = GridLayoutManager(context, 3)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -51,7 +53,7 @@ class FeedFragment : Fragment() {
         (feed_recycler_view.adapter as FeedAdapter).stopListening()
     }
 
-    class FeedAdapter(private var query: Query?) : RecyclerView.Adapter<PostViewHolder>(), EventListener<QuerySnapshot> {
+    class FeedAdapter(private var query: Query?, private val onAdapterChangedAction: () -> Unit) : RecyclerView.Adapter<PostViewHolder>(), EventListener<QuerySnapshot> {
         private val snapshots = mutableListOf<DocumentSnapshot>()
         private var listener: ListenerRegistration? = null
 
@@ -61,7 +63,7 @@ class FeedFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-            holder.bind(snapshots[position])
+            holder.bind(snapshots[position], onAdapterChangedAction)
         }
 
         override fun onEvent(feedSnapshot: QuerySnapshot?, e: FirebaseFirestoreException?) {
@@ -109,6 +111,7 @@ class FeedFragment : Fragment() {
         private fun onDocumentAdded(change: DocumentChange) {
             snapshots.add(change.newIndex, change.document)
             notifyItemInserted(change.newIndex)
+
         }
 
         private fun onDocumentModified(change: DocumentChange) {
@@ -136,10 +139,10 @@ class FeedFragment : Fragment() {
         private val descriptionTextView = view.findViewById<TextView>(R.id.descriptionTextView)
 
 
-        fun bind(snapshot: DocumentSnapshot) {
+        fun bind(snapshot: DocumentSnapshot, onAdapterChangedAction: () -> Unit) {
             val post = snapshot.toObject(Post::class.java)
             val bitmap = post?.image?.let { PostUtils.getBitmapFromEncodedBytes(it) }
-            if (bitmap == null ) {
+            if (bitmap == null) {
                 imageView.setImageDrawable(ContextCompat.getDrawable(imageView.context, R.drawable.placeholder_post))
             } else {
                 imageView.setImageBitmap(bitmap)
@@ -152,6 +155,8 @@ class FeedFragment : Fragment() {
                 descriptionTextView.visibility = View.VISIBLE
                 descriptionTextView?.text = post?.text
             }
+
+            onAdapterChangedAction()
         }
     }
 
