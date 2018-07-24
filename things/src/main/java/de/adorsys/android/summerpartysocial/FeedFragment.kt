@@ -140,23 +140,28 @@ class FeedFragment : Fragment() {
 
 
         fun bind(snapshot: DocumentSnapshot, onAdapterChangedAction: () -> Unit) {
-            val post = snapshot.toObject(Post::class.java)
-            val bitmap = post?.image?.let { PostUtils.getBitmapFromEncodedBytes(it) }
-            if (bitmap == null) {
-                imageView.setImageDrawable(ContextCompat.getDrawable(imageView.context, R.drawable.placeholder_post))
-            } else {
-                imageView.setImageBitmap(bitmap)
-            }
-            titleTextView?.text = titleTextView.context.getString(R.string.image_shared_by, post?.name)
-            val text = post?.text
-            if (text.isNullOrBlank()) {
-                descriptionTextView.visibility = View.GONE
-            } else {
-                descriptionTextView.visibility = View.VISIBLE
-                descriptionTextView?.text = post?.text
-            }
+            try {
+                val post = snapshot.toObject(Post::class.java)
+                val bitmap = post?.image?.let { PostUtils.getBitmapFromEncodedBytes(it) }
+                if (bitmap == null) {
+                    imageView.setImageDrawable(ContextCompat.getDrawable(imageView.context, R.drawable.placeholder_post))
+                } else {
+                    imageView.setImageBitmap(bitmap)
+                }
+                titleTextView?.text = titleTextView.context.getString(R.string.image_shared_by, post?.name)
+                val text = post?.text
+                if (text.isNullOrBlank()) {
+                    descriptionTextView.visibility = View.GONE
+                } else {
+                    descriptionTextView.visibility = View.VISIBLE
+                    descriptionTextView?.text = post?.text
+                }
 
-            onAdapterChangedAction()
+                onAdapterChangedAction()
+            } catch (e: Exception) {
+                Log.e("TAG_THINGS", "Could not correctly parse post object for $snapshot")
+                onAdapterChangedAction()
+            }
         }
     }
 
