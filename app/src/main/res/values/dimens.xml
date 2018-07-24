@@ -19,6 +19,8 @@
     <dimen name="width_enter_image">120dp</dimen>
     <dimen name="image_size">300dp</dimen>
     <dimen name="image_padding">30dp</dimen>
+    <dimen name="padding_info_text">50dp</dimen>
+    <dimen name="lineSpacingExtra">3dp</dimen>
 
 
 </resources>
