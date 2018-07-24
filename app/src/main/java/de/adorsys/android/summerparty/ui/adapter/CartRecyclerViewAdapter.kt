@@ -2,7 +2,6 @@ package de.adorsys.android.summerparty.ui.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +10,15 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import de.adorsys.android.network.Cocktail
+import de.adorsys.android.shared.CocktailUtils
 import de.adorsys.android.summerparty.R
-import de.adorsys.android.summerparty.data.Cocktail
-import de.adorsys.android.summerparty.data.CocktailUtils
+import de.adorsys.android.summerparty.Repository
 
 class CartRecyclerViewAdapter(
-        private val cocktails: MutableList<Cocktail>, private val onListEmptyListener: OnListEmptyListener, private var cocktailMap: HashMap<Cocktail, Int> = HashMap()) : RecyclerView.Adapter<CartRecyclerViewAdapter.ViewHolder>() {
+        private val cocktails: MutableList<Cocktail>,
+        private val onListEmptyListener: OnListEmptyListener,
+        private var cocktailMap: MutableMap<Cocktail, Int> = mutableMapOf()) : RecyclerView.Adapter<CartRecyclerViewAdapter.ViewHolder>() {
     init {
         cocktailMap = CocktailUtils.cocktailListToMap(cocktails)
 
@@ -56,37 +58,36 @@ class CartRecyclerViewAdapter(
         fun bindItem(cocktail: Cocktail) {
             item = cocktail
             cocktailCountText.setText(cocktailMap[cocktail]?.toString())
-            cocktailCountText.setOnClickListener({
+            cocktailCountText.setOnClickListener {
                 cocktailCountText.selectAll()
-            })
+            }
             cocktailCountText.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {}
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                    val cocktailCount = charSequence?.toString()
-                    if (!TextUtils.isEmpty(cocktailCount) && !cocktailCount.equals(" ")) {
-                        if (cocktailCount!!.length > 1) {
-                            cocktailCountText.selectAll()
-                        }
+                override fun afterTextChanged(s: Editable?) {
+                    val cocktailCount = s?.toString()
+                    if (!cocktailCount.isNullOrBlank()) {
+                        cocktailCountText.selectAll()
                         cocktailMap.remove(cocktail)
-                        cocktailMap.put(cocktail, cocktailCount.toInt())
+                        cocktailMap[cocktail] = cocktailCount!!.toInt()
                     }
                 }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {}
             })
-            cocktailDelete.setOnClickListener({
+            cocktailDelete.setOnClickListener {
                 cocktails.remove(cocktail)
                 cocktailMap.remove(cocktail)
+                Repository.removeFromPendingCocktails(cocktail)
                 notifyDataSetChanged()
                 if (cocktails.isEmpty()) {
                     onListEmptyListener.onListEmpty()
                 }
-            })
+            }
             val cocktailDrawable = CocktailUtils.getCocktailDrawableForName(cocktailImage.context, cocktail.name)
             cocktailImage.setImageDrawable(cocktailDrawable)
             cocktailName.text = cocktail.name
         }
     }
-
 
     interface OnListEmptyListener {
         fun onListEmpty()

@@ -13,7 +13,7 @@ import de.adorsys.android.summerparty.R
 
 class CreateUserActivity : BaseActivity() {
     companion object {
-        val KEY_USERNAME = "key_username"
+        const val KEY_USERNAME = "key_username"
     }
     private var preferences: SharedPreferences? = null
 
@@ -24,11 +24,11 @@ class CreateUserActivity : BaseActivity() {
         preferences = getSharedPreferences(MainActivity.KEY_PREFS_FILENAME, Context.MODE_PRIVATE)
 
         setContentView(R.layout.activity_create_user)
-        val usernameInputLayout = findViewById(R.id.username_input_layout) as TextInputLayout
-        val usernameEditText = findViewById(R.id.username_edit_text) as TextInputEditText
-        val registerButton = findViewById(R.id.register_button) as Button
+        val usernameInputLayout = findViewById<TextInputLayout>(R.id.username_input_layout)
+        val usernameEditText = findViewById<TextInputEditText>(R.id.username_edit_text)
+        val registerButton = findViewById<Button>(R.id.register_button)
 
-        registerButton.setOnClickListener({
+        registerButton.setOnClickListener {
             val username = usernameEditText.text.toString()
             if (TextUtils.isEmpty(username)) {
                 usernameInputLayout.error = getString(R.string.error_user_not_specified)
@@ -39,6 +39,6 @@ class CreateUserActivity : BaseActivity() {
                 setResult(Activity.RESULT_OK, intent)
                 finish()
             }
-        })
+        }
     }
 }

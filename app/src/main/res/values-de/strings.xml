@@ -25,4 +25,14 @@
     <string name="x">x</string>
     <string name="user_content_title">Nutzer</string>
 	<string name="user_content_text">Du bist %1$s und Deine Nutzer-Id ist %2$s.</string>
+
+
+	<string name="postTitle">Foto teilen</string>
+	<string name="post_user_information">Du hast unser neues Feature entdeckt! Mache Fotos und poste sie in unseren Summerparty Feed. Vorab möchten wir dich bitten nur Fotos von Personen zu posten die mit der Abbildung einverstanden sind. Alle Bilder werden nach unserem Event gelöscht.</string>
+	<string name="agree">Verstanden</string>
+	<string name="upload">hochladen</string>
+	<string name="text_hint">Schreibe etwas zu deinem Bild…</string>
+	<string name="post_empty">Mache ein Foto und poste es in  unseren Sommerfest Feed.</string>
+	<string name="post_success">Deine Foto wurde in den Summerparty Feed hochgeladen. Du kannst ein weiteres Foto posten.</string>
+	<string name="cocktail_of_the_year">Pink Gin Tonic</string>
 </resources>

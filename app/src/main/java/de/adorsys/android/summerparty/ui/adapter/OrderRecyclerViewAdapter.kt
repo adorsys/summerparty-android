@@ -1,16 +1,24 @@
 package de.adorsys.android.summerparty.ui.adapter
 
+import android.support.v7.recyclerview.extensions.ListAdapter
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import de.adorsys.android.network.Order
+import de.adorsys.android.shared.views.OrderView
 import de.adorsys.android.summerparty.R
-import de.adorsys.android.summerparty.data.Order
-import de.adorsys.android.summerparty.ui.views.OrderView
 
-class OrderRecyclerViewAdapter(
-        private val orders: List<Order>) : RecyclerView.Adapter<OrderRecyclerViewAdapter.OrderViewHolder>() {
+class OrderRecyclerViewAdapter : ListAdapter<Order, OrderRecyclerViewAdapter.OrderViewHolder>(DiffUtilItemCallback()) {
+    private val orders = mutableListOf<Order>()
+
+    override fun submitList(list: List<Order>?) {
+        orders.clear()
+        orders.addAll(list.orEmpty())
+        super.submitList(list)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_order, parent, false)
@@ -18,11 +26,7 @@ class OrderRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
-        holder.bindItem(orders[position])
-    }
-
-    override fun getItemCount(): Int {
-        return orders.size
+        holder.bindItem(getItem(position))
     }
 
 
@@ -46,6 +50,16 @@ class OrderRecyclerViewAdapter(
             } else {
                 headerView.visibility = View.GONE
             }
+        }
+    }
+
+    class DiffUtilItemCallback: DiffUtil.ItemCallback<Order>() {
+        override fun areItemsTheSame(oldItem: Order, newItem: Order): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Order, newItem: Order): Boolean {
+            return oldItem == newItem
         }
     }
 }

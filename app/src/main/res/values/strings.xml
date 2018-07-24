@@ -16,7 +16,6 @@
 	<string name="availability_available">available</string>
 	<string name="availability_unavailable">not available</string>
     <string name="cart_count_standard">1</string>
-	<string name="order_cocktail_placeholder">%1$d x %2$s</string>
     <string name="enter_user_name">Enter a username</string>
 	<string name="error_user_not_specified">The user cannot be empty</string>
 	<string name="notification_content_text">Your order detail have changed. Have a look.</string>
@@ -25,4 +24,18 @@
     <string name="x">x</string>
     <string name="user_content_title">User</string>
 	<string name="user_content_text">You are %1$s and your user id is %2$s.</string>
+	<string name="order_cocktail_placeholder">%1$d x %2$s</string>
+
+	<string name="channel_name" translatable="false">general</string>
+	<string name="channel_description" translatable="false">cocktail notifications</string>
+
+    <string name="postTitle">Share picture</string>
+    <string name="post_user_information">You discovered our new feature! Take pictures and post them to our summer party feed. Please make sure to only take pictures with people of who you have received the consent to do so.</string>
+    <string name="agree">Accept</string>
+    <string name="upload">Upload</string>
+	<string name="text_hint">Add a comment to your picture</string>
+    <string name="post_empty">Take a picture and post it to our summer party feed.</string>
+    <string name="post_success">Your picture has been successfully uploaded to our summerparty feed. You can add another one.</string>
+
+	<string name="cocktail_of_the_year">Pink Gin Tonic</string>
 </resources>
