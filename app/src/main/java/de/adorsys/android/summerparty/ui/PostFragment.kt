@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.constraint.ConstraintLayout
@@ -205,7 +207,25 @@ internal class PostFragment : Fragment() {
             options.inJustDecodeBounds = false
             options.inSampleSize = Math.round(scaleFactor)
 
-            BitmapFactory.decodeFile(filePath, options)
+            val exif = ExifInterface(filePath)
+            val orientationString = exif.getAttribute(ExifInterface.TAG_ORIENTATION)
+            val orientation = if (orientationString != null) {
+                Integer.parseInt(orientationString)
+            } else {
+                ExifInterface.ORIENTATION_NORMAL
+            }
+
+            var rotationAngle = 0F
+            if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90F
+            if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180F
+            if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270F
+
+            val bitmap = BitmapFactory.decodeFile(filePath, options)
+
+            val matrix = Matrix()
+            matrix.setRotate(rotationAngle, (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat())
+
+            Bitmap.createBitmap(bitmap, 0, 0, options.outWidth, options.outHeight, matrix, true)
         } catch (e: Exception) {
             Log.e(javaClass.name, e.message)
             null

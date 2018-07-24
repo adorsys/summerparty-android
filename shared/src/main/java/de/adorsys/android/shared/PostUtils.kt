@@ -9,7 +9,7 @@ object PostUtils {
     fun getEncodedBytesFromBitmap(bitmap: Bitmap): String? {
         return try {
             val stream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
             Base64.encodeToString(stream.toByteArray(), Base64.URL_SAFE)
         } catch (e: Exception) {
             null
