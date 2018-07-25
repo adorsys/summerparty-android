@@ -39,6 +39,7 @@ dependencies {
 	implementation "com.google.firebase:firebase-core:${firebaseVersion}"
 	implementation "com.google.firebase:firebase-firestore:${firebaseDatabaseVersion}"
 	implementation "com.google.firebase:firebase-messaging:${firebaseMessagingVersion}"
+	implementation "com.google.firebase:firebase-storage:${firebaseStorageVersion}"
 
 	// Architecture components
 	implementation "android.arch.lifecycle:extensions:$architectureComponentsVersion"

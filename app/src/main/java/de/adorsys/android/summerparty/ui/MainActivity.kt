@@ -15,6 +15,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import de.adorsys.android.network.Cocktail
 import de.adorsys.android.network.mutable.MutableCustomer
@@ -25,7 +26,16 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 
-class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionListener, PostFragment.OnGetPermissionsListener {
+class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionListener, PostFragment.OnGetPermissionsListener, PostFragment.OnShowProgressListener {
+    override fun showProgress(show: Boolean, progress: Int?) {
+        if (show) {
+            progressBarContainer.visibility = View.VISIBLE
+            progress?.let { progressBar.progress = it }
+        } else {
+            progressBarContainer.visibility = View.GONE
+        }
+    }
+
     private var cocktailMainFragment: CocktailMainFragment? = null
     private var postFragment: PostFragment? = null
 
@@ -49,7 +59,8 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     }
 
     private lateinit var preferences: SharedPreferences
-    private lateinit var progressBar: View
+    private lateinit var progressBar: ProgressBar
+    private lateinit var progressBarContainer: FrameLayout
     private lateinit var fragmentContainer: FrameLayout
 
     private var firebaseToken: String? = null
@@ -72,6 +83,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         // init views
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         fragmentContainer = findViewById(R.id.fragment_container)
+        progressBarContainer = findViewById(R.id.progressBarContainer)
         progressBar = findViewById(R.id.progressBar)
         viewContainer = findViewById(R.id.main_content)
         preferences = getSharedPreferences(KEY_PREFS_FILENAME, Context.MODE_PRIVATE)

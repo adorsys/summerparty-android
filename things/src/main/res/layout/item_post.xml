@@ -3,54 +3,47 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="@dimen/indent_8"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/indent_8"
+    android:maxHeight="@dimen/item_max_height">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
-        android:layout_height="@dimen/image_size"
+        android:layout_height="0dp"
+        android:maxHeight="@dimen/image_max_height"
         android:minHeight="@dimen/image_size"
         android:scaleType="centerCrop"
         android:src="@drawable/placeholder_post"
-        app:layout_constraintBottom_toTopOf="@id/titleTextView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.85"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="spread_inside"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/titleTextView"
         style="@style/TextAppearance.AppCompat.Subhead"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/indent_8"
-        android:layout_marginTop="@dimen/indent_8"
-        android:layout_marginEnd="@dimen/indent_8"
         android:layout_marginBottom="@dimen/indent_8"
         android:gravity="center"
         android:minHeight="@dimen/min_text_size"
-        tools:text="Name"
         app:layout_constraintBottom_toTopOf="@+id/descriptionTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"/>
+        tools:text="Name"/>
 
     <TextView
         android:id="@+id/descriptionTextView"
         style="@style/TextAppearance.AppCompat.Subhead"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/indent_8"
-        android:layout_marginEnd="@dimen/indent_8"
-        android:layout_marginBottom="@dimen/indent_8"
         android:gravity="center"
         android:minHeight="@dimen/min_text_size"
-        tools:text="Text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleTextView"/>
+        tools:text="Text"/>
 
 </android.support.constraint.ConstraintLayout>

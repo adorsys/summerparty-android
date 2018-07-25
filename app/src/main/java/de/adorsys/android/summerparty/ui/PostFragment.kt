@@ -5,10 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
-import android.media.ExifInterface
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.constraint.ConstraintLayout
@@ -26,7 +22,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import de.adorsys.android.shared.FirebaseProvider
 import de.adorsys.android.shared.Post
-import de.adorsys.android.shared.PostUtils
+import de.adorsys.android.shared.views.BitmapUtils
 import de.adorsys.android.summerparty.R
 import java.io.File
 import java.io.IOException
@@ -38,8 +34,13 @@ internal class PostFragment : Fragment() {
         fun onRequestPermission()
     }
 
+    interface OnShowProgressListener {
+        fun showProgress(show: Boolean = true, progress: Int? = null)
+    }
+
     private var preferences: SharedPreferences? = null
-    private lateinit var listener: PostFragment.OnGetPermissionsListener
+    private lateinit var getPermissionsListener: PostFragment.OnGetPermissionsListener
+    private lateinit var showProgressListener: OnShowProgressListener
     private lateinit var pictureImageView: ImageView
     private lateinit var postMainContainer: LinearLayout
     private lateinit var informedConsentContainer: ConstraintLayout
@@ -77,27 +78,13 @@ internal class PostFragment : Fragment() {
 
         descriptionEditText = view.findViewById(R.id.description_edit_text)
         uploadImageButton = view.findViewById(R.id.upload_image_button)
-        uploadImageButton.setOnClickListener { button ->
+        uploadImageButton.setOnClickListener { _ ->
             if (file != null) {
-                val name = preferences?.getString(MainActivity.KEY_USER_NAME, null)
-                val scaledBitmap = file?.path?.let { getScaledImage(500F, it) }
-                val imageString = scaledBitmap?.let {
-                    PostUtils.getEncodedBytesFromBitmap(it)
-                }
-                val text = descriptionEditText.text.toString()
-
-                if (!name.isNullOrBlank() && !imageString.isNullOrBlank()) {
-                    val post = Post(UUID.randomUUID().toString(), name = name!!, image = imageString!!, text = text)
-                    FirebaseProvider.createPost(
-                            post,
-                            {
-                                showSuccessScreen()
-                                button.postDelayed({
-                                    updateView()
-                                }, 4000)
-                            },
-                            { Log.e(javaClass.name, "firebase post not successful") })
-                }
+                FirebaseProvider.uploadImage(
+                        file!!,
+                        { showProgressListener.showProgress(true, it) },
+                        { createPost(it) },
+                        { Log.e("TAG_IMAGE_UPLOAD", it.message) })
             } else {
                 Log.e(javaClass.name, "file is null")
             }
@@ -106,10 +93,32 @@ internal class PostFragment : Fragment() {
         return view
     }
 
+    private fun createPost(storageReference: String?) {
+        Log.d("TAG_IMAGE_UPLOAD", storageReference)
+
+        val name = preferences?.getString(MainActivity.KEY_USER_NAME, null)
+        val text = descriptionEditText.text.toString()
+
+
+        showProgressListener.showProgress(true)
+
+        val post = Post(UUID.randomUUID().toString(), name = name, imageReference = storageReference, text = text)
+        FirebaseProvider.createPost(
+                post,
+                {
+                    showSuccessScreen()
+                    descriptionEditText.postDelayed({
+                        updateView()
+                    }, 4000)
+                },
+                { Log.e("TAG_IMAGE_UPLOAD", it.message) })
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
-            this.listener = context as OnGetPermissionsListener
+            this.getPermissionsListener = context as OnGetPermissionsListener
+            this.showProgressListener = context as OnShowProgressListener
         } catch (e: ClassCastException) {
             IllegalStateException("Your activity has to implement OnGetPermissionsListener")
         }
@@ -117,7 +126,7 @@ internal class PostFragment : Fragment() {
 
     internal fun openCamera() {
         if (PermissionManager.permissionPending(context!!, Manifest.permission.CAMERA)) {
-            listener.onRequestPermission()
+            getPermissionsListener.onRequestPermission()
         } else {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             if (intent.resolveActivity(context!!.packageManager) != null) {
@@ -187,48 +196,7 @@ internal class PostFragment : Fragment() {
     private fun setScaledImage(filePath: String?) {
         filePath?.let {
             val imageViewSize = pictureImageView.resources.getDimension(R.dimen.image_size)
-            pictureImageView.setImageBitmap(getScaledImage(imageViewSize, it))
-        }
-    }
-
-    private fun getScaledImage(size: Float, filePath: String): Bitmap? {
-        return try {
-            // Get the dimensions of the bitmap
-            val options = BitmapFactory.Options()
-            options.inJustDecodeBounds = true
-            BitmapFactory.decodeFile(filePath, options)
-            val photoW = options.outWidth
-            val photoH = options.outHeight
-
-            // Determine how much to scale down the image
-            val scaleFactor = Math.min(photoW / size, photoH / size)
-
-            // Decode the image file into a Bitmap sized to fill the View
-            options.inJustDecodeBounds = false
-            options.inSampleSize = Math.round(scaleFactor)
-
-            val exif = ExifInterface(filePath)
-            val orientationString = exif.getAttribute(ExifInterface.TAG_ORIENTATION)
-            val orientation = if (orientationString != null) {
-                Integer.parseInt(orientationString)
-            } else {
-                ExifInterface.ORIENTATION_NORMAL
-            }
-
-            var rotationAngle = 0F
-            if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90F
-            if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180F
-            if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270F
-
-            val bitmap = BitmapFactory.decodeFile(filePath, options)
-
-            val matrix = Matrix()
-            matrix.setRotate(rotationAngle, (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat())
-
-            Bitmap.createBitmap(bitmap, 0, 0, options.outWidth, options.outHeight, matrix, true)
-        } catch (e: Exception) {
-            Log.e(javaClass.name, e.message)
-            null
+            pictureImageView.setImageBitmap(BitmapUtils.getScaledImage(imageViewSize, it))
         }
     }
 
@@ -246,6 +214,7 @@ internal class PostFragment : Fragment() {
     }
 
     private fun showSuccessScreen() {
+        showProgressListener.showProgress(false)
         successContainer.visibility = VISIBLE
         postMainContainer.visibility = GONE
 
