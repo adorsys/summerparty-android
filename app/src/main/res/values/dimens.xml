@@ -6,6 +6,7 @@
 
 	<dimen name="padding_top_appbar">8dp</dimen>
 	<dimen name="padding_top">28dp</dimen>
+	<dimen name="padding_top_large">56dp</dimen>
 
 
 	<dimen name="width_cocktail_image">56dp</dimen>
@@ -18,8 +19,8 @@
 	<dimen name="size_delete_button">36dp</dimen>
     <dimen name="width_enter_image">120dp</dimen>
     <dimen name="image_size">300dp</dimen>
-    <dimen name="image_padding">30dp</dimen>
-    <dimen name="padding_info_text">50dp</dimen>
+    <dimen name="image_padding">32dp</dimen>
+    <dimen name="padding_info_text">56dp</dimen>
     <dimen name="lineSpacingExtra">3dp</dimen>
 
 

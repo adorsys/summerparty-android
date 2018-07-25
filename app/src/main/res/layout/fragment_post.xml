@@ -25,7 +25,7 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/padding_top"
+            android:paddingTop="@dimen/padding_top_large"
             android:src="@drawable/ic_camera_star"
             app:layout_constraintBottom_toTopOf="@+id/consent_text_view"
             app:layout_constraintEnd_toEndOf="parent"
@@ -80,21 +80,38 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:layout_width="150dp"
+            android:id="@+id/imageView_checked"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="1.5"
-            android:padding="@dimen/padding_top"
+            android:paddingBottom="@dimen/padding_top_large"
             android:src="@drawable/ic_checked"
-            android:visibility="visible"/>
+            app:layout_constraintBottom_toTopOf="@+id/success_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="spread_inside"/>
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_weight="1"
-            android:gravity="top|center"
-            android:padding="50dp"
-            android:text="Your picture has been successfully uploaded to our summerparty feed. You can add another one."/>
+            android:id="@+id/success_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_vertical_margin_small"
+            android:gravity="center"
+            android:paddingBottom="@dimen/padding_top"
+            android:lineSpacingExtra="@dimen/lineSpacingExtra"
+            android:paddingLeft="@dimen/padding_info_text"
+            android:paddingRight="@dimen/padding_info_text"
+            android:text="Your picture has been successfully uploaded to our summerparty feed. You can add another one."
+            android:textColor="@color/colorProgress"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@+id/imageView_checked"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+
 
     </LinearLayout>
 
