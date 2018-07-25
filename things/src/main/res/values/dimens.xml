@@ -3,6 +3,8 @@
     <dimen name="indent_8">8dp</dimen>
     <dimen name="indent_16">16dp</dimen>
     <dimen name="image_size">156dp</dimen>
+    <dimen name="image_max_height">300dp</dimen>
+    <dimen name="item_max_height">400dp</dimen>
     <dimen name="min_text_size">24dp</dimen>
     <dimen name="width_status_image">96dp</dimen>
 </resources>

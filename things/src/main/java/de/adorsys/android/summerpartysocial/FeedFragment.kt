@@ -1,5 +1,9 @@
 package de.adorsys.android.summerpartysocial
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -15,8 +19,9 @@ import com.google.firebase.firestore.*
 import de.adorsys.android.shared.FirebaseProvider
 import de.adorsys.android.shared.Post
 import de.adorsys.android.shared.PostUtils
+import de.adorsys.android.shared.views.BitmapUtils
+import de.adorsys.android.summerpartysocial.R.id.feed_recycler_view
 import kotlinx.android.synthetic.main.fragment_feed.*
-
 
 class FeedFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -27,8 +32,8 @@ class FeedFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val query = FirebaseProvider.getFeed()
-        val adapter = FeedAdapter(query) {
-            feed_recycler_view.smoothScrollToPosition(0)
+        val adapter = FeedAdapter(query) { position ->
+            feed_recycler_view.scrollToPosition(position)
         }
         feed_recycler_view.adapter = adapter
         val layoutManager = GridLayoutManager(context, 3)
@@ -53,7 +58,7 @@ class FeedFragment : Fragment() {
         (feed_recycler_view.adapter as FeedAdapter).stopListening()
     }
 
-    class FeedAdapter(private var query: Query?, private val onAdapterChangedAction: () -> Unit) : RecyclerView.Adapter<PostViewHolder>(), EventListener<QuerySnapshot> {
+    class FeedAdapter(private var query: Query?, private val onAdapterChangedAction: (position: Int) -> Unit) : RecyclerView.Adapter<PostViewHolder>(), EventListener<QuerySnapshot> {
         private val snapshots = mutableListOf<DocumentSnapshot>()
         private var listener: ListenerRegistration? = null
 
@@ -63,7 +68,7 @@ class FeedFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-            holder.bind(snapshots[position], onAdapterChangedAction)
+            holder.bind(snapshots[position])
         }
 
         override fun onEvent(feedSnapshot: QuerySnapshot?, e: FirebaseFirestoreException?) {
@@ -111,7 +116,7 @@ class FeedFragment : Fragment() {
         private fun onDocumentAdded(change: DocumentChange) {
             snapshots.add(change.newIndex, change.document)
             notifyItemInserted(change.newIndex)
-
+            onAdapterChangedAction(change.newIndex)
         }
 
         private fun onDocumentModified(change: DocumentChange) {
@@ -138,16 +143,25 @@ class FeedFragment : Fragment() {
         private val titleTextView = view.findViewById<TextView>(R.id.titleTextView)
         private val descriptionTextView = view.findViewById<TextView>(R.id.descriptionTextView)
 
-
-        fun bind(snapshot: DocumentSnapshot, onAdapterChangedAction: () -> Unit) {
+        fun bind(snapshot: DocumentSnapshot) {
             try {
                 val post = snapshot.toObject(Post::class.java)
-                val bitmap = post?.image?.let { PostUtils.getBitmapFromEncodedBytes(it) }
-                if (bitmap == null) {
-                    imageView.setImageDrawable(ContextCompat.getDrawable(imageView.context, R.drawable.placeholder_post))
+
+                if (!post?.imageReference.isNullOrEmpty()) {
+                    val reference = post?.imageReference
+                    FirebaseProvider.downloadImage(reference,
+                            { file ->
+                                val bitmap = BitmapUtils.getScaledImage(imageView.context.resources.getDimension(R.dimen.image_max_height), file.path)
+                                setBitmap(bitmap)
+                            },
+                            {
+                                Log.e("TAG_THINGS", "Could not correctly decode bitmap from $snapshot")
+                            })
                 } else {
-                    imageView.setImageBitmap(bitmap)
+                    val bitmap = post?.image?.let { PostUtils.getBitmapFromEncodedBytes(it) }
+                    setBitmap(bitmap)
                 }
+
                 titleTextView?.text = titleTextView.context.getString(R.string.image_shared_by, post?.name)
                 val text = post?.text
                 if (text.isNullOrBlank()) {
@@ -156,11 +170,16 @@ class FeedFragment : Fragment() {
                     descriptionTextView.visibility = View.VISIBLE
                     descriptionTextView?.text = post?.text
                 }
-
-                onAdapterChangedAction()
             } catch (e: Exception) {
                 Log.e("TAG_THINGS", "Could not correctly parse post object for $snapshot")
-                onAdapterChangedAction()
+            }
+        }
+
+        private fun setBitmap(bitmap: Bitmap?) {
+            if (bitmap == null) {
+                imageView.setImageDrawable(ContextCompat.getDrawable(imageView.context, R.drawable.placeholder_post))
+            } else {
+                imageView.setImageBitmap(bitmap)
             }
         }
     }
