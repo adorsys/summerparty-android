@@ -78,6 +78,10 @@ internal class PostFragment : Fragment() {
 
         descriptionEditText = view.findViewById(R.id.description_edit_text)
         uploadImageButton = view.findViewById(R.id.upload_image_button)
+        pictureImageView.setOnClickListener()
+        {
+            openCamera()
+        }
         uploadImageButton.setOnClickListener { _ ->
             if (file != null) {
                 FirebaseProvider.uploadImage(
