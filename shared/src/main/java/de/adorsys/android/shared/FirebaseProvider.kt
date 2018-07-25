@@ -1,5 +1,6 @@
 package de.adorsys.android.shared
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.google.firebase.firestore.DocumentReference
@@ -8,11 +9,12 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
-
-
+import java.io.IOException
 
 
 object FirebaseProvider {
+    private val _imageMap = mutableMapOf<String?, File>()
+
     fun createPost(post: Post, actionSuccess: (documentReference: DocumentReference) -> Unit, actionFailure: (e: Exception) -> Unit) {
         val fireStore = getFireStore()
         fireStore.collection("summerparty")
@@ -66,6 +68,7 @@ object FirebaseProvider {
     }
 
     fun downloadImage(
+            context: Context,
             fileReference: String?,
             successAction: (file: File) -> Unit,
             failureAction: (e: Exception) -> Unit) {
@@ -75,16 +78,43 @@ object FirebaseProvider {
             return
         }
 
+        if (_imageMap.contains(fileReference)) {
+            _imageMap[fileReference]?.let { successAction(it) }
+            return
+        }
+
         val storage = FirebaseStorage.getInstance()
         val storageReference = storage.reference
         val imagesReference = storageReference.child(fileReference!!)
 
-        val localFile = File.createTempFile("images", "jpg")
+        val localFile = createFile(context, fileReference)
 
-        imagesReference.getFile(localFile)
+        localFile?.let { file ->
+            _imageMap[fileReference] = localFile
+            imagesReference.getFile(file)
                 .addOnSuccessListener {
                     successAction(localFile)
                 }
                 .addOnFailureListener(failureAction)
+        }
+    }
+
+    private fun createFile(context: Context, fileReference: String): File? {
+        return try {
+            val storageDir = context.filesDir
+            val image: File? = try {
+                File.createTempFile(
+                        fileReference, /* prefix */
+                        "",      /* suffix */
+                        storageDir)     /* directory */
+            } catch (e: Exception) {
+                null
+            }
+
+            image
+        } catch (e: IOException) {
+            Log.e("TAG_IMAGE", e.message)
+            null
+        }
     }
 }
