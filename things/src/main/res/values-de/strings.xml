@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Sommerparty-Feed</string>
-    <string name="image_shared_by">Foto von %s</string>
     <string name="order_state_mixed">Abholbereit</string>
     <string name="order_state_delivered">Abgeholt</string>
     <string name="order_state_ordered">Bestellt</string>
+    <string name="image_shared_by"><![CDATA[Foto von <b>%s</b> ]]></string>
 </resources>

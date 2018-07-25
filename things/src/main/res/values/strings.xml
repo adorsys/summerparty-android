@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Summerparty Feed</string>
-    <string name="image_shared_by">Image by %s</string>
     <string name="order_cocktail_placeholder" translatable="false">%1$d x %2$s</string>
     <string name="order_state_mixed">Ready for collection</string>
     <string name="order_state_delivered">Fetched</string>
     <string name="order_state_ordered">Ordered</string>
+    <string name="image_shared_by"><![CDATA[Image by <b>%s</b> ]]></string>
 </resources>

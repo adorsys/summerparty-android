@@ -1,14 +1,12 @@
 package de.adorsys.android.summerpartysocial
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
-import android.media.ExifInterface
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,11 +14,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.firebase.firestore.*
-import de.adorsys.android.shared.FirebaseProvider
-import de.adorsys.android.shared.Post
-import de.adorsys.android.shared.PostUtils
-import de.adorsys.android.shared.views.BitmapUtils
-import de.adorsys.android.summerpartysocial.R.id.feed_recycler_view
 import kotlinx.android.synthetic.main.fragment_feed.*
 
 class FeedFragment : Fragment() {
@@ -163,7 +156,13 @@ class FeedFragment : Fragment() {
                     setBitmap(bitmap)
                 }
 
-                titleTextView?.text = titleTextView.context.getString(R.string.image_shared_by, post?.name)
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    titleTextView?.text = Html.fromHtml(titleTextView.context.getString(R.string.image_shared_by, post?.name), Html.FROM_HTML_MODE_LEGACY)
+
+                } else {
+                    titleTextView?.text = Html.fromHtml(titleTextView.context.getString(R.string.image_shared_by, post?.name))
+
+                }
                 val text = post?.text
                 if (text.isNullOrBlank()) {
                     descriptionTextView.visibility = View.GONE
