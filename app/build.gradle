@@ -9,8 +9,8 @@ android {
 		applicationId "de.adorsys.android.summerparty"
 		minSdkVersion 21
 		targetSdkVersion 28
-		versionCode 4
-		versionName "2.0.0"
+		versionCode 5
+		versionName "2.0.2"
 		testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 	}
 

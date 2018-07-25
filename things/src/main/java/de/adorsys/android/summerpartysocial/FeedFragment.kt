@@ -36,7 +36,8 @@ class FeedFragment : Fragment() {
             feed_recycler_view.scrollToPosition(position)
         }
         feed_recycler_view.adapter = adapter
-        val layoutManager = GridLayoutManager(context, 3)
+        val columnCount = resources.getInteger(R.integer.column_count)
+        val layoutManager = GridLayoutManager(context, columnCount)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (position) {
