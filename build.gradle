@@ -19,6 +19,7 @@ ext {
     firebaseVersion = "16.0.1"
     firebaseDatabaseVersion = "17.0.1"
     firebaseMessagingVersion = "17.1.0"
+    firebaseStorageVersion = "16.0.1"
     kotlinCoroutinesVersion = "0.22.5"
     androidThingsVersion = "1.0"
     architectureComponentsVersion = "1.1.1"
