@@ -141,18 +141,20 @@
             <ImageView
                 android:id="@+id/camera_image_view"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="@dimen/image_view_height"
                 android:layout_gravity="center"
-                android:padding="@dimen/padding_top"
+                android:paddingTop="@dimen/padding_top_large"
                 android:src="@drawable/ic_cam"
-                android:visibility="visible"/>
+                android:visibility="visible" />
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="@dimen/text_view_height"
                 android:gravity="center"
-                android:padding="50dp"
-                android:text="@string/post_empty"/>
+                android:paddingLeft="@dimen/padding_large"
+                android:paddingRight="@dimen/padding_large"
+                android:textColor="@color/colorProgress"
+                android:text="@string/post_empty" />
 
         </LinearLayout>
 

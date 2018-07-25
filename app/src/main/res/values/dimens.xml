@@ -7,6 +7,7 @@
 	<dimen name="padding_top_appbar">8dp</dimen>
 	<dimen name="padding_top">28dp</dimen>
 	<dimen name="padding_top_large">56dp</dimen>
+	<dimen name="padding_large">48dp</dimen>
 
 
 	<dimen name="width_cocktail_image">56dp</dimen>
@@ -22,6 +23,8 @@
     <dimen name="image_padding">32dp</dimen>
     <dimen name="padding_info_text">56dp</dimen>
     <dimen name="lineSpacingExtra">3dp</dimen>
+	<dimen name="text_view_height">150dp</dimen>
+	<dimen name="image_view_height">100dp</dimen>
 
 
 </resources>
