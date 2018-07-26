@@ -188,6 +188,7 @@
                 android:id="@+id/description_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLength="140"
                 android:hint="@string/text_hint"
                 android:imeOptions="actionDone"
                 android:singleLine="true"
