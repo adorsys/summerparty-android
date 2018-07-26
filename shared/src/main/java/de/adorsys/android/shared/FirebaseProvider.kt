@@ -1,6 +1,5 @@
 package de.adorsys.android.shared
 
-import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.google.firebase.firestore.DocumentReference
@@ -9,11 +8,12 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
-import java.io.IOException
 
 
 object FirebaseProvider {
     private val _imageMap = mutableMapOf<String?, File>()
+    val imageMap
+        get() = _imageMap
 
     fun createPost(post: Post, actionSuccess: (documentReference: DocumentReference) -> Unit, actionFailure: (e: Exception) -> Unit) {
         val fireStore = getFireStore()
@@ -68,7 +68,6 @@ object FirebaseProvider {
     }
 
     fun downloadImage(
-            context: Context,
             fileReference: String?,
             successAction: (file: File) -> Unit,
             failureAction: (e: Exception) -> Unit) {
@@ -78,7 +77,7 @@ object FirebaseProvider {
             return
         }
 
-        if (_imageMap.contains(fileReference)) {
+        if (_imageMap[fileReference] != null) {
             _imageMap[fileReference]?.let { successAction(it) }
             return
         }
@@ -87,34 +86,15 @@ object FirebaseProvider {
         val storageReference = storage.reference
         val imagesReference = storageReference.child(fileReference!!)
 
-        val localFile = createFile(context, fileReference)
+        val localFile = File.createTempFile("images", "jpg")
 
         localFile?.let { file ->
-            _imageMap[fileReference] = localFile
+            _imageMap[fileReference] = file
             imagesReference.getFile(file)
-                .addOnSuccessListener {
-                    successAction(localFile)
-                }
-                .addOnFailureListener(failureAction)
-        }
-    }
-
-    private fun createFile(context: Context, fileReference: String): File? {
-        return try {
-            val storageDir = context.filesDir
-            val image: File? = try {
-                File.createTempFile(
-                        fileReference, /* prefix */
-                        "",      /* suffix */
-                        storageDir)     /* directory */
-            } catch (e: Exception) {
-                null
-            }
-
-            image
-        } catch (e: IOException) {
-            Log.e("TAG_IMAGE", e.message)
-            null
+                    .addOnSuccessListener {
+                        successAction(localFile)
+                    }
+                    .addOnFailureListener(failureAction)
         }
     }
 }

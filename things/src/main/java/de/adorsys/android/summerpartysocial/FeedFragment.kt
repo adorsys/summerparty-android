@@ -14,6 +14,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.firebase.firestore.*
+import de.adorsys.android.shared.FirebaseProvider
+import de.adorsys.android.shared.Post
+import de.adorsys.android.shared.PostUtils
+import de.adorsys.android.shared.views.BitmapUtils
 import kotlinx.android.synthetic.main.fragment_feed.*
 
 class FeedFragment : Fragment() {
@@ -143,7 +147,8 @@ class FeedFragment : Fragment() {
 
                 if (!post?.imageReference.isNullOrEmpty()) {
                     val reference = post?.imageReference
-                    FirebaseProvider.downloadImage(reference,
+                    FirebaseProvider.downloadImage(
+                            reference,
                             { file ->
                                 val bitmap = BitmapUtils.getScaledImage(imageView.context.resources.getDimension(R.dimen.image_max_height), file.path)
                                 setBitmap(bitmap)
