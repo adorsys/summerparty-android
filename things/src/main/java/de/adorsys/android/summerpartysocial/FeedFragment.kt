@@ -19,6 +19,8 @@ import de.adorsys.android.shared.Post
 import de.adorsys.android.shared.PostUtils
 import de.adorsys.android.shared.views.BitmapUtils
 import kotlinx.android.synthetic.main.fragment_feed.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 
 class FeedFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -66,7 +68,7 @@ class FeedFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-            holder.bind(snapshots[position])
+            holder.bind(snapshots[position], position)
         }
 
         override fun onEvent(feedSnapshot: QuerySnapshot?, e: FirebaseFirestoreException?) {
@@ -141,24 +143,31 @@ class FeedFragment : Fragment() {
         private val titleTextView = view.findViewById<TextView>(R.id.titleTextView)
         private val descriptionTextView = view.findViewById<TextView>(R.id.descriptionTextView)
 
-        fun bind(snapshot: DocumentSnapshot) {
+        private val placeholder = ContextCompat.getDrawable(view.context, R.drawable.placeholder_post)
+
+        fun bind(snapshot: DocumentSnapshot, position: Int) {
             try {
                 val post = snapshot.toObject(Post::class.java)
+                imageView.setImageDrawable(placeholder)
 
                 if (!post?.imageReference.isNullOrEmpty()) {
                     val reference = post?.imageReference
                     FirebaseProvider.downloadImage(
                             reference,
                             { file ->
-                                val bitmap = BitmapUtils.getScaledImage(imageView.context.resources.getDimension(R.dimen.image_max_height), file.path)
-                                setBitmap(bitmap)
+                                launch {
+                                    val bitmap = BitmapUtils.getScaledImage(imageView.context.resources.getDimension(R.dimen.image_max_height), file.path)
+                                    launch(UI) {
+                                        setBitmap(bitmap, position)
+                                    }
+                                }
                             },
                             {
                                 Log.e("TAG_THINGS", "Could not correctly decode bitmap from $snapshot")
                             })
                 } else {
                     val bitmap = post?.image?.let { PostUtils.getBitmapFromEncodedBytes(it) }
-                    setBitmap(bitmap)
+                    setBitmap(bitmap, position)
                 }
 
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -166,8 +175,8 @@ class FeedFragment : Fragment() {
 
                 } else {
                     titleTextView?.text = Html.fromHtml(titleTextView.context.getString(R.string.image_shared_by, post?.name))
-
                 }
+
                 val text = post?.text
                 if (text.isNullOrBlank()) {
                     descriptionTextView.visibility = View.GONE
@@ -180,13 +189,14 @@ class FeedFragment : Fragment() {
             }
         }
 
-        private fun setBitmap(bitmap: Bitmap?) {
-            if (bitmap == null) {
-                imageView.setImageDrawable(ContextCompat.getDrawable(imageView.context, R.drawable.placeholder_post))
-            } else {
-                imageView.setImageBitmap(bitmap)
+        private fun setBitmap(bitmap: Bitmap?, position: Int) {
+            if (position == adapterPosition) {
+                if (bitmap == null) {
+                    imageView.setImageDrawable(placeholder)
+                } else {
+                    imageView.setImageBitmap(bitmap)
+                }
             }
         }
     }
-
 }
