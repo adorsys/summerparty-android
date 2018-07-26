@@ -46,7 +46,6 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         const val KEY_FIREBASE_RECEIVER = "firebase_receiver"
         const val KEY_FIREBASE_RELOAD = "reload"
         const val KEY_FIREBASE_TOKEN = "firebase_token"
-        const val KEY_FIRST_START = "first_start"
         const val REQUEST_CODE_CART = 23
         const val REQUEST_CODE_CAMERA: Int = 942
         const val REQUEST_CODE_NAME = 24
@@ -92,10 +91,10 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
 
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.cocktail_order -> startCocktailMainFragment()
-                R.id.feed -> startPostMainFragment()
+                R.id.cocktail_order -> return@setOnNavigationItemSelectedListener startCocktailMainFragment()
+                R.id.feed -> return@setOnNavigationItemSelectedListener startPostMainFragment()
             }
-            true
+            false
         }
 
         Repository.cocktailsLiveData.observe(this, Observer {
@@ -205,20 +204,22 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         }
     }
 
-    private fun startCocktailMainFragment() {
+    private fun startCocktailMainFragment(): Boolean {
         toolbar.title = getString(R.string.app_name)
         if (cocktailMainFragment == null) {
             cocktailMainFragment = CocktailMainFragment()
         }
         supportFragmentManager.beginTransaction().replace(R.id.fragment_container, cocktailMainFragment).commit()
+        return true
     }
 
-    private fun startPostMainFragment() {
+    private fun startPostMainFragment(): Boolean {
         toolbar.title = getString(R.string.postTitle)
         if (postFragment == null) {
             postFragment = PostFragment()
         }
         supportFragmentManager.beginTransaction().replace(R.id.fragment_container, postFragment).commit()
+        return true
     }
 
     private fun openCartActivity() {
@@ -277,15 +278,6 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         }
     }
 
-    private fun firstStart(): Boolean {
-        return if (preferences.contains(KEY_FIRST_START)) {
-            false
-        } else {
-            preferences.edit().putBoolean(KEY_FIRST_START, true).apply()
-            true
-        }
-    }
-
     private fun handleIntent(intent: Intent?, showDialog: Boolean) {
         progressBar.visibility = View.GONE
         if (intent == null) {
@@ -297,7 +289,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
                         .setIcon(R.drawable.ic_cocktail_icon)
                         .setTitle(R.string.notification_content_title)
                         .setMessage(R.string.notification_content_text)
-                        .setPositiveButton(android.R.string.ok) { _, _ -> getOrdersForUser(true) }
+                        .setPositiveButton(android.R.string.ok) { _, _ -> getOrdersForUser(true, true) }
                 notificationDialog = dialogBuilder.create()
                 notificationDialog?.show()
             } else if (!showDialog) {

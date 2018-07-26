@@ -25,6 +25,7 @@
     <dimen name="lineSpacingExtra">3dp</dimen>
 	<dimen name="text_view_height">150dp</dimen>
 	<dimen name="image_view_height">100dp</dimen>
+    <dimen name="bottom_navigation_bar_height">48dp</dimen>
 
 
 </resources>
