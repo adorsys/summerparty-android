@@ -48,8 +48,7 @@ class MainActivity : AppCompatActivity(), FeedFragment.OnShowDetailListener {
         bundle.putString(ImageDetailFragment.EXTRA_IMAGE_REFERENCE, imageReference)
         fragment.arguments = bundle
 
-        supportFragmentManager
-                .beginTransaction()
+        supportFragmentManager.beginTransaction()
                 .add(R.id.container_start, fragment)
                 .addToBackStack(ImageDetailFragment.TAG)
                 .commit()

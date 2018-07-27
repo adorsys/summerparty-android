@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE
 import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,6 +23,7 @@ import de.adorsys.android.shared.views.BitmapUtils
 import kotlinx.android.synthetic.main.fragment_feed.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
+
 
 class FeedFragment : Fragment() {
     interface OnShowDetailListener {
@@ -53,7 +55,9 @@ class FeedFragment : Fragment() {
                     feed_recycler_view.scrollToPosition(position)
                 },
                 {
-                    onShowDetailListener?.onShowDetailedImage(it)
+                    if (feed_recycler_view.scrollState == SCROLL_STATE_IDLE) {
+                        onShowDetailListener?.onShowDetailedImage(it)
+                    }
                 })
         feed_recycler_view.adapter = adapter
         val columnCount = resources.getInteger(R.integer.column_count)
@@ -183,7 +187,7 @@ class FeedFragment : Fragment() {
                             reference,
                             { file ->
                                 launch {
-                                    val bitmap = BitmapUtils.getScaledImage(imageView.context.resources.getDimension(R.dimen.image_max_height), file.path)
+                                    val bitmap = BitmapUtils.getScaledImage(imageView.measuredHeight.toFloat() + 100, file.path)
                                     launch(UI) {
                                         setBitmap(bitmap, position)
                                     }

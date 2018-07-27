@@ -25,6 +25,8 @@ class ImageDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val imageReference = arguments?.getString(EXTRA_IMAGE_REFERENCE)
 
+        detail_image_view.alpha = 0F
+
         close_image_container.setOnClickListener {
             fragmentManager?.popBackStack()
         }
@@ -40,7 +42,8 @@ class ImageDetailFragment : Fragment() {
 
                         val bitmap = BitmapUtils.getScaledImage(size.y.toFloat(), file.path)
                         launch(UI) {
-                            detail_image_view.setImageBitmap(bitmap)
+                            detail_image_view?.setImageBitmap(bitmap)
+                            detail_image_view?.animate()?.alpha(1F)?.start()
                         }
                     }
                 },
