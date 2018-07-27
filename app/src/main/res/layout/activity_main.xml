@@ -62,6 +62,8 @@
 		android:layout_height="match_parent"
 		android:background="@color/colorProgress"
 		android:visibility="gone"
+		android:clickable="true"
+		android:focusableInTouchMode="true"
 		tools:visibility="visible">
 
 		<ProgressBar
