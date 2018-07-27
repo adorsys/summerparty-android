@@ -21,14 +21,14 @@
     <string name="error_user_not_specified">Der Nutzer darf nicht leer sein</string>
 	<string name="notification_content_text">Deine Bestellung hat sich verändert. Schau sie Dir mal an.</string>
 	<string name="notification_content_title">Deine Bestellung</string>
-    <string name="orders_empty">Du hast aktuell keine offenen Cocktailbestellungen. :(</string>
+    <string name="orders_empty">Du hast aktuell keine offenen &#10;Cocktailbestellungen :(.</string>
     <string name="x">x</string>
     <string name="user_content_title">Nutzer</string>
 	<string name="user_content_text">Du bist %1$s und Deine Nutzer-Id ist %2$s.</string>
 
 
 	<string name="postTitle">Foto teilen</string>
-	<string name="post_user_information">Du hast unser neues Feature entdeckt! Mache Fotos und poste sie in unseren Summerparty Feed. Vorab möchten wir dich bitten nur Fotos von Personen zu posten die mit der Abbildung einverstanden sind. Alle Bilder werden nach unserem Event gelöscht.</string>
+	<string name="post_user_information">Du hast unser neues Feature entdeckt!&#10; Mache Fotos und poste sie in unseren Summerparty Feed. Vorab möchten wir dich bitten nur Fotos von Personen zu posten die mit der Abbildung einverstanden sind. Alle Bilder werden nach unserem Event gelöscht.</string>
 	<string name="agree">Verstanden</string>
 	<string name="upload">hochladen</string>
 	<string name="text_hint">Schreibe etwas zu deinem Bild…</string>
