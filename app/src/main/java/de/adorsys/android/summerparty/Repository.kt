@@ -139,60 +139,59 @@ object Repository {
     }
 
     fun fetchCocktails(onReadyAction: ((List<Cocktail>) -> Unit)? = null, forceReload: Boolean = false) {
-        if (_cocktailList.isNotEmpty() || !forceReload) {
+        if (forceReload || _cocktailList.isEmpty()) {
+            launch {
+                try {
+                    val response = ApiManager.getCocktails().await()
+                    if (response.isSuccessful) {
+                        _cocktailList.clear()
+                        _cocktailList.addAll(response.body().orEmpty())
+                        onReadyAction?.let { it(_cocktailList) }
+                        _cocktailsLiveData.postValue(_cocktailList)
+                    } else {
+                        Log.e("TAG_COCKTAILS", response.message())
+                        onReadyAction?.let { it(emptyList()) }
+                    }
+                } catch (e: Exception) {
+                    Log.e("TAG_COCKTAILS", e.message)
+                    onReadyAction?.let { it(emptyList()) }
+                }
+            }
+        } else {
             onReadyAction?.let { it(_cocktailList) }
             _cocktailsLiveData.postValue(_cocktailList)
             return
         }
-
-        launch {
-            try {
-                val response = ApiManager.getCocktails().await()
-                if (response.isSuccessful) {
-                    _cocktailList.clear()
-                    _cocktailList.addAll(response.body().orEmpty())
-                    onReadyAction?.let { it(_cocktailList) }
-                    _cocktailsLiveData.postValue(_cocktailList)
-                } else {
-                    Log.e("TAG_COCKTAILS", response.message())
-                    onReadyAction?.let { it(emptyList()) }
-                }
-            } catch (e: Exception) {
-                Log.e("TAG_COCKTAILS", e.message)
-                onReadyAction?.let { it(emptyList()) }
-            }
-        }
     }
 
     fun fetchOrders(onReadyAction: ((List<Order>) -> Unit)? = null, forceReload: Boolean = false) {
-        if (_orderList.isNotEmpty() || !forceReload) {
+        if (forceReload || _orderList.isEmpty()) {
+            launch {
+                if (user == null) {
+                    Log.e("TAG_CUSTOMER_ORDERS", "user is null")
+                    onReadyAction?.let { it(emptyList()) }
+                    return@launch
+                }
+
+                try {
+                    val response = ApiManager.getOrdersForCustomer(user!!.id).await()
+                    if (response.isSuccessful) {
+                        _orderList.clear()
+                        _orderList.addAll(response.body().orEmpty())
+                        onReadyAction?.let { it(_orderList) }
+                        _ordersLiveData.postValue(_orderList)
+                    } else {
+                        Log.e("TAG_CUSTOMER_ORDERS", response.message())
+                        onReadyAction?.let { it(emptyList()) }
+                    }
+                } catch (e: Exception) {
+                    onReadyAction?.let { it(emptyList()) }
+                    Log.e("TAG_CUSTOMER_ORDERS", e.message)
+                }
+            }
+        } else {
             onReadyAction?.let { it(_orderList) }
             _ordersLiveData.postValue(_orderList)
-            return
-        }
-
-        launch {
-            if (user == null) {
-                Log.e("TAG_CUSTOMER_ORDERS", "user is null")
-                onReadyAction?.let { it(emptyList()) }
-                return@launch
-            }
-
-            try {
-                val response = ApiManager.getOrdersForCustomer(user!!.id).await()
-                if (response.isSuccessful) {
-                    _orderList.clear()
-                    _orderList.addAll(response.body().orEmpty())
-                    onReadyAction?.let { it(_orderList) }
-                    _ordersLiveData.postValue(_orderList)
-                } else {
-                    Log.e("TAG_CUSTOMER_ORDERS", response.message())
-                    onReadyAction?.let { it(emptyList()) }
-                }
-            } catch (e: Exception) {
-                onReadyAction?.let { it(emptyList()) }
-                Log.e("TAG_CUSTOMER_ORDERS", e.message)
-            }
         }
     }
 

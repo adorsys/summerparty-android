@@ -295,7 +295,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
                 notificationDialog = dialogBuilder.create()
                 notificationDialog?.show()
             } else if (!showDialog) {
-                getOrdersForUser(true)
+                getOrdersForUser(true, true)
             }
         }
         if (intent.getStringExtra(KEY_FIREBASE_TOKEN) != null) {

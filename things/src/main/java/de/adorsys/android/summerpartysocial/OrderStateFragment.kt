@@ -70,6 +70,9 @@ class OrderStateFragment : Fragment() {
 
     private fun updateAdapter(list: List<Order?>) {
         (order_recycler_view.adapter as OrderAdapter).submitList(list)
+        order_recycler_view.postDelayed(
+                { (order_recycler_view.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(0, 0) },
+                500)
     }
 
 

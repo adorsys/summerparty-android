@@ -1,11 +1,12 @@
 <resources>
-    <string name="app_name">Summerparty Feed</string>
+    <string name="app_name">Sommerparty-Feed</string>
+    <string name="order_state_mixed">Abholbereit</string>
+    <string name="order_state_delivered">Abgeholt</string>
+    <string name="order_state_ordered">Bestellt</string>
+    <string name="image_shared_by"><![CDATA[Foto von <b>%s</b> ]]></string>
+    <string name="content_description_detail_view">Detailansicht</string>
+    <string name="content_description_detail_view_close">Schließe Detailansicht</string>
+
     <string name="order_cocktail_placeholder" translatable="false">%1$d x %2$s</string>
-    <string name="order_state_mixed">Ready for collection</string>
-    <string name="order_state_delivered">Fetched</string>
-    <string name="order_state_ordered">Ordered</string>
-    <string name="image_shared_by"><![CDATA[Image by <b>%s</b> ]]></string>
-    <string name="content_description_detail_view">detail view</string>
-    <string name="content_description_detail_view_close">Close detail view</string>
-    <string name="detail_image_view_transition">detail image view transition</string>
+    <string name="detail_image_view_transition" translatable="false">detail image view transition</string>
 </resources>
