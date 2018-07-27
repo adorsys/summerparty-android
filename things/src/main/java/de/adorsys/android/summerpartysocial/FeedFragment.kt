@@ -71,7 +71,7 @@ class FeedFragment : Fragment() {
             }
         }
         feed_recycler_view.layoutManager = layoutManager
-        feed_recycler_view.postDelayed({ layoutManager.scrollToPosition(0) }, 1000)
+        view.postDelayed({ layoutManager.scrollToPosition(0) }, 1000)
     }
 
     override fun onStart() {
@@ -187,7 +187,13 @@ class FeedFragment : Fragment() {
                             reference,
                             { file ->
                                 launch {
-                                    val bitmap = BitmapUtils.getScaledImage(imageView.measuredHeight.toFloat() + 100, file.path)
+                                    val greatestLength =
+                                            if (imageView.measuredHeight > imageView.measuredWidth) {
+                                                imageView.measuredHeight
+                                            } else {
+                                                imageView.measuredWidth
+                                            }
+                                    val bitmap = BitmapUtils.getScaledImage(greatestLength.toFloat(), file.path)
                                     launch(UI) {
                                         setBitmap(bitmap, position)
                                     }
