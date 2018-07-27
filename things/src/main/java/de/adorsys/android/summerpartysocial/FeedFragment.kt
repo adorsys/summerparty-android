@@ -183,7 +183,7 @@ class FeedFragment : Fragment() {
                             reference,
                             { file ->
                                 launch {
-                                    val bitmap = BitmapUtils.getScaledImage(imageView.context.resources.getDimension(R.dimen.image_max_height), file.path)
+                                    val bitmap = BitmapUtils.getScaledImage(imageView.measuredHeight.toFloat() + 100, file.path)
                                     launch(UI) {
                                         setBitmap(bitmap, position)
                                     }
