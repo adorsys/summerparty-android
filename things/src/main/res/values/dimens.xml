@@ -7,4 +7,5 @@
     <dimen name="item_max_height">400dp</dimen>
     <dimen name="min_text_size">24dp</dimen>
     <dimen name="width_status_image">96dp</dimen>
+    <dimen name="close_image_height">32dp</dimen>
 </resources>

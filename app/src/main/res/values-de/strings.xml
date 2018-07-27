@@ -35,4 +35,6 @@
 	<string name="post_empty">Mache ein Foto und poste es in  unseren Sommerfest Feed.</string>
 	<string name="post_success">Deine Foto wurde in den Summerparty Feed hochgeladen. Du kannst ein weiteres Foto posten.</string>
 	<string name="cocktail_of_the_year">Pink Gin Tonic</string>
+    <string name="cocktails">Cocktails</string>
+	<string name="feed">Feed</string>
 </resources>
