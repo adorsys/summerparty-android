@@ -32,6 +32,7 @@
         android:id="@+id/detail_image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:transitionName="@string/detail_image_view_transition"
         android:contentDescription="@string/content_description_detail_view"/>
 
 </LinearLayout>
