@@ -1,5 +1,6 @@
 package de.adorsys.android.summerpartysocial
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -23,6 +24,21 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 
 class FeedFragment : Fragment() {
+    interface OnShowDetailListener {
+        fun onShowDetailedImage(imageReference: String)
+    }
+
+    private var onShowDetailListener: OnShowDetailListener? = null
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        try {
+            onShowDetailListener = context as OnShowDetailListener
+        } catch (e: Exception) {
+            Log.e("TAG_FEED_FRAGMENT", e.message)
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_feed, container, false)
     }
@@ -31,9 +47,14 @@ class FeedFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val query = FirebaseProvider.getFeed()
-        val adapter = FeedAdapter(query) { position ->
-            feed_recycler_view.scrollToPosition(position)
-        }
+        val adapter = FeedAdapter(
+                query,
+                { position ->
+                    feed_recycler_view.scrollToPosition(position)
+                },
+                {
+                    onShowDetailListener?.onShowDetailedImage(it)
+                })
         feed_recycler_view.adapter = adapter
         val columnCount = resources.getInteger(R.integer.column_count)
         val layoutManager = GridLayoutManager(context, columnCount)
@@ -46,6 +67,7 @@ class FeedFragment : Fragment() {
             }
         }
         feed_recycler_view.layoutManager = layoutManager
+        feed_recycler_view.postDelayed({ layoutManager.scrollToPosition(0) }, 1000)
     }
 
     override fun onStart() {
@@ -58,13 +80,17 @@ class FeedFragment : Fragment() {
         (feed_recycler_view.adapter as FeedAdapter).stopListening()
     }
 
-    class FeedAdapter(private var query: Query?, private val onAdapterChangedAction: (position: Int) -> Unit) : RecyclerView.Adapter<PostViewHolder>(), EventListener<QuerySnapshot> {
+    class FeedAdapter(
+            private var query: Query?,
+            private val onAdapterChangedAction: (position: Int) -> Unit,
+            private val onClickAction: (imageReference: String) -> Unit) : RecyclerView.Adapter<PostViewHolder>(), EventListener<QuerySnapshot> {
+
         private val snapshots = mutableListOf<DocumentSnapshot>()
         private var listener: ListenerRegistration? = null
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
             val inflater = LayoutInflater.from(parent.context)
-            return PostViewHolder(inflater.inflate(R.layout.item_post, parent, false))
+            return PostViewHolder(inflater.inflate(R.layout.item_post, parent, false), onClickAction)
         }
 
         override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
@@ -138,7 +164,7 @@ class FeedFragment : Fragment() {
         }
     }
 
-    class PostViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class PostViewHolder(view: View, private val onClickAction: (imageReference: String) -> Unit) : RecyclerView.ViewHolder(view) {
         private val imageView = view.findViewById<ImageView>(R.id.imageView)
         private val titleTextView = view.findViewById<TextView>(R.id.titleTextView)
         private val descriptionTextView = view.findViewById<TextView>(R.id.descriptionTextView)
@@ -149,6 +175,7 @@ class FeedFragment : Fragment() {
             try {
                 val post = snapshot.toObject(Post::class.java)
                 imageView.setImageDrawable(placeholder)
+                imageView.setOnClickListener { post?.imageReference?.let { reference -> onClickAction(reference) } }
 
                 if (!post?.imageReference.isNullOrEmpty()) {
                     val reference = post?.imageReference

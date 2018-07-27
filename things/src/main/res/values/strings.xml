@@ -5,4 +5,6 @@
     <string name="order_state_delivered">Fetched</string>
     <string name="order_state_ordered">Ordered</string>
     <string name="image_shared_by"><![CDATA[Image by <b>%s</b> ]]></string>
+    <string name="content_description_detail_view">detail view</string>
+    <string name="content_description_detail_view_close">Close detail view</string>
 </resources>
