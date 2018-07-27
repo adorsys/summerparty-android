@@ -38,7 +38,7 @@ class CocktailMainFragment : Fragment() {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
-                Repository.fetchCocktails()
+                Repository.fetchCocktails(null, true)
             }
         })
 
