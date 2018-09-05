@@ -4,13 +4,13 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
 	compileSdkVersion 28
-	buildToolsVersion '27.0.3'
+	buildToolsVersion '28.0.2'
 	defaultConfig {
 		applicationId "de.adorsys.android.summerparty"
 		minSdkVersion 21
 		targetSdkVersion 28
-		versionCode 5
-		versionName "2.0.2"
+		versionCode 6
+		versionName "2.0.3"
 		testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 	}
 
