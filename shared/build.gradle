@@ -29,6 +29,7 @@ dependencies {
     api project(path: ':network', configuration: 'default')
 
     implementation "com.android.support:appcompat-v7:${supportLibVersion}"
+    implementation "com.android.support:exifinterface:${supportLibVersion}"
     implementation "com.google.firebase:firebase-firestore:${firebaseDatabaseVersion}"
     implementation "com.google.firebase:firebase-storage:${firebaseStorageVersion}"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

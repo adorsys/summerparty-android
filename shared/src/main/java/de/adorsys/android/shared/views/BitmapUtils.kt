@@ -3,7 +3,7 @@ package de.adorsys.android.shared.views
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.media.ExifInterface
+import android.support.media.ExifInterface
 import android.util.Log
 
 object BitmapUtils {
@@ -25,16 +25,17 @@ object BitmapUtils {
 
             val exif = ExifInterface(filePath)
             val orientationString = exif.getAttribute(ExifInterface.TAG_ORIENTATION)
-            val orientation = if (orientationString != null) {
-                Integer.parseInt(orientationString)
-            } else {
-                ExifInterface.ORIENTATION_NORMAL
+            val orientation = when {
+                orientationString != null -> Integer.parseInt(orientationString)
+                else -> ExifInterface.ORIENTATION_NORMAL
             }
 
-            var rotationAngle = 0F
-            if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90F
-            if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180F
-            if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270F
+            val rotationAngle = when(orientation) {
+                ExifInterface.ORIENTATION_ROTATE_90 -> 90F
+                ExifInterface.ORIENTATION_ROTATE_180 -> 180F
+                ExifInterface.ORIENTATION_ROTATE_270 -> 270F
+                else -> 0F
+            }
 
             val bitmap = BitmapFactory.decodeFile(filePath, options)
 
