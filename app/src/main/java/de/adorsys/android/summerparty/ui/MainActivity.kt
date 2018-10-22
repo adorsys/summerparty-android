@@ -39,6 +39,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     }
 
     private var cocktailMainFragment: CocktailMainFragment? = null
+    private var galleryFragment: GalleryFragment? = null
     private var postFragment: PostFragment? = null
 
     companion object {
@@ -93,8 +94,9 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
 
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.cocktail_order -> return@setOnNavigationItemSelectedListener startCocktailMainFragment()
                 R.id.feed -> return@setOnNavigationItemSelectedListener startPostMainFragment()
+                R.id.gallary -> return@setOnNavigationItemSelectedListener startGallaryFragment()
+                R.id.cocktail_order -> return@setOnNavigationItemSelectedListener startCocktailMainFragment()
             }
             false
         }
@@ -119,7 +121,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         val userId = preferences.getString(KEY_USER_ID, null)
         userId?.let { Repository.getUser(it) }
 
-        startCocktailMainFragment()
+        startPostMainFragment()
     }
 
     override fun onResume() {
@@ -204,6 +206,15 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         } else if (viewContainer != null) {
             Snackbar.make(viewContainer!!, getString(R.string.cocktail_out_of_stock, item.name), Snackbar.LENGTH_LONG).show()
         }
+    }
+
+    private fun startGallaryFragment(): Boolean {
+        toolbar.title = getString(R.string.galleryTitle)
+        if (galleryFragment == null) {
+            galleryFragment = GalleryFragment()
+        }
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, galleryFragment).commit()
+        return true
     }
 
     private fun startCocktailMainFragment(): Boolean {

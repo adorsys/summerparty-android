@@ -29,6 +29,7 @@
 	<string name="channel_name" translatable="false">general</string>
 	<string name="channel_description" translatable="false">cocktail notifications</string>
 
+    <string name="galleryTitle">Gallery</string>
     <string name="postTitle">Share picture</string>
     <string name="post_user_information">You discovered our new feature! &#10;Take pictures and post them to our summer party feed. Please make sure to only take pictures with people of who you have received the consent to do so.</string>
     <string name="agree">Accept</string>
@@ -39,5 +40,6 @@
 
 	<string name="cocktail_of_the_year">Pink Gin Tonic</string>
     <string name="cocktails">Cocktails</string>
+    <string name="gallery">Gallery</string>
 	<string name="feed">Feed</string>
 </resources>
