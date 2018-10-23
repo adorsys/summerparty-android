@@ -2,10 +2,10 @@ package de.adorsys.android.summerparty.ui
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import de.adorsys.android.network.mutable.MutableOrder
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.Repository

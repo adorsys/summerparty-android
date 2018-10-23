@@ -1,8 +1,8 @@
 package de.adorsys.android.summerparty
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import de.adorsys.android.network.ApiManager
 import de.adorsys.android.network.Cocktail
 import de.adorsys.android.network.Customer

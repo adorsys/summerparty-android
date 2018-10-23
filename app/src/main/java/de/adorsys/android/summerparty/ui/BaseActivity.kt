@@ -1,7 +1,7 @@
 package de.adorsys.android.summerparty.ui
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import de.adorsys.android.summerparty.SummerpartyApp
 
 open class BaseActivity : AppCompatActivity() {

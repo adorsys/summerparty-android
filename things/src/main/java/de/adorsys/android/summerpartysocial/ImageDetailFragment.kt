@@ -3,12 +3,12 @@ package de.adorsys.android.summerpartysocial
 import android.content.Context
 import android.graphics.Point
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.fragment.app.Fragment
 import de.adorsys.android.shared.FirebaseProvider
 import de.adorsys.android.shared.views.ImageUtils
 import kotlinx.android.synthetic.main.fragment_image_detail.*

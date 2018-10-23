@@ -1,12 +1,11 @@
 package de.adorsys.android.summerparty.ui
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import de.adorsys.android.shared.FirebaseProvider
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.ui.adapter.FeedAdapter
@@ -27,16 +26,16 @@ class FeedFragment : Fragment() {
         val adapter = FeedAdapter(
                 query,
                 { position ->
-                    (feedRecyclerView as RecyclerView).scrollToPosition(position)
+                    feedRecyclerView.scrollToPosition(position)
                 },
                 { position ->
                     currentPosition = position
                 },
                 null)
 
-        (feedRecyclerView as RecyclerView).adapter = adapter
+        feedRecyclerView.adapter = adapter
         val layoutManager = GridLayoutManager(context, 1)
-        (feedRecyclerView as RecyclerView).layoutManager = layoutManager
+        feedRecyclerView.layoutManager = layoutManager
 
         val position = savedInstanceState?.getInt("position") ?: 0
         feedRecyclerView.postDelayed({

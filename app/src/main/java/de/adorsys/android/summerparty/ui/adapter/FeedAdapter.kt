@@ -1,7 +1,7 @@
 package de.adorsys.android.summerparty.ui.adapter
 
 import android.graphics.Bitmap
-import android.support.v7.widget.RecyclerView
+import android.os.Build
 import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.*
 import de.adorsys.android.shared.Post
 import de.adorsys.android.shared.views.ImageUtils
@@ -124,7 +125,7 @@ class FeedAdapter(
                     }
                 }
 
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     titleTextView?.text = Html.fromHtml(titleTextView.context.getString(R.string.image_shared_by, post?.name), Html.FROM_HTML_MODE_LEGACY)
                 } else {
                     titleTextView?.text = Html.fromHtml(titleTextView.context.getString(R.string.image_shared_by, post?.name))

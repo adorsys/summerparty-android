@@ -1,7 +1,7 @@
 package de.adorsys.android.summerpartysocial
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import java.io.File
 
 class MainActivity : AppCompatActivity(), FeedFragment.OnShowDetailListener {

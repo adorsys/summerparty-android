@@ -7,9 +7,9 @@ import android.content.Intent
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
-import android.support.annotation.RequiresApi
-import android.support.v4.app.NotificationCompat
-import android.support.v4.content.LocalBroadcastManager
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -19,11 +19,11 @@ import de.adorsys.android.summerparty.ui.MainActivity
 
 
 class FirebaseMessagingService : FirebaseMessagingService() {
-    private var broadcaster: LocalBroadcastManager? = null
+    private var broadcaster: androidx.localbroadcastmanager.content.LocalBroadcastManager? = null
 
     override fun onCreate() {
         super.onCreate()
-        broadcaster = LocalBroadcastManager.getInstance(this)
+        broadcaster = androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(this)
     }
 
     // happens when app is in foreground

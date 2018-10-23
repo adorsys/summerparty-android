@@ -7,10 +7,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.constraint.ConstraintLayout
-import android.support.design.widget.TextInputEditText
-import android.support.v4.app.Fragment
-import android.support.v4.content.FileProvider
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +16,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
+import com.google.android.material.textfield.TextInputEditText
 import de.adorsys.android.shared.FirebaseProvider
 import de.adorsys.android.shared.Post
 import de.adorsys.android.shared.views.ImageUtils

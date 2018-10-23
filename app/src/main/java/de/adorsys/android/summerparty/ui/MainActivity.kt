@@ -3,12 +3,8 @@ package de.adorsys.android.summerparty.ui
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
-import android.arch.lifecycle.Observer
 import android.content.*
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -17,6 +13,10 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.google.android.material.snackbar.Snackbar
 import de.adorsys.android.network.Cocktail
 import de.adorsys.android.network.mutable.MutableCustomer
 import de.adorsys.android.summerparty.R
@@ -213,7 +213,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         if (feedFragment == null) {
             feedFragment = FeedFragment()
         }
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, feedFragment).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, feedFragment!!).commit()
         return true
     }
 
@@ -222,7 +222,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         if (cocktailMainFragment == null) {
             cocktailMainFragment = CocktailMainFragment()
         }
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, cocktailMainFragment).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, cocktailMainFragment!!).commit()
         return true
     }
 
@@ -231,7 +231,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         if (postFragment == null) {
             postFragment = PostFragment()
         }
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, postFragment).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, postFragment!!).commit()
         return true
     }
 

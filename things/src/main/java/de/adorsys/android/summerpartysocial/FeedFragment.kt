@@ -3,11 +3,6 @@ package de.adorsys.android.summerpartysocial
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE
 import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.google.firebase.firestore.*
 import de.adorsys.android.shared.FirebaseProvider
 import de.adorsys.android.shared.Post
@@ -62,7 +62,7 @@ class FeedFragment : Fragment() {
         feed_recycler_view.adapter = adapter
         val columnCount = resources.getInteger(R.integer.column_count)
         val layoutManager = GridLayoutManager(context, columnCount)
-        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+        layoutManager.spanSizeLookup = object : androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (position) {
                     0 -> 2
@@ -168,7 +168,7 @@ class FeedFragment : Fragment() {
         }
     }
 
-    class PostViewHolder(view: View, private val onClickAction: (imageReference: String) -> Unit) : RecyclerView.ViewHolder(view) {
+    class PostViewHolder(view: View, private val onClickAction: (imageReference: String) -> Unit) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
         private val imageView = view.findViewById<ImageView>(R.id.imageView)
         private val titleTextView = view.findViewById<TextView>(R.id.titleTextView)
         private val descriptionTextView = view.findViewById<TextView>(R.id.descriptionTextView)

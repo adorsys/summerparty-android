@@ -11,7 +11,7 @@ android {
 		targetSdkVersion 28
 		versionCode 6
 		versionName "2.0.3"
-		testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 	}
 
 	buildTypes {
@@ -29,11 +29,11 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${kotlinCoroutinesVersion}"
-	implementation "com.android.support:appcompat-v7:${supportLibVersion}"
-    implementation "com.android.support:design:${supportLibVersion}"
-	implementation "com.android.support:cardview-v7:${supportLibVersion}"
-    implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
-    implementation "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
+	implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
+	implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
     implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
     implementation "com.squareup.retrofit2:converter-moshi:${retrofitVersion}"
 	implementation "com.google.firebase:firebase-core:${firebaseVersion}"
@@ -42,8 +42,8 @@ dependencies {
 	implementation "com.google.firebase:firebase-storage:${firebaseStorageVersion}"
 
 	// Architecture components
-	implementation "android.arch.lifecycle:extensions:$architectureComponentsVersion"
-	implementation "android.arch.lifecycle:reactivestreams:$architectureComponentsVersion"
+	implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+	implementation 'androidx.lifecycle:lifecycle-reactivestreams:2.0.0'
 
 	testImplementation "junit:junit:${jUnitVersion}"
 
