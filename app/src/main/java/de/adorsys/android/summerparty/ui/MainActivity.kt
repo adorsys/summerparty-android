@@ -94,8 +94,8 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
 
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.feed -> return@setOnNavigationItemSelectedListener startPostMainFragment()
-                R.id.gallary -> return@setOnNavigationItemSelectedListener startGallaryFragment()
+                R.id.post -> return@setOnNavigationItemSelectedListener startPostMainFragment()
+                R.id.feed -> return@setOnNavigationItemSelectedListener startFeedFragment()
                 R.id.cocktail_order -> return@setOnNavigationItemSelectedListener startCocktailMainFragment()
             }
             false
@@ -208,8 +208,8 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         }
     }
 
-    private fun startGallaryFragment(): Boolean {
-        toolbar.title = getString(R.string.galleryTitle)
+    private fun startFeedFragment(): Boolean {
+        toolbar.title = getString(R.string.feedTitle)
         if (feedFragment == null) {
             feedFragment = FeedFragment()
         }

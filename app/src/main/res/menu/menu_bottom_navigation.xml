@@ -10,17 +10,17 @@
         android:title="@string/cocktails"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/gallary"
+        android:id="@+id/feed"
         android:enabled="true"
-        android:icon="@drawable/ic_gallary"
-        android:title="@string/gallery"
+        android:icon="@drawable/ic_feed"
+        android:title="@string/feed"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/feed"
+        android:id="@+id/post"
         android:enabled="true"
         android:icon="@drawable/ic_camera"
-        android:title="@string/feed"
+        android:title="@string/post"
         app:showAsAction="ifRoom" />
 
 </menu>

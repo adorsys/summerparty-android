@@ -7,7 +7,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.preference.PreferenceManager
 import android.util.Log
-import androidx.exifinterface.media.ExifInterface
+import android.media.ExifInterface
 import com.google.firebase.firestore.DocumentSnapshot
 import de.adorsys.android.shared.FirebaseProvider
 import java.io.File

@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.fragment_gallery.*
 
 
 class FeedFragment : Fragment() {
+    private lateinit var adapter: FeedAdapter
     private var currentPosition: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -23,7 +24,7 @@ class FeedFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val query = FirebaseProvider.getFeed()
-        val adapter = FeedAdapter(
+        adapter = FeedAdapter(
                 query,
                 { position ->
                     feedRecyclerView.scrollToPosition(position)
@@ -33,6 +34,8 @@ class FeedFragment : Fragment() {
                 },
                 null)
 
+        adapter.startListening()
+
         feedRecyclerView.adapter = adapter
         val layoutManager = GridLayoutManager(context, 1)
         feedRecyclerView.layoutManager = layoutManager
@@ -41,6 +44,11 @@ class FeedFragment : Fragment() {
         feedRecyclerView.postDelayed({
             layoutManager.scrollToPosition(position)
         }, 2000)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        adapter.stopListening()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
