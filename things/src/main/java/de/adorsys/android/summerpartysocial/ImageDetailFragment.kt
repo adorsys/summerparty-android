@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import de.adorsys.android.shared.FirebaseProvider
-import de.adorsys.android.shared.views.BitmapUtils
+import de.adorsys.android.shared.views.ImageUtils
 import kotlinx.android.synthetic.main.fragment_image_detail.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -40,7 +40,7 @@ class ImageDetailFragment : Fragment() {
                         val size = Point()
                         display?.getSize(size)
 
-                        val bitmap = BitmapUtils.getScaledImage(size.y.toFloat(), file.path)
+                        val bitmap = ImageUtils.getScaledImage(size.y.toFloat(), file.path)
                         launch(UI) {
                             detail_image_view?.setImageBitmap(bitmap)
                             detail_image_view?.animate()?.alpha(1F)?.start()

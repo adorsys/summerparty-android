@@ -39,7 +39,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     }
 
     private var cocktailMainFragment: CocktailMainFragment? = null
-    private var galleryFragment: GalleryFragment? = null
+    private var feedFragment: FeedFragment? = null
     private var postFragment: PostFragment? = null
 
     companion object {
@@ -210,10 +210,10 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
 
     private fun startGallaryFragment(): Boolean {
         toolbar.title = getString(R.string.galleryTitle)
-        if (galleryFragment == null) {
-            galleryFragment = GalleryFragment()
+        if (feedFragment == null) {
+            feedFragment = FeedFragment()
         }
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, galleryFragment).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, feedFragment).commit()
         return true
     }
 

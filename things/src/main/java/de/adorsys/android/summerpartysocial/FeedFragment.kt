@@ -19,7 +19,7 @@ import com.google.firebase.firestore.*
 import de.adorsys.android.shared.FirebaseProvider
 import de.adorsys.android.shared.Post
 import de.adorsys.android.shared.PostUtils
-import de.adorsys.android.shared.views.BitmapUtils
+import de.adorsys.android.shared.views.ImageUtils
 import kotlinx.android.synthetic.main.fragment_feed.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -193,7 +193,7 @@ class FeedFragment : Fragment() {
                                             } else {
                                                 imageView.measuredWidth
                                             }
-                                    val bitmap = BitmapUtils.getScaledImage(greatestLength.toFloat(), file.path)
+                                    val bitmap = ImageUtils.getScaledImage(greatestLength.toFloat(), file.path)
                                     launch(UI) {
                                         setBitmap(bitmap, position)
                                     }

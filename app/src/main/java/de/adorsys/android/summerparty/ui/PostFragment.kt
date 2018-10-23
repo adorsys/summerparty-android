@@ -22,7 +22,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import de.adorsys.android.shared.FirebaseProvider
 import de.adorsys.android.shared.Post
-import de.adorsys.android.shared.views.BitmapUtils
+import de.adorsys.android.shared.views.ImageUtils
 import de.adorsys.android.summerparty.R
 import java.io.File
 import java.io.IOException
@@ -200,7 +200,7 @@ internal class PostFragment : Fragment() {
     private fun setScaledImage(filePath: String?) {
         filePath?.let {
             val imageViewSize = pictureImageView.resources.getDimension(R.dimen.image_size)
-            pictureImageView.setImageBitmap(BitmapUtils.getScaledImage(imageViewSize, it))
+            pictureImageView.setImageBitmap(ImageUtils.getScaledImage(imageViewSize, it))
         }
     }
 
