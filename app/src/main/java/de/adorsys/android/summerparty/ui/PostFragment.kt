@@ -148,7 +148,7 @@ internal class PostFragment : Fragment() {
                                 context!!, "de.adorsys.android.summerparty",
                                 it)
                         intent.putExtra(MediaStore.EXTRA_OUTPUT, currentPhotoUri)
-                        this@PostFragment.startActivityForResult(intent, REQUEST_CODE_CAMERA_CAPTURE)
+                        activity!!.startActivityForResult(intent, REQUEST_CODE_CAMERA_CAPTURE)
                     }
                 } catch (e: Exception) {
                     Log.e(javaClass.name, e.message)
@@ -247,6 +247,6 @@ internal class PostFragment : Fragment() {
 
     companion object {
         private const val KEY_IS_INFORMED_CONSENT = "is_informed_consent"
-        private const val REQUEST_CODE_CAMERA_CAPTURE: Int = 944
+        const val REQUEST_CODE_CAMERA_CAPTURE: Int = 944
     }
 }

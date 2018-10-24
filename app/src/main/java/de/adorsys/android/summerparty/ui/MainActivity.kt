@@ -18,6 +18,7 @@ import de.adorsys.android.network.mutable.MutableCustomer
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.Repository
 import de.adorsys.android.summerparty.Repository.user
+import de.adorsys.android.summerparty.ui.PostFragment.Companion.REQUEST_CODE_CAMERA_CAPTURE
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -62,6 +63,7 @@ class MainActivity :
         // init views
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener { startFeedFragment() }
 
         fragmentContainer = findViewById(R.id.fragment_container)
         progressBarContainer = findViewById(R.id.progressBarContainer)
@@ -77,9 +79,6 @@ class MainActivity :
         userId?.let { Repository.getUser(it) }
 
         startFeedFragment()
-
-        supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onStart() {
@@ -108,6 +107,11 @@ class MainActivity :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_CAMERA_PERMISSION
+                && resultCode == Activity.RESULT_OK) {
+            postFragment?.onActivityResult(requestCode, resultCode, data)
+        }
+
+        if (requestCode == REQUEST_CODE_CAMERA_CAPTURE
                 && resultCode == Activity.RESULT_OK) {
             postFragment?.onActivityResult(requestCode, resultCode, data)
         }
