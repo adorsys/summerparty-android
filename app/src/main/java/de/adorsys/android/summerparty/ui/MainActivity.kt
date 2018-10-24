@@ -146,11 +146,9 @@ class MainActivity :
 
     override fun showProgress(show: Boolean, progress: Int?) {
         if (show) {
-            bottom_navigation.visibility = View.INVISIBLE
             progressBarContainer.visibility = View.VISIBLE
             progress?.let { progressBar.progress = it }
         } else {
-            bottom_navigation.visibility = View.VISIBLE
             progressBarContainer.visibility = View.GONE
         }
     }
