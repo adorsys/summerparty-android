@@ -25,6 +25,7 @@ import de.adorsys.android.shared.FirebaseProvider
 import de.adorsys.android.shared.Post
 import de.adorsys.android.shared.views.ImageUtils
 import de.adorsys.android.summerparty.R
+import de.adorsys.android.summerparty.ui.MainActivity.Companion.REQUEST_CODE_CAMERA_PERMISSION
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -147,7 +148,7 @@ internal class PostFragment : Fragment() {
                                 context!!, "de.adorsys.android.summerparty",
                                 it)
                         intent.putExtra(MediaStore.EXTRA_OUTPUT, currentPhotoUri)
-                        activity?.startActivityForResult(intent, REQUEST_CODE_CAMERA)
+                        this@PostFragment.startActivityForResult(intent, REQUEST_CODE_CAMERA_CAPTURE)
                     }
                 } catch (e: Exception) {
                     Log.e(javaClass.name, e.message)
@@ -196,10 +197,15 @@ internal class PostFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_CAMERA
+        if (requestCode == REQUEST_CODE_CAMERA_CAPTURE
                 && resultCode == Activity.RESULT_OK) {
             showImageView()
             setScaledImage(file?.path)
+        }
+
+        if (requestCode == REQUEST_CODE_CAMERA_PERMISSION
+                && resultCode == Activity.RESULT_OK) {
+            openCamera()
         }
     }
 
@@ -241,6 +247,6 @@ internal class PostFragment : Fragment() {
 
     companion object {
         private const val KEY_IS_INFORMED_CONSENT = "is_informed_consent"
-        private const val REQUEST_CODE_CAMERA: Int = 942
+        private const val REQUEST_CODE_CAMERA_CAPTURE: Int = 944
     }
 }

@@ -1,29 +1,41 @@
 package de.adorsys.android.summerparty.ui
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Toolbar
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import de.adorsys.android.shared.FirebaseProvider
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.ui.adapter.FeedAdapter
-import kotlinx.android.synthetic.main.fragment_gallery.*
-import de.adorsys.android.summerparty.R.id.toolbar
-import kotlinx.android.synthetic.main.activity_main.view.*
+import kotlinx.android.synthetic.main.fragment_feed.*
 
 
 class FeedFragment : Fragment() {
+    interface OnStartPostFragmentListener {
+        fun onStartPostFragment()
+    }
+
     private lateinit var adapter: FeedAdapter
+    private lateinit var listener: OnStartPostFragmentListener
     private var currentPosition: Int = 0
-    private var postFragment: PostFragment? = null
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        try {
+            listener = context as OnStartPostFragmentListener
+        } catch (e: ClassCastException) {
+            Log.e("FEED", "Your activity has to implement the OnStartPostFragmentListener")
+            fragmentManager?.popBackStack()
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_gallery, container, false)
+        return inflater.inflate(R.layout.fragment_feed, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,21 +62,13 @@ class FeedFragment : Fragment() {
             layoutManager.scrollToPosition(position)
         }, 2000)
 
-        val toolbar = activity!!.findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        val toolbar = activity!!.findViewById<Toolbar>(R.id.toolbar)
         toolbar.navigationIcon = null
         toolbar.setTitle(R.string.feedTitle)
 
         view.findViewById<View>(R.id.addPostButton).setOnClickListener {
-            startPostMainFragment()
+            listener.onStartPostFragment()
         }
-    }
-
-    private fun startPostMainFragment() {
-        //toolbar.title = getString(R.string.postTitle)
-        if (postFragment == null) {
-            postFragment = PostFragment()
-        }
-        activity!!.supportFragmentManager.beginTransaction().replace(R.id.fragment_container, postFragment!!).commit()
     }
 
     override fun onDetach() {

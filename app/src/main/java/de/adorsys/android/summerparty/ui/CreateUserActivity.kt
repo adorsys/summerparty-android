@@ -12,9 +12,6 @@ import com.google.android.material.textfield.TextInputLayout
 import de.adorsys.android.summerparty.R
 
 class CreateUserActivity : BaseActivity() {
-    companion object {
-        const val KEY_USERNAME = "key_username"
-    }
     private var preferences: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,5 +37,9 @@ class CreateUserActivity : BaseActivity() {
                 finish()
             }
         }
+    }
+
+    companion object {
+        const val KEY_USERNAME = "key_username"
     }
 }
