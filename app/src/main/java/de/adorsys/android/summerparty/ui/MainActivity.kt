@@ -25,6 +25,13 @@ import de.adorsys.android.summerparty.Repository.user
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
+import android.content.Intent
+import de.adorsys.android.summerparty.R.id.toolbar
+import de.adorsys.android.summerparty.R.id.toolbar
+
+
+
+
 
 class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionListener, PostFragment.OnGetPermissionsListener, PostFragment.OnShowProgressListener {
     override fun showProgress(show: Boolean, progress: Int?) {
@@ -65,6 +72,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
     private lateinit var progressBarContainer: FrameLayout
     private lateinit var fragmentContainer: FrameLayout
 
+
     private var firebaseToken: String? = null
     private var viewContainer: View? = null
     private var cartMenuItem: MenuItem? = null
@@ -91,6 +99,9 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         preferences = getSharedPreferences(KEY_PREFS_FILENAME, Context.MODE_PRIVATE)
 
         setSupportActionBar(toolbar)
+        toolbar.setNavigationIcon(R.drawable.ic_back)
+
+        toolbar.setNavigationOnClickListener { startActivity(Intent(applicationContext, MainActivity::class.java)) }
 
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -100,6 +111,9 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
             }
             false
         }
+
+
+        toolbar.setNavigationOnClickListener { startFeedFragment() }
 
         Repository.cocktailsLiveData.observe(this, Observer {
             progressBar.visibility = View.GONE
@@ -121,7 +135,7 @@ class MainActivity : BaseActivity(), CocktailFragment.OnListFragmentInteractionL
         val userId = preferences.getString(KEY_USER_ID, null)
         userId?.let { Repository.getUser(it) }
 
-        startPostMainFragment()
+        startFeedFragment()
     }
 
     override fun onResume() {

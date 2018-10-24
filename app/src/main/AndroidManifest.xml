@@ -10,9 +10,9 @@
 	<application
 		android:allowBackup="false"
         android:name=".SummerpartyApp"
-		android:icon="@drawable/ic_app_logo"
+		android:icon="@mipmap/ic_photo_feed_round_round"
 		android:label="@string/app_name"
-		android:roundIcon="@drawable/ic_app_logo"
+		android:roundIcon="@mipmap/ic_photo_feed_round_round"
 		android:supportsRtl="true"
 		android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">

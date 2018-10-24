@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -63,6 +64,11 @@ internal class PostFragment : Fragment() {
         pictureContainer = view.findViewById(R.id.picture_container)
         pictureImageView = view.findViewById(R.id.picture_image_view)
         successContainer = view.findViewById(R.id.success_upload_container)
+
+
+        val toolbar = activity!!.findViewById<Toolbar>(R.id.toolbar)
+        toolbar.setNavigationIcon(R.drawable.ic_back)
+        toolbar.setTitle(R.string.postTitle)
 
         if (isInformedConsent()) {
             hideInformedContainer()
