@@ -242,7 +242,7 @@ internal class PostFragment : Fragment() {
         postMainContainer.visibility = VISIBLE
         descriptionEditText.setText("")
         successContainer.visibility = GONE
-        hideImageView()
+        fragmentManager?.popBackStack()
     }
 
     companion object {

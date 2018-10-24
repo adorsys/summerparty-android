@@ -44,7 +44,7 @@ class FeedFragment : Fragment() {
         adapter = FeedAdapter(
                 query,
                 { position ->
-                    feedRecyclerView.scrollToPosition(position)
+                    feedRecyclerView?.scrollToPosition(position)
                 },
                 { position ->
                     currentPosition = position
