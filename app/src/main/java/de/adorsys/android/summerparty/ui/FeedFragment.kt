@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import de.adorsys.android.shared.FirebaseProvider
 import de.adorsys.android.summerparty.R
+import de.adorsys.android.summerparty.R.id.feedRecyclerView
 import de.adorsys.android.summerparty.ui.adapter.FeedAdapter
 import kotlinx.android.synthetic.main.fragment_feed.*
 

@@ -20,7 +20,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
-import com.google.android.gms.common.images.internal.ImageUtils
 import com.google.android.material.textfield.TextInputEditText
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.ui.MainActivity.Companion.REQUEST_CODE_CAMERA_PERMISSION
@@ -28,6 +27,9 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import de.adorsys.android.shared.FirebaseProvider
+import de.adorsys.android.shared.Post
+import de.adorsys.android.shared.views.ImageUtils
 
 internal class PostFragment : Fragment() {
     interface OnGetPermissionsListener {
