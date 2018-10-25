@@ -20,10 +20,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import com.google.android.gms.common.images.internal.ImageUtils
 import com.google.android.material.textfield.TextInputEditText
-import de.adorsys.android.shared.FirebaseProvider
-import de.adorsys.android.shared.Post
-import de.adorsys.android.shared.views.ImageUtils
 import de.adorsys.android.summerparty.R
 import de.adorsys.android.summerparty.ui.MainActivity.Companion.REQUEST_CODE_CAMERA_PERMISSION
 import java.io.File
@@ -144,6 +142,8 @@ internal class PostFragment : Fragment() {
                 file = createFile(context!!, ".jpg")
                 try {
                     file?.let {
+                        // Compress bitmap
+                        setScaledImage(it.absolutePath, "1920".toFloat())
                         val currentPhotoUri = FileProvider.getUriForFile(
                                 context!!, "de.adorsys.android.summerparty",
                                 it)
@@ -200,7 +200,7 @@ internal class PostFragment : Fragment() {
         if (requestCode == REQUEST_CODE_CAMERA_CAPTURE
                 && resultCode == Activity.RESULT_OK) {
             showImageView()
-            setScaledImage(file?.path)
+            setScaledImage(file?.path, pictureImageView.resources.getDimension(R.dimen.image_size))
         }
 
         if (requestCode == REQUEST_CODE_CAMERA_PERMISSION
@@ -209,9 +209,8 @@ internal class PostFragment : Fragment() {
         }
     }
 
-    private fun setScaledImage(filePath: String?) {
+    private fun setScaledImage(filePath: String?, imageViewSize: Float) {
         filePath?.let {
-            val imageViewSize = pictureImageView.resources.getDimension(R.dimen.image_size)
             pictureImageView.setImageBitmap(ImageUtils.getScaledImage(imageViewSize, it))
         }
     }
